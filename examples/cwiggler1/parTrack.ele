@@ -1,0 +1,71 @@
+! dynamic aperture vs momentum offset without errors, but with a wiggler
+
+!
+! first, set the chromaticity to some positive values (to make it more
+! interesting) and save the lattice 
+!
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+&chromaticity
+    sextupoles = "SDH SFH", n_iterations = 10,
+    change_defined_values = 1,
+    dnux_dp = 3,
+    dnuy_dp = 3,
+    tolerance = 0.00001
+&end
+
+&run_control &end
+&bunched_beam &end
+&track &end
+
+&save_lattice filename=%s.new &end
+
+! Run on-momentum DA with quad strength and tilt errors 
+
+&run_setup
+    lattice = "parTrack.new",
+    p_central = 880,
+    use_beamline="par",
+    magnets = %s.mag
+    final = %s.fin,
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+&twiss_output
+        output_at_each_step = 1,
+        filename = %s.twi,
+&end
+
+&run_control
+        n_passes = 1000
+&end
+
+&error_control error_log=%s.erl, clear_error_settings=1 &end
+! These errors are large just for demonstration purposes
+&error_element name=*, element_type=KQUAD, item=FSE, amplitude=2e-3, bind=0 &end
+&error_element name=*, element_type=KQUAD, item=TILT, amplitude=2e-3, bind=0 &end
+
+&find_aperture
+    output = %s.aper,
+    boundary = %s.abnd,
+    mode = "eleven-line",
+    verbosity = 1,
+    xmin = -0.05,
+    xmax =  0.05,
+    ymin =  0.0,
+    ymax =  0.025,
+    nx  = 6,
+    ny  = 6,
+    n_splits = 3,
+&end
+

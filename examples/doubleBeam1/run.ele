@@ -1,0 +1,40 @@
+&run_setup
+        p_central_mev = 1000
+        lattice = lattice.lte,
+        output = bunch1.sdds
+&end
+
+&run_control
+&end
+
+! 1mm bunch length centered on 0
+&bunched_beam 
+        n_particles_per_bunch = 1000
+        sigma_s = 1e-3,
+        sigma_dp = 1e-3,
+        distribution_type[2] = "gaussian"
+&end
+
+&track &end
+
+&run_setup
+        p_central_mev = 1000
+        lattice = lattice.lte,
+        output = bunch2.sdds
+&end
+
+&run_control
+&end
+
+! 2 mm bunch length centered on 10mm
+&bunched_beam 
+        n_particles_per_bunch = 1000
+        sigma_s = 2e-3,
+        sigma_dp = 1e-3,
+        distribution_type[2] = "gaussian"
+        centroid[4] = 10e-3
+&end
+
+&track &end
+
+&subprocess command = "sddscombine -merge -overwrite bunch1.sdds bunch2.sdds bunch.sdds" &end

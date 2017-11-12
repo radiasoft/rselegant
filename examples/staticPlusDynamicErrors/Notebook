@@ -1,0 +1,20 @@
+Example of combining static and dynamic errors for a transport line.
+
+run1.ele   template file for the static errors and correction
+           usage example
+           % elegant run1.ele -macro=seed=13213211
+           creates run1-13213211.*
+
+run2.ele   template file for the dynamic errors
+           usage example:
+           % elegant run2.ele -macro=seed=13213211,ensembles=1000   
+           Uses results of run1-13213211, then runs 1000 ensembles on top of that
+
+fodo.lte   lattice file for a fodo transport line
+           N.B.: see note about a bug workaround
+
+runExample runs static case, then 1000 dynamic instances
+
+processExample
+           Reprocesses results of runExample
+

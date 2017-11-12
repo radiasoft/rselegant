@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# run1.ele        Calculate the twiss parameters, just to see that it is stable
+
+elegant run1.ele
+plotTwiss -fileRoot run1
+# Extract some information for the hcorrectors only (for later plotting)
+sddsprocess run1.twi run1.twi.hcor -match=col,ElementType=HKIC*
+
+# run2.ele        Compute the response matrices, plus perform trajectory correction
+#                 for quad misalignments.  Could separate these steps.
+
+elegant run2.ele
+# Plot the correctors after correction
+sddsplot -column=s,Kick run2.cor -match=parameter,Plane=horizontal
+# Prepare transposed response matrix, deleting the 's' column first
+sddsconvert run2.hirm -pipe=out -delete=col,s | sddstranspose -pipe=in run2.hirmt
+
+# run3.ele        Compute the trajectory with quad misalignments but without correction 
+#                 This is like measuring a trajectory that you want to correct
+
+elegant run3.ele
+# Prepare x data for use in computing correctors
+sddsconvert run3.cen -pip=out -retain=col,ElementName,ElementType,Cx | sddsprocess -pipe=in run3.xcen -match=col,ElementType=MONI
+# Perform matrix multiplication
+sddsmatrixmult run2.hirmt run3.xcen -pipe=out \
+    | sddsconvert -pipe -rename=col,Cx=HKick \
+    | sddsxref -pipe=in run1.twi.hcor -take=s run3.cor
+# Compare to elegant's correction
+sddsplot -graph=sym,vary,subtype=type \
+    -column=s,Kick run2.cor -match=parameter,Plane=horizontal -legend=spec=Elegant \
+    -col=s,HKick run3.cor -legend=spec=Outboard
+
+
+

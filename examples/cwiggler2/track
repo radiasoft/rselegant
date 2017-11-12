@@ -1,0 +1,26 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# make a file with a sequence of values of delta
+exec sddssequence deltaValues.sdds \
+    "-define=delta,type=double,symbol=\$gd\$r" \
+    -sequence=begin=-0.015,end=0.015,delta=0.005 
+
+# do tracking for each value of delta
+
+if ![file exists parTrack.log] {
+    catch {exec elegant parTrack.ele -macro=deltaFile=deltaValues.sdds > parTrack.log}
+}
+
+# plot DA
+exec sddsplot -split=page -separate=page -groupby=page \
+    -column=x,y parTrack.aper -graph=symbol,type=0 
+
+# plot beta functions
+exec sddsplot -split=page -separate=request -groupby=page,request \
+    -column=s,beta? parTrack.twi -graph=line,vary -same=y -unsup=y \
+    -column=s,Profile parTrack.mag -omnipresent -overlay=xmode=norm,yfact=0.04 &
+ 
+
+

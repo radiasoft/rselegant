@@ -1,0 +1,35 @@
+#!/bin/csh -f
+set nonomatch
+
+# filename = InstallGirderErrors
+# Developed by S. Kramer and M. Borland
+# Adds girder errors by drawing a line between the last two elements
+# (zero-strength multipoles) in each element group.
+
+# Uses run1.param as the source of the element DX and DY values
+# Generates run1.dx and run1.dy, with total displacement (girder+individual)
+
+foreach item ( dx dy )
+    sddsprocess run1.param -pipe=out \
+        -match=column,ElementGroup=girder* \
+        -match=column,ElementParameter=+$item \
+        -define=column,PageP,i_page,type=long \
+        -define=parameter,PageP,i_page,type=long \
+        | sddsxref run1.twi -pipe -match=ElementName -take=s -reuse=page \
+        | sddsbreak -pipe -change=ElementGroup \
+        | sddsprocess -pipe \
+        -process=s,first,sMin -process=s,last,sMax \
+        -process=ParameterValue,first,Vo -process=ParameterValue,last,Vn \
+        "-define=parameter,sLength,sMax sMin - " \
+        "-define=parameter,${item}o,Vo " \
+        "-define=parameter,${item}p,Vn Vo - sLength /" \
+        "-define=column,${item}Girdcor,${item}o ${item}p s sMin - * +" \
+        "-define=column,${item}Girdbeg,ParameterValue Vo == pop pop ? 0 : 1 $ " \
+        "-define=column,${item}Girdend,ParameterValue Vn == pop pop ? 0 : 1 $ " \
+"-redef=col,ParameterValue,${item}Girdcor ${item}Girdbeg * ${item}Girdend * ParameterValue +"\
+	| sddscombine -pipe=in run1.$item -merge=PageP
+
+end
+
+
+

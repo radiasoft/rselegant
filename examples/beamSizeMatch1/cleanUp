@@ -1,0 +1,4 @@
+#!/bin/bash
+
+\rm run?.twi run?.sig run?.param run?.fin run?.terms
+

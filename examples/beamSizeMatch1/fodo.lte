@@ -1,0 +1,8 @@
+q1h: quad,l=0.25,k1=1 
+q2h: quad,l=0.25,k1=-1
+d1: drift,l=1
+m1: mark,fitpoint=1
+twi: twiss,betax=1,betay=1,from_beam=1
+em: emittance,emitx=10e-6,emity=10e-6
+bl: line=(3*(q1h,d1,m1,d1,q2h,q2h,d1,m1,d1,q1h))
+blm: line=(twi,em,bl)

@@ -1,0 +1,48 @@
+#!/bin/sh  
+# \
+exec oagtclsh "$0" "$@"
+
+set auto_path [linsert $auto_path 0  /usr/local/oag/apps/lib/$env(HOST_ARCH)]
+set auto_path [linsert $auto_path 0 /usr/local/oag/lib_patch/$env(HOST_ARCH)]
+APSStandardSetup
+
+set usage {usage: processJob1 -valueList <list> -tagList <list> -rootname <string> -runID <integer>}
+# E.g., processJob1 -tagList "S1 S2" -valueList "1.7 5.6" -rootname run001 -runID 1
+
+set valueList ""
+set tagList ""
+set rootname ""
+set runID ""
+set args $argv
+if {[APSStrictParseArguments {valueList tagList rootname runID}] || \
+	![string length $rootname] } {
+    return -code error "$usage"
+}
+
+if [file exists $rootname.proc] exit
+
+set runID [string trim $runID]
+if ![string length $runID] {
+    eval set runID [os editstring x-/0123456789/Z-x/0/ $rootname]
+    if ![string length $runID] {
+        set runID 0
+    }
+}
+
+# This is the actual command to process the results. It must produce a file named
+# $rootname.proc with runID and penaltyValue.  It must copy the columns from
+# $rootname.input to ensure the input values are saved.
+
+if [catch {exec sddsprocess $rootname.twi -pipe=out \
+             -process=beta*,ave,%sAverage \
+             | sddscollapse -pipe \
+             | sddsxref $rootname.input -pipe -take=* \
+             | sddsprocess -pipe=in $rootname.proc \
+             "-redefine=column,runID,$runID,type=long" \
+             "-define=column,penaltyValue,betaxAverage sqr betayAverage sqr +"} result] {
+    puts stderr "$result"
+    exit 1
+}
+
+exit 0
+

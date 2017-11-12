@@ -1,0 +1,31 @@
+! this run sets the static errors and corrects them.
+
+&run_setup
+	lattice = fodo.lte
+	use_beamline = xport,
+	p_central_mev = 100
+	rootname = run1-<seed>,
+	centroid = %s.cen
+	magnets = %s.mag
+	parameters = %s.param
+	random_number_seed = <seed>
+&end
+
+&run_control
+	n_steps = 1
+&end
+
+&error_control clear_error_settings = 1 &end
+
+&error_element name=Q?, item=DX, amplitude = 1e-3, bind = 0 &end
+&error_element name=Q?, item=DY, amplitude = 1e-3, bind = 0 &end
+&error_element name=Q?, item=TILT, amplitude = 1e-3, bind = 0 &end
+
+&correct
+	mode = "trajectory"
+&end
+
+&bunched_beam &end
+
+&track &end
+

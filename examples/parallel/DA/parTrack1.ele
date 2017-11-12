@@ -1,0 +1,28 @@
+! 
+! first, set the chromaticity to some positive values (to make it more
+! interesting) and save the lattice 
+!
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+&chromaticity
+    sextupoles = "SDH SFH", n_iterations = 10,
+    change_defined_values = 1,
+    dnux_dp = 3,
+    dnuy_dp = 3,
+    tolerance = 0.00001
+&end
+
+&run_control &end
+&bunched_beam &end
+&track &end
+
+&save_lattice filename=%s.new &end
+

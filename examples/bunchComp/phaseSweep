@@ -1,0 +1,20 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# Create a sequence of phase delta values. 
+# Sort into increasing order by absolute value so the first (delta=0) can act
+# as a fiducial.
+exec sddssequence -pipe=out -define=deltaPhase,type=double,units=s \
+  -sequence=begin=-5,end=5,delta=1 \
+  | sddsprocess -pipe "-defi=col,AbsDeltaPhase,deltaPhase abs" \
+  | sddssort -pipe=in phaseSweep.sweep -column=AbsDeltaPhase,incr
+
+if [file exists phaseSweep.log] {
+    file delete phaseSweep.log
+}
+
+exec elegant phaseSweep.ele > phaseSweep.log
+
+exec sddsplot -layout=2,2 -separate -graph=symbol,scale=2 \
+        -parameter=LINA10.PHASE,(pCentral,pAverage,Cdelta,Ct) phaseSweep.fin &

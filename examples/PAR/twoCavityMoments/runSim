@@ -1,0 +1,12 @@
+#!/bin/csh -f
+set nonomatch
+
+elegant run.ele
+
+sddsxref run.mom run.fin -pipe=out -leave=* -transfer=parameter,* \
+| sddsprocess -pipe -process=s?,ave,%sAve \
+| sddscollapse -pipe=in run.results
+
+sddsplot -column=RF12.VOLT,s5Ave -graph=sym,scale=2 run.results
+
+

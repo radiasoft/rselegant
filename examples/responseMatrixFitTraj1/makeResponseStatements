@@ -1,0 +1,69 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# Needed to give the list of quadrupole names:
+set parameters run0.param
+
+# Needed to get the names of the response matrix elements:
+set hResp run1.hrm
+set vResp run1.vrm
+
+# Output filename
+set output match1.ele
+
+# Partial input file
+set input fittingStatements.ele
+set fi [open $input r]
+
+set fo [open $output w]
+
+while {![eof $fi]} {
+    gets $fi data
+    puts $fo $data
+}
+
+if [catch {exec sddsprocess $parameters -pipe=out -match=column,ElementType=*QUAD -match=column,ElementParameter=L \
+             | sdds2stream -pipe -column=ElementName} quadNameList] {
+    puts stderr "Error: $quadNameList"
+    exit 1
+}
+
+foreach quad $quadNameList {
+    puts $fo "&optimization_variable name=$quad, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end"
+}
+puts $fo ""
+
+foreach matrix [list $hResp $vResp] HV [list H V] kickName [list KICK KICK] {
+    puts stdout "Working on $matrix"
+    flush stdout
+    if [catch {exec sddsconvert $matrix -pipe=out -delete=column,s,BPMName \
+                 | sddsquery -pipe -column} correctorNameList] {
+        puts stderr "Error (1): $correctorNameList"
+        exit 1
+    }
+    set correctorNumber 0
+    foreach corrector $correctorNameList {
+        incr correctorNumber
+        set columnName $corrector
+        if [set i [string first \# $corrector]]!=-1 {
+            set corrector [string range $corrector 0 [expr $i-1]]
+        }
+        puts stdout "Working on $corrector"
+        flush stdout
+        # Make matching terms for each BPM for one corrector.
+        if [catch {exec sddsprocess $matrix -pipe=out \
+                     "-reedit=col,BPMName,S?/#/10D" \
+                     "-define=col,BPMNumber,i_row 1 +,type=long" \
+                     "-print=column,statement,&optimization_term term = \"${HV}R_%s\#%ld_${corrector}\#$correctorNumber.$kickName %e - sqr\" &end,BPMName,BPMNumber,$columnName"  \
+                     | sdds2stream -pipe -column=statement} statementList] {
+            puts stderr "Error (2): $statementList"
+        }
+        foreach statement $statementList {
+            puts $fo $statement
+        }
+    }
+}
+
+puts $fo "&bunched_beam &end"
+puts $fo "&optimize &end"

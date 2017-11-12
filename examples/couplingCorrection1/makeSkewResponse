@@ -1,0 +1,15 @@
+#!/bin/bash 
+
+\rm skewResponse-*.done
+
+for skew in `sddsprocess run0.twi -pipe=out -match=col,ElementName=*QS | sdds2stream -col=ElementName -pipe`; do elegant skewResponseTemplate.ele -macro=skew=$skew; done
+
+for file in skewResponse-S*.mom  ; do sddsconvert $file -pipe=out -retain=col,ElementName,s36 -rename=col,s36=`editstring $file -edit=Z-%/.mom//` | sddsprocess -pipe=in ${file/mom/resp} -match=col,ElementName=*P[0-5] -redefine=col,%s,"%s 0.01 /",select=S*,symbol=,units='m$a3$n' ; done
+
+sddsxref skewResponse-S??:QS.resp skewResponse-S???:QS.resp skewResponse.sdds
+\rm skewResponse-*.*
+sddspseudoinverse skewResponse.sdds skewResponse.inv -largest=9
+
+
+
+

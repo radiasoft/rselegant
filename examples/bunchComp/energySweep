@@ -1,0 +1,12 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if [file exists energySweep.log] {
+    file delete energySweep.log
+}
+
+exec elegant energySweep.ele > energySweep.log
+
+exec sddsplot -layout=2,2 -separate -graph=symbol,scale=2 \
+        -parameter=LINA10.VOLT,(pCentral,pAverage,Sdelta,St) energySweep.fin &

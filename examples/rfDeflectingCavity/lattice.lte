@@ -1,0 +1,7 @@
+! Set cavity for vertical deflection at the negative-going zero-crossing
+% 2.997924E+09 sto f0
+% .49995 sto Lcav
+% 21 sto Kcav
+cav: RFDF,frequency="f0",l="Lcav",voltage=1e6,n_kicks="Kcav",&
+        phase=90,tilt="pi 2 /"
+bl: line=(cav)

@@ -1,0 +1,57 @@
+&run_setup
+   lattice = "apsKick.lte",
+   use_beamline = "RING",
+   p_central = 13698.630137,
+   default_order = 2,
+   semaphore_file = "%s.done",
+&end
+
+! Set rf cavities.  In this case we have four cavities for total of 9 MV
+&alter_elements name=RF, item=VOLT, value=2.25e6 &end
+&alter_elements name=RF, item=PHASE, value=1.435340944522561e+02 &end
+&alter_elements name=RF, item=FREQ, value=3.519303131536540e+08 &end
+
+! Turn on quantum excitation in quads, sextupolse, and dipoles
+&alter_elements name=*, type=KQUAD, item=ISR, value=1 &end
+&alter_elements name=*, type=KSEXT, item=ISR, value=1 &end
+&alter_elements name=*, type=CSBEN*, item=ISR, value=1 &end
+
+! Set sextupole values
+&alter_elements name=*S1, item=K2, value=10.0 &end
+&alter_elements name=*S2, item=K2, value=-21.4 &end
+&alter_elements name=*S3, item=K2, value=-18.1 &end
+&alter_elements name=*S4, item=K2, value=16.5 &end
+
+! Load quad errors and tilts
+&load_parameters
+        filename_list = "quads-1.0p.param skews-1.0p.param ",
+        change_defined_values = 1
+&end
+
+&run_control
+    n_steps = 1,
+&end
+
+! Compute closed orbit to prepare to compute moments on the orbit. 
+&closed_orbit
+        output = %s.clo,
+        closed_orbit_accuracy = 1e-8,
+        closed_orbit_iterations = 500,
+        iteration_fraction = 0.25
+&end
+
+! Set up for moments computation
+&moments_output
+        filename = %s.mom
+        matched = 1,
+        output_at_each_step = 1
+        verbosity = 1,
+        radiation = 1
+        n_slices = 100
+&end
+
+&bunched_beam &end
+
+! Perform the computations, centered on the orbit
+&track center_on_orbit=1 &end
+

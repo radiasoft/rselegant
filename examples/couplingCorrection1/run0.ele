@@ -1,0 +1,66 @@
+&divide_elements
+        name = *, type = *DRIF*, divisions = 1,
+&end
+&divide_elements
+        name = *, type = *SBEN*, divisions = 1,
+&end
+&divide_elements
+        name = *, type = *QUAD*, divisions = 1,
+&end
+&divide_elements
+        name = *, type = *SEXT*, divisions = 1,
+&end
+
+&run_setup
+	lattice = aps.lte,
+	use_beamline = RINGRF
+	p_central = "{rpnl 7.0e3 mev /}",
+	default_order = 2,
+        magnets = %s.mag,       
+        parameters = %s.param,
+        semaphore_file = %s.done,
+&end
+
+&load_parameters
+        filename_list = " bestSS.param",
+	force_occurence_data = 1,
+        change_defined_values = 1,
+        allow_missing_elements = 1,
+        allow_missing_parameters = 1,
+        allow_missing_files = 1,
+&end
+
+
+&alter_elements name=*, type=*SBEN*, item=ORDER, value=2, allow_missing_parameters=1,
+	allow_missing_elements=1 &end
+&alter_elements name=*, type=*SBEN*, item=EDGE_ORDER, value=1, allow_missing_parameters=1,
+	allow_missing_elements=1 &end
+&alter_elements name=*, type=*SEXT*, item=ORDER, value=2, allow_missing_parameters=1, 
+	allow_missing_elements=1 &end
+&alter_elements name=*, type=*QUAD*, item=ORDER, value=2, allow_missing_parameters=1, 
+	allow_missing_elements=1 &end
+
+&twiss_output
+        filename = "%s.twi",
+        concat_order = 2,
+        matched = 1
+        radiation_integrals = 1
+&end
+
+&moments_output
+        filename = %s.mom
+        matched = 1
+        equilibrium = 1
+        radiation = 1
+&end
+
+&run_control 
+	n_steps = 1,
+&end
+
+
+&bunched_beam &end
+
+&track &end
+
+&save_lattice filename = %s.new &end

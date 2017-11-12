@@ -1,0 +1,35 @@
+! tracking example
+!   Tracks off-momentum particles then analyzes motion to
+!   determine the chromaticity
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    final = %s.fin,
+    default_order = 2,
+&end
+
+&twiss_output
+        filename = %s.twi,
+&end
+
+&run_control
+        n_indices = 1,
+        n_passes = 1024
+&end
+
+&alter_elements name=MAL, item=DX, value=1e-6 &end
+&alter_elements name=MAL, item=DY, value=1e-6 &end
+
+&vary_element 
+        name=mal, item=dp, initial=-1e-2, final=1e-2, 
+        index_number=0, index_limit=16 &end
+
+&closed_orbit &end
+
+&bunched_beam n_particles_per_bunch = 1 &end
+
+&track center_on_orbit=1 &end

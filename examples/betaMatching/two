@@ -1,0 +1,12 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists two.log] {
+    exec elegant two.ele > two.log
+}
+exec sddsplot -parameter=Step,optimizationFunction two.fin -mode=y=log,y=special &
+exec sddsplot -graph=line,vary -unsup=y \
+                -column=s,beta? -yscale=id=1 two.twi -legend \
+                -column=s,Profile -overlay=xmode=norm,yfact=0.04 \
+                -graph=line,type=0 two.mag &

@@ -1,0 +1,21 @@
+#!/bin/csh -f
+set nonomatch
+
+elegant quad.ele
+
+# Collapse the file and also create some measurement error values (Ex, Ey)
+sddscollapse quad.fin -pipe=out \
+    | sddsprocess -pipe=in quad.finc \
+    "-define=column,Ex,1e-4 grnd * abs 1e-4 +" \
+    "-define=column,Ey,1.5e-4 grnd * abs 1.5e-4 +"
+
+sddsemitproc quad.finc quad.emit -sigmaData=Sx,Sy -nErrorSets=50 -errorData=Ex,Ey 
+
+sddsplot -ylabel="Beamsize (m)" \
+    -column=Q1.K1,Sx,Ex quad.finc -graph=error,subtype=0 -legend=edit=%/Sigma// \
+    -column=Q1.K1,Sy,Ey quad.finc -graph=error,subtype=1 -legend=edit=%/Sigma// \
+    -column=Q1.K1,?SigmaData quad.emit -graph=sym,vary=subtype -legend=edit=%/Sigma// -topline=@EmittanceLabel \
+    -column=Q1.K1,?SigmaFit quad.emit -graph=line,vary -legend=edit=%/Sigma//
+
+
+

@@ -1,0 +1,10 @@
+Example of using the script element.
+
+In this example, we merge a series of extra beams into a simulation
+that already has a beam.  The merging is done with the mergeBeams
+script.
+
+To run this example:
+% elegant run.ele
+% sddsplot -column=s,Particles run.cen
+% sddsplot -column=s,S[xys] run.sig -graph=line,vary

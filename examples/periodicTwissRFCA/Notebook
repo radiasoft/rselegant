@@ -1,0 +1,32 @@
+Demonstration that one can't have periodic beta functions in a FODO cell array with linac structures.
+M. Borland (ANL)
+
+! Run elegant for a cell, with matched=1
+elegant run-cell.ele
+! Beam sizes are approximately periodic
+sddsplot -column=s,S[xy] run-cell.sig -graph=line,vary 
+! Beta functions are not
+sddsplot -column=s,beta[xy] run-cell.twi -graph=line,vary 
+! Compute beta functions from beam sizes
+sddsprocess run-cell.sig \
+            -define=col,beta%s,"S%s sqr e%s /",units=m,select=S[xy],edit=d
+! Compare to twiss_output, see good agreement
+sddsplot -column=s,beta[xy] run-cell.sig run-cell.twi \
+         -graph=line,vary 
+
+! Run many cells, starting with same conditions
+elegant run.ele
+! Show that beam sizes are not periodic
+sddsplot -column=s,S[xy] run.sig -graph=line,vary
+
+Depending on the beam energy and the energy gain in the cell, the
+matched beta functions will be more or less periodic.  The reason is
+that elegant propagates the beta functions using the transfer matrix,
+which does not have unit determinant (because of the acceleration).
+
+If you have track a beam starting with the matched beta functions
+elegant finds, the beam sizes should be close to periodic for that
+cell.  However, if you concatenate several cells, the beam sizes won't
+be periodic.  They can't be, because as the beam accelerates, the
+determinant of the matrix becomes closer to unity and the end focusing
+decreases in strength.

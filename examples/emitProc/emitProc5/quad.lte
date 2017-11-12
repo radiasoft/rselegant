@@ -1,0 +1,7 @@
+q1: quad,l=0.5,k1=1
+l1: drift,l=0.25
+q2: quad,l=0.5,k1=-1
+a1: rfca,l=3,volt=50e6,end1_focus=1,end2_focus=1,phase=90
+bl: line=(q1,l1,q2,a1)
+l0: drift,l=0
+genbeam: line=(l0)

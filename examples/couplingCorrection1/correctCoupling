@@ -1,0 +1,57 @@
+#!/bin/sh  
+# \
+exec oagtclsh "$0" "$@"
+
+set auto_path [linsert $auto_path 0  /usr/local/oag/apps/lib/$env(HOST_ARCH)]
+set auto_path [linsert $auto_path 0 /usr/local/oag/lib_patch/$env(HOST_ARCH)]
+APSStandardSetup
+
+set usage {usage: correctCoupling -rootname <string> -input <parameterFile> -eyTarget <pm>}
+set rootname ""
+set input ""
+set eyTarget 31
+set args $argv
+if {[APSStrictParseArguments {rootname input eyTarget}] || ![string length $rootname] || ![string length $input]} {
+    return -code error "$usage"
+}
+
+set fdo [open $rootname.cc-log w]
+puts $fdo "rootname = $rootname, input = $input, eyTarget = $eyTarget"
+flush $fdo
+
+# First, perform SVD correction of vertical dispersion
+
+# - Compute moments with input errors
+catch {exec elegant etayCorrTemplate.ele -macro=rootname=${rootname}-etayOrig,inputParameters=$input > ${rootname}-etayOrig.log} result
+puts $fdo "Compute moments with input errors: $result"
+flush $fdo
+
+# Compute correction strengths and apply
+# -- Extract etay=s36
+catch {exec sddsprocess $rootname-etayOrig.mom -pipe=out -match=col,ElementName=*P\[0-5\] | sddsconvert -pipe=in $rootname-etayCorrection.s36 -retain=col,s36,ElementName} result
+puts $fdo "Extract etay=s36: $result"
+flush $fdo
+
+# -- Multiply with inverse matrix and convert to parameter format
+catch {exec sddsmatrixmult skewResponse.inv $rootname-etayCorrection.s36 -pipe=out \
+    | sddsxref skewResponse.inv -take=OldColumnNames -rename=col,OldColumnNames=ElementName -pipe \
+    | sddsprocess -pipe=in $rootname-etayCorrection.param -print=col,ElementParameter,K1 "-define=col,ParameterValue,s36  chs " -print=col,ParameterMode,differential} result
+puts $fdo "Multiply with inverse matrix: $result"
+flush $fdo
+
+# Second, correct coupling and add dispersion to get target vertical emittance
+catch {exec elegant couplingCorrTemplate.ele -macro=rootname=${rootname}-CC,inputParameters=$input,etayCorrection=$rootname-etayCorrection.param,eyTarget=$eyTarget > $rootname-CC.log} result
+puts $fdo "Correct coupling: $result"
+flush $fdo
+
+# Delete data we don't need---This might change depending o the simulation
+exec sddsprocess ${rootname}-CC.param -nowarning \
+    -match=col,ElementType=*BEN*,! -match=col,ElementType=*MON*,! -match=col,ElementType=*KICK*,! -match=col,ElementType=MAXAMP*,! -match=col,ElementType=SREFFECTS,! \
+    -match=col,ElementParameter=*ORDER,! -match=col,ElementParameter=BORE,! -match=col,ElementParameter=B,! -match=col,ElementParameter=\[HV\]*,! \
+    -match=col,ElementParameter=SYNCH_RAD*,! -match=col,ElementParameter=ISR*,! -match=col,ElementParameter=D\[XYZ\],!
+
+# Clean up
+eval file delete $rootname-etayCorrection.s36 [glob ${rootname}-etayOrig.*] ${rootname}-CC.param~
+
+
+

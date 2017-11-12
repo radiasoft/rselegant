@@ -1,0 +1,10 @@
+#!/bin/csh -f
+
+set seed = 131231119
+# Run static errors and correction
+elegant run1.ele -macro=seed=$seed
+
+# Run 1000 dynamic error ensembles on top of static errors
+elegant run2.ele -macro=seed=$seed,ensembles=1000
+
+./processExample $seed

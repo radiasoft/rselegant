@@ -1,0 +1,2 @@
+#!/bin/csh -f
+\rm skewResp.qs* test1-* tiltErrors.param 

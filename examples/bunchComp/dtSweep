@@ -1,0 +1,14 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+exec sddssequence -pipe=out -define=Dt,type=double,units=s \
+  -sequence=begin=-2e-12,end=2e-12,delta=5e-13 \
+  | sddsprocess -pipe "-defi=col,AbsDt,Dt abs" \
+  | sddssort -pipe=in dtSweep.sweep -column=AbsDt,incr
+
+if ![file exists dtSweep.log] {
+    exec elegant dtSweep.ele > dtSweep.log
+}
+exec sddsplot -layout=2,2 {-xlabel=$gD$rt (s)} -separate -graph=symbol,scale=2 \
+        -parameter=MALIN.DT,(Ss,Sdelta,pAverage,Charge) dtSweep.fin &

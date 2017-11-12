@@ -1,0 +1,67 @@
+! "Fine" dynamic aperture, giving a map of lost particles vs turns to get lost.
+
+! 
+! first, set the chromaticity to some positive values (to make it more
+! interesting) and save the lattice 
+!
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+&chromaticity
+    sextupoles = "SDH SFH", n_iterations = 10,
+    change_defined_values = 1,
+    dnux_dp = 3,
+    dnuy_dp = 3,
+    tolerance = 0.00001
+&end
+
+&run_control &end
+&bunched_beam &end
+&track &end
+
+&save_lattice filename=%s.new &end
+
+&run_setup
+    lattice = "parTrack.new",
+    p_central = 880,
+    use_beamline="par",
+    magnets = %s.mag
+    final = %s.fin,
+    losses = %s.los
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+&twiss_output
+        output_at_each_step = 1,
+        filename = %s.twi,
+&end
+
+&run_control
+        n_passes = 400
+&end
+
+&error_control &end
+&error_element name=Q1, item=TILT, amplitude=1e-3, bind=0 &end
+&error_element name=Q2, item=TILT, amplitude=1e-3, bind=0 &end
+&error_element name=Q3, item=TILT, amplitude=1e-3, bind=0 &end
+&error_element name=Q4, item=TILT, amplitude=1e-3, bind=0 &end
+
+&bunched_beam
+        n_particles_per_bunch = 1000,
+        bunch = %s.bun
+        distribution_type[0] = "dynamic-aperture", "dynamic-aperture",
+        distribution_cutoff[0] = 30, 30
+        beta_x = 1e6, emit_x = 10e-10
+        beta_y = 1e6, emit_y = 1e-10
+&end
+
+&track &end

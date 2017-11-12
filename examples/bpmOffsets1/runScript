@@ -1,0 +1,26 @@
+#!/bin/csh
+
+# This run simply uses elegant to generate a set of BPM alignment errors.
+# One could also get this data from another source, such as beam-based measurements in a real machine
+elegant run1.ele
+
+# Reorganize the data to give DX, DY vs s for plotting later
+sddsprocess run1.cen run1.cenMONI -match=col,ElementType=MONI
+sddsprocess run1.erl -pipe=out -print=col,ElementTag,"%s.%ld.%s",ElementName,ElementOccurence,ElementParameter \
+ | sddsconvert -pipe -retain=column,ElementTag,ParameterValue \
+ | sddstranspose -pipe \
+ | sddscollect -pipe -collect=suffix=DX -collect=suffix=DY \
+ | sddsprocess -pipe -scan=col,ElementOccurence,Rootname,%ld,edit=Z.,type=long \
+ | sddssort -pipe -column=ElementOccurence \
+ | sddsxref -pipe=in run1.cenMONI -take=s run1.erls
+
+# This run loads the BPM offset data and performs trajectory correction to
+# reduce the BPM readings to zero (as closely as possible)
+elegant run2.ele
+
+# Plot beam position along with the BPM offsets
+sddsplot -layout=1,2 \
+        -column=s,DX run1.erls -graph=sym,fill -legend=spec="BPM offset" -col=s,Cx run2.cen -legend=spec="Steered traj." -end \
+        -column=s,DY run1.erls -graph=sym,fill -legend=spec="BPM offset" -col=s,Cy run2.cen -legend=spec="Steered traj." -end 
+
+

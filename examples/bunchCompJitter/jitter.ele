@@ -1,0 +1,50 @@
+&run_setup
+        lattice = linac.lte,
+        default_order = 1,
+        use_beamline = bl,
+        p_central = 107.6,
+        sigma = %s.sig,
+        centroid = %s.cen,
+        final = %s.fin,
+        semaphore_file = %s.done
+&end
+
+&run_control
+        n_steps = 201,                    ! Track 201 bunches
+        first_is_fiducial = 1,            ! First bunch will fiducialize the system
+        reset_rf_for_each_step = 0,       ! Do not reset rf phases for each bunch
+&end
+
+&error_control 
+        no_errors_for_first_step = 1,     ! No errors for first (fiducial) bunch
+        error_log = %s.erl
+&end
+
+! Incoming timing jitter from injector 
+&error_element name=MALIN, item=DT, amplitude=1e-13, &end
+
+! Linac structures assumed to be in groups of four for each klystron, with 0.1 deg rms phase
+! error and 0.01% rms voltage error
+&error_element name=LINA10, item=PHASE, amplitude=0.1, bind=1, bind_number=4 &end
+&error_element name=LINA10, item=VOLT, amplitude=0.0001, fractional=1, bind=1, bind_number=4 &end
+
+&error_element name=LINB10, item=PHASE, amplitude=0.1, bind=1, bind_number=4 &end
+&error_element name=LINB10, item=VOLT, amplitude=0.0001, fractional=1, bind=1, bind_number=4 &end
+
+&bunched_beam
+        n_particles_per_bunch = 1000,
+        bunch = %s.bun,
+        one_random_bunch=0,
+        emit_x = 4.6e-8,
+        emit_y = 4.6e-8,
+        beta_x = 10, alpha_x = 1,
+        beta_y = 10, alpha_y = 1,
+        sigma_dp = 0.001,
+        sigma_s = 650e-6,
+        distribution_type[0] = 3*"gaussian",
+        distribution_cutoff[0] = 3*3,
+        symmetrize = 1,
+        enforce_rms_values[0] = 1,1,1,
+&end
+ 
+&track &end

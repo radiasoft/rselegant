@@ -1,0 +1,13 @@
+#!/usr/bin/tclsh  
+
+set d0 -1.0
+set nd 11
+set deltaList ""
+for {set i 0} {$i<$nd} {incr i} {
+    set delta [expr $d0+2*$i*abs($d0)/($nd-1)]
+    lappend deltaList $delta
+    puts stderr "Running delta = $delta %"
+    catch {exec elegant parTemplate.ele -macro=rootname=[format par-%02d $i],delta=$delta} result
+}
+
+exec sddsmakedataset deltaValues.sdds -column=delta,type=double,units=% -data=[join $deltaList ,]

@@ -1,0 +1,104 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# Needed to give the list of quadrupole names:
+set parameters run0.param
+
+# Needed to get the names of the response matrix elements plus
+# the "experimental" data
+set hResp run1.hrm
+set vResp run1.vrm
+set twiss run1.twi
+
+# Output filename
+set output match1.ele
+
+# Partial input file
+set input fittingStatements.ele
+set fi [open $input r]
+
+set fo [open $output w]
+
+while {![eof $fi]} {
+    gets $fi data
+    puts $fo $data
+}
+
+if [catch {exec sddsprocess $parameters -pipe=out -match=column,ElementType=*QUAD -match=column,ElementParameter=L \
+             | sdds2stream -pipe -column=ElementName} quadNameList] {
+    puts stderr "Error: $quadNameList"
+    exit 1
+}
+
+foreach quad $quadNameList {
+    # Vary each quad's fractional strength error
+    puts $fo "&optimization_variable name=$quad, item=FSE, lower_limit=-0.01, upper_limit=0.01, step_size=0.001 &end"
+    # Try to keep strength errors to a minimum
+    puts $fo "&optimization_term term = \"$quad.FSE sqr\ 10 / \" &end"
+}
+puts $fo ""
+
+foreach plane {H V} {
+    if [catch {exec sddsprocess $parameters -pipe=out -match=column,ElementType=${plane}KICK -match=column,ElementParameter=L \
+        | sdds2stream -pipe -column=ElementName} corrNameList] {
+            puts stderr "Error: $corrNameList"
+            exit 1
+    }
+    foreach corr $corrNameList {
+        # Vary each correctors calibration
+        puts $fo "&optimization_variable name=$corr, item=CALIBRATION, lower_limit=0.5, upper_limit=1.5, step_size=0.01 &end"
+        # Try to keep errors to a minimum
+        puts $fo "&optimization_term term = \"$corr.CALIBRATION 1 - 100 / sqr \" &end"
+    }
+}
+puts $fo ""
+
+foreach matrix [list $hResp $vResp] HV [list H V] kickName [list KICK KICK] {
+    puts stdout "Working on $matrix"
+    flush stdout
+    if [catch {exec sddsconvert $matrix -pipe=out -delete=column,s,BPMName \
+                 | sddsquery -pipe -column} correctorNameList] {
+        puts stderr "Error: $correctorNameList"
+        exit 1
+    }
+    foreach corrector $correctorNameList {
+        puts stdout "Working on $corrector"
+        flush stdout
+        # Make matching terms for each BPM for one corrector.
+        # We assume that each element name (BPMs and correctors) is unique
+        if [catch {exec sddsprocess $matrix -pipe=out \
+                     -process=$corrector,largest,%sLargest \
+                     "-print=column,statement,&optimization_term term = \"${HV}R_%s\#1_${corrector}\#1.$kickName %e - %e / sqr\" &end,BPMName,$corrector,${corrector}Largest"  \
+                     | sdds2stream -pipe -column=statement} statementList] {
+            puts stderr "Error: $statementList"
+        } else {
+            foreach statement $statementList {
+                puts $fo $statement
+            }
+        }
+    }
+}
+
+if [catch {exec sddsprocess $twiss -pipe=out -match=col,ElementName=P?P?M \
+             -process=etax,largest,etaxLargest \
+             "-print=column,statement,&optimization_term term = \"%s\#1.etax %e - %e / sqr\" &end,ElementName,etax,etaxLargest" \
+             | sdds2stream -pipe -column=statement}  statementList] {
+    puts stderr "Error: $statementList"
+} else {
+    foreach statement $statementList {
+        puts $fo $statement
+    }
+}
+
+foreach quantity {nux nuy} {
+    if [catch {exec sdds2stream -parameter=$quantity $twiss} value] {
+        puts stderr "Error: $value"
+    } else {
+        puts $fo "&optimization_term term = \"$quantity $value - $value / sqr \" &end"
+    }
+}
+
+
+puts $fo "&bunched_beam &end"
+puts $fo "&optimize &end"

@@ -1,0 +1,3 @@
+#!/bin/csh
+
+\rm run.out run.out.h2d run.done

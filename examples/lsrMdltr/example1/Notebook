@@ -1,0 +1,8 @@
+Example of using LSRMDLTR element, using LCLS-like parameters.
+
+elegant run.ele 
+
+sddsplot -col=t,p run.out -graph=dot
+
+sddshist2d run.out run.out.h2d -column=t,p -xparam=100 -yparam=100
+sddscontour -shade run.out.h2d

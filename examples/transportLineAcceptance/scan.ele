@@ -1,0 +1,22 @@
+&run_setup
+        lattice = lattice.lte,
+        use_beamline = LTP,
+        final = %s.fin,
+        centroid = %s.cen,
+        p_central = 880,
+&end
+
+&run_control
+        n_indices = 1,
+        reset_rf_for_each_step = 0,
+&end
+
+&vary_element name=malin, item=dp, initial=-0.02, final=0.02, index_number=0, index_limit=21
+&end
+
+
+&bunched_beam
+        n_particles_per_bunch = 1
+&end
+
+&track &end

@@ -1,0 +1,16 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists ejoptk.log] {
+    catch {exec elegant ejoptk.ele > ejoptk.log}
+}
+
+exec sddsplot -column=t,Waveform parkick.wf "-title=PAR kicker waveform (model)" 
+exec sddsplot -parameter=Step,optimizationFunction ejoptk.finOpt "-title=Optimization progress" \
+    -mode=y=log,y=special
+exec sddsplot -yscale=names "-title=Centroid vs distance during ejection" -graph=line,vary \
+    -alignZero=yfactor \
+    -column=s,Cx ejoptk.cen -legend \
+    -column=s,Cxp ejoptk.cen -legend \
+    -column=s,Profile ejoptk.mag -overlay=xmode=norm,yfact=0.04 

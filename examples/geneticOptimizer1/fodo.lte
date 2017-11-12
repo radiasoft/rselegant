@@ -1,0 +1,4 @@
+q1: quad,l=0.5,k1=1
+q2: quad,l=0.5,k1=-1
+d1: drift,l=2
+bl: line=(q1,d1,2*q2,d1,q1)

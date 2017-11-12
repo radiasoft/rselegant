@@ -1,0 +1,6 @@
+#!/bin/csh -f
+# Run this script to clean up old files in preparation for running again
+
+set nonomatch
+
+\rm *.dx *.dy *.log *.mag *.param *.twi *.w1 *.cen *.cor *.done *.traj *.stat *.clo *.?stat* *.env *.param.* *.his

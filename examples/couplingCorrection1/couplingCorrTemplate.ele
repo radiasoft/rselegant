@@ -1,0 +1,404 @@
+# Perform correction with pre-loading of the etay correction
+
+# Macro fields:
+# <rootname> : run rootname
+# <inputParameters> : input parameter file, presumably with the original errors
+# <etayCorrection> : input parameter file, should contain K1's for skews to correct dispersion
+# <eyTarget> : target vertical emittance (pm)
+
+&transmute_elements
+        name = *, type = WATCH, new_type = MARK &end
+
+# First step with A-cos and B-sin
+
+&run_setup
+	lattice = run0.new,
+	use_beamline = RINGRF,
+	p_central_mev = 7e3,
+	default_order = 1,
+        final = %s.finOpt1
+        parameters = %s.param1
+        semaphore_file = %s.done,
+        rootname = <rootname>
+&end
+
+&load_parameters
+        filename = <inputParameters>
+        change_defined_values = 1
+        allow_missing_elements = 1
+&end
+&load_parameters
+        filename = <etayCorrection>,
+        change_defined_values = 1
+        allow_missing_elements = 1
+&end
+&alter_elements name=S35BM, item=FITPOINT, value=1 &end
+
+&twiss_output
+        matched = 1
+        filename = %s-initial.twi
+        concat_order =1 
+        radiation_integrals = 1
+&end
+&moments_output
+        filename = "%s-initial.mom",
+        matched = 1,
+        equilibrium = 1,
+        radiation = 1,
+&end
+
+&moments_output
+        filename = "%s.mom",
+        matched = 1,
+        equilibrium = 1,
+        radiation = 1,
+        output_at_each_step = 1
+&end
+
+&run_control &end
+
+&optimization_setup
+        n_evaluations = 1500
+        n_passes = 3
+        n_restarts = 0
+        verbose = 0
+        log_file = /dev/tty
+        tolerance = 1e-12
+        target = 1e-6
+&end
+
+&optimization_term
+        term = "S35BM#1.s33m sqrt 1e6 *" &end
+
+&optimization_variable
+        name = S5B:QS, item = K1, lower_limit=-0.12, upper_limit=0.12, step_size=0.001 &end
+&optimization_covariable
+        name = S9B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S9B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S9B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S13B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S13B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S13B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S17B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S17B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S17B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S21B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S21B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S21B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S25B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S25B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S25B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S29B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S29B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S29B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S33B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S33B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S33B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S37B:QS, item = K1, 
+        equation = "{sddsprocess skewB-sin.sdds -pipe=out -match=col,ElementName=S37B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S37B:QS.K10 +"
+&end
+
+&optimization_variable
+        name = S3A:QS, item = K1, lower_limit=-0.12, upper_limit=0.12, step_size=0.001 &end
+&optimization_covariable
+        name = S7A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S7A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S7A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S11A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S11A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S11A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S15A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S15A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S15A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S19A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S19A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S19A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S23A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S23A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S23A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S27A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S27A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S27A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S31A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S31A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S31A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S35A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S35A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S35A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S39A:QS, item = K1, 
+        equation = "{sddsprocess skewA-cos.sdds -pipe=out -match=col,ElementName=S39A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S39A:QS.K10 +"
+&end
+
+&bunched_beam &end
+
+&optimize &end
+
+# Second step with A-sin and B-cos
+
+&run_setup
+	lattice = run0.new,
+	use_beamline = RINGRF,
+	p_central_mev = 7e3,
+	default_order = 1,
+        final = %s.finOpt2
+        parameters = %s.param2
+        semaphore_file = %s.done,
+        rootname = <rootname>
+&end
+
+&moments_output
+        filename = "%s.mom",
+        matched = 1,
+        equilibrium = 1,
+        radiation = 1,
+        output_at_each_step = 1
+&end
+&load_parameters
+        filename = %s.param1,
+        change_defined_values = 1
+&end
+
+&run_control &end
+
+&optimization_setup
+        n_evaluations = 1500
+        n_passes = 3
+        n_restarts = 0
+        verbose = 0
+        log_file = /dev/tty
+        tolerance = 1e-12
+        target = 1e-6
+&end
+
+&optimization_term
+        term = "S35BM#1.s33m sqrt 1e6 *" &end
+
+&optimization_variable
+        name = S5B:QS, item = K1, lower_limit=-0.12, upper_limit=0.12, step_size=0.001 &end
+&optimization_covariable
+        name = S9B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S9B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S9B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S13B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S13B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S13B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S17B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S17B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S17B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S21B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S21B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S21B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S25B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S25B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S25B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S29B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S29B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S29B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S33B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S33B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S33B:QS.K10 +"
+&end
+&optimization_covariable
+        name = S37B:QS, item = K1, 
+        equation = "{sddsprocess skewB-cos.sdds -pipe=out -match=col,ElementName=S37B:QS | sdds2stream -pipe -column=coefficient} S5B:QS.K1 S5B:QS.K10 - * S37B:QS.K10 +"
+&end
+
+&optimization_variable
+        name = S3A:QS, item = K1, lower_limit=-0.12, upper_limit=0.12, step_size=0.001 &end
+&optimization_covariable
+        name = S7A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S7A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S7A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S11A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S11A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S11A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S15A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S15A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S15A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S19A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S19A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S19A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S23A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S23A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S23A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S27A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S27A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S27A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S31A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S31A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S31A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S35A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S35A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S35A:QS.K10 +"
+&end
+&optimization_covariable
+        name = S39A:QS, item = K1, 
+        equation = "{sddsprocess skewA-sin.sdds -pipe=out -match=col,ElementName=S39A:QS | sdds2stream -pipe -column=coefficient} S3A:QS.K1 S3A:QS.K10 - * S39A:QS.K10 +"
+&end
+
+&bunched_beam &end
+
+&optimize &end
+
+# Third step with zeroth harmonic to adjust ey
+
+&run_setup
+	lattice = run0.new,
+	use_beamline = RINGRF,
+	p_central_mev = 7e3,
+	default_order = 1,
+        final = %s.finOpt3
+        parameters = %s.param3
+        semaphore_file = %s.done,
+        rootname = <rootname>
+&end
+
+&moments_output
+        filename = "%s.mom",
+        matched = 1,
+        equilibrium = 1,
+        radiation = 1,
+        output_at_each_step = 1
+&end
+&load_parameters
+        filename = %s.param2,
+        change_defined_values = 1
+&end
+
+&run_control &end
+
+&optimization_setup
+        n_evaluations = 1500
+        n_passes = 3
+        n_restarts = 0
+        verbose = 0
+        log_file = /dev/tty
+        tolerance = 1e-12
+        target = 1e-6
+&end
+
+&optimization_term
+        term = "S35BM#1.s33m S35BM#1.s44m * S35BM#1.s34m sqr - sqrt 1e12 * <eyTarget> 1 sene" &end
+
+&optimization_variable
+        name = S3A:QS, item = K1, lower_limit=-0.12, upper_limit=0.12, step_size=0.001 &end
+
+&optimization_covariable
+        name = S7A:QS, item = K1, equation = "S7A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S11A:QS, item = K1,  equation = "S11A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S15A:QS, item = K1,  equation = "S15A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S19A:QS, item = K1,  equation = "S19A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S23A:QS, item = K1,  equation = "S23A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S27A:QS, item = K1,  equation = "S27A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S31A:QS, item = K1,  equation = "S31A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S35A:QS, item = K1,  equation = "S35A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S39A:QS, item = K1,  equation = "S39A:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S5B:QS, item = K1,  equation = "S5B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S9B:QS, item = K1,  equation = "S9B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S13B:QS, item = K1,  equation = "S13B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S17B:QS, item = K1,  equation = "S17B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S21B:QS, item = K1,  equation = "S21B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S25B:QS, item = K1,  equation = "S25B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S29B:QS, item = K1,  equation = "S29B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S33B:QS, item = K1,  equation = "S33B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+&optimization_covariable
+        name = S37B:QS, item = K1,  equation = "S37B:QS.K10 S3A:QS.K1 S3A:QS.K10 - +"
+&end
+
+
+&bunched_beam &end
+
+&optimize &end
+
+&run_setup
+	lattice = run0.new,
+	use_beamline = RINGRF,
+	p_central_mev = 7e3,
+	default_order = 1,
+        magnets = %s.mag,
+        semaphore_file = %s.done,
+        parameters = %s.param
+        rootname = <rootname>
+&end
+
+&load_parameters
+        filename = %s.param3,
+        change_defined_values = 1
+&end
+
+&moments_output
+        filename = "%s.mom",
+        matched = 1,
+        equilibrium = 1,
+        radiation = 1,
+&end
+
+&twiss_output
+        matched = 1
+        filename = %s.twi
+        concat_order =1 
+        radiation_integrals = 1
+&end
+
+&run_control &end
+&bunched_beam &end
+&track &end

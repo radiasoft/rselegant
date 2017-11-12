@@ -1,0 +1,4 @@
+This is similar to ../chromTracking, but we also compute twiss parameters
+for each energy offset.  To get agreement, we set K3=0 on the dipoles.
+Otherwise, the twiss calculations and tracking will only agree for small
+energy deviation.

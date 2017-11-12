@@ -1,0 +1,145 @@
+tube: maxamp,x_max=0.06,y_max=0.019
+bap: rcol,x_max=0.0555,y_max=0.019
+kap: ecol,x_max=0.04,y_max=0.017
+swall: scraper,position=-0.02,direction=2
+hcor: hkicker, l=1.0e-12
+vcor: vkicker, l=1.0e-12
+hmon: hmonitor, l=0.0
+vmon: vmonitor, l=0.0
+l1a: drift, l=0.2
+l1b: drift, l=1.531675
+! non-chromatic sextupole plus horizontal and vertical steering
+s1h: sextupole, l=0.1, k2=0.0
+s1: line=(s1h,hcor,vcor,s1h)
+l2: drift, l=0.08
+lqb: drift, l=0.24
+q1: quadrupole, l=0.23, k1=1.786022448154
+b1: sbend, l=0.8, angle=-0.785398163397, e1=-0.445, e2=-0.445, k2=0.1375, &
+hgap=0.0225, fint=0.41
+b2: sbend, l=0.8, angle=-0.785398163397, e1=-0.445, e2=-0.445, k2=0.1375, &
+hgap=0.0225, fint=0.41
+q2: quadrupole, l=0.23, k1=2.295915530046
+l3: drift, l=1.47
+l3a: drif,l=0.568095770758662
+l3b: drif,l=0.551904229241338
+! LHK is half the effective length of a kicker
+lhk: drift, l=0.175
+l34a: drif,l=0.811087
+l34b: drif,l=0.308913
+! markers for the centers of the injection and ejection kickers
+ik1: marker
+ik2: marker
+ek: marker
+! vertical chromaticity sextupole plus vertical steering magnet
+sdh: sextupole, l=0.1, k2=5.95873739969822
+sd: line=(sdh,vcor,sdh)
+l4: drift, l=0.08
+q3: quadrupole, l=0.23, k1=0.0
+q4: quadrupole, l=0.23, k1=2.270174600496
+l5: drift, l=0.325
+! horizontal chromaticity sextupole plus horizontal steering magnet
+sfh: sextupole, l=0.1, k2=-1.65546424863732
+sf: line=(sfh,hcor,sfh)
+! markers for the septum center and the center of the RF straight
+msept: marker
+mrf: marker
+! quadrant 1, less half of SF
+quadr1: line=(l1a,swall,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,kap,l3a,lhk,ik1,&
+    lhk,l3b,kap,sd,l4,vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+! quadrant 2, less half of SF
+quadr2: line=(l1a,swall,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,kap,l3a,lhk,ik2,&
+    lhk,l3b,kap,sd,l4,vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+! quadrant 3, less half of SF
+quadr3: line=(l1a,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,l3,sd,l4,&
+    vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+! quadrant 4, less half of SF
+quadr4: line=(l1a,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,kap,l34a,lhk,ek,&
+    lhk,l34b,kap,sd,l4,vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+half23: line=(msept,quadr2,sf,-quadr3,mrf)
+half41: line=(mrf,quadr4,sf,-quadr1,msept)
+half12: line=(hcor,sfh,-quadr1,msept,quadr2,sfh,hcor)
+half: line=(tube,quadr2,sf,-quadr2,swall)
+! full PAR, starting at septum and ending at septum
+par: line=(swall,half23,half41,swall)
+
+"LTP:PH": HMONITOR, L=0.0
+"LTP:PH1": "LTP:PH"
+"LTP:PH2": "LTP:PH"
+"LTP:PH3": "LTP:PH"
+"LTP:PH4": "LTP:PH"
+"LTP:PV": VMONITOR, L=0.0
+"LTP:PV1": "LTP:PV"
+"LTP:PV2": "LTP:PV"
+"LTP:PV3": "LTP:PV"
+"LTP:PV4": "LTP:PV"
+
+"LTP:H": HKICKER, L=0.06
+"LTP:H1": "LTP:H"
+"LTP:H2": "LTP:H"
+"LTP:H3": "LTP:H"
+"LTP:H4": "LTP:H"
+"LTP:V": VKICKER, L=0.06
+"LTP:V1": "LTP:V"
+"LTP:V2": "LTP:V"
+"LTP:V3": "LTP:V"
+"LTP:V4": "LTP:V"
+"LTP:HV": KICKER, L=0.06
+
+LTPLMQ: DRIFT,L=0.18739
+LTPLMQ1: DRIFT, L=0.26603
+LTPLQC: DRIFT,L=0.12017 
+LTPLQ5C: DRIFT, L=0.19867
+LTPLQC1: DRIFT, L=0.10525
+LTPL12: DRIFT, L=1.926950000000000
+LTPL11: DRIFT, L=2.173730000000000
+LTPL10: DRIFT, L=2.413060000000000
+LTPL9: DRIFT, L=1.946510000000000
+LTPL8A: DRIFT, L=1.462329
+LTPL8B: DRIFT, L=0.20099
+LTPL7: DRIFT, L=0.59678
+LTPL6: DRIFT, L=0.70942
+LTPL5: DRIFT, L=0.62634
+LTPL4: DRIFT, L=0.62634
+LTPL3: DRIFT, L=0.62634
+LTPL3A: DRIFT, L=0.42535
+LTPL3B: DRIFT, L=0.20099
+LTPL2A: DRIFT, L=0.3317
+LTPL2B: DRIFT, L=0.496950000000000
+LTPL1: DRIFT, L=2.904756
+LTPL1A: DRIFT, L=1.345630000000000
+LTPL1B: DRIFT, L=0.7262
+LTPL1C: DRIFT,L=0.15240
+LTPL1D: DRIFT, L=0.677476
+
+"LTP:Q10": QUADRUPOLE, L=0.3061, K1=1.3
+"LTP:Q9": QUADRUPOLE, L=0.3061, K1=-1.4
+"LTP:Q8": QUADRUPOLE, L=0.3061, K1=1.6
+"LTP:Q7": QUADRUPOLE, L=0.3061, K1=-1.7
+"LTP:Q6": QUADRUPOLE, L=0.3061, K1=2.9
+"LTP:Q5": QUADRUPOLE, L=0.1491, K1=-7.0
+"LTP:Q4": QUADRUPOLE, L=0.3061, K1=4.9
+"LTP:Q3": QUADRUPOLE, L=0.3061, K1=-3.8
+"LTP:Q2": QUADRUPOLE, L=0.3061, K1=3.6
+"LTP:Q1": QUADRUPOLE, L=0.3061, K1=-0.9
+"LTP:B1": SBEND, L=0.4, ANGLE=-0.2, E1=-0.1, E2=-0.1, HGAP=0.02, FINT=0.5
+"LTP:SP": SBEND, L=0.4, ANGLE=0.2, E1=0.2, E2=0.0, HGAP=0.01, FINT=0.5
+"LTP:FL1": MARK
+"LTP:FL2": MARK
+"LTP:FL3": MARK
+"LTP:CM1": MARK
+"LTP:END": MARK
+LTP1: LINE=("LTP:HV",LTPL12,"LTP:Q10",LTPLQC,"LTP:V4",LTPL11,&
+    "LTP:Q9",LTPLQC,"LTP:H4",LTPL10,&
+    "LTP:Q8",LTPL9,"LTP:PV4",LTPLMQ,"LTP:Q7",LTPLQC,"LTP:V3",&
+    LTPL8A,"LTP:FL3",LTPL8B,"LTP:PH4",LTPLMQ,"LTP:Q6",LTPLQC,&
+    "LTP:H3",LTPL7,"LTP:B1")
+LTP2: LINE=(LTPL6,"LTP:PV3",LTPLMQ1,"LTP:Q5",LTPLQ5C,"LTP:V2",&
+    LTPL5,"LTP:PH3",LTPLMQ,"LTP:Q4",LTPLQC,"LTP:H2",LTPL4,&
+    "LTP:PV2",LTPLMQ,"LTP:Q3",LTPLQC,"LTP:V1",LTPL3A,"LTP:FL2",&
+    LTPL3B,"LTP:PH2",LTPLMQ,"LTP:Q2",LTPLQC1,"LTP:H1",&
+    LTPL2A,"LTP:CM1",LTPL2B,"LTP:Q1",LTPL1A,"LTP:FL1",LTPL1B,&
+    "LTP:PH1",LTPL1C,"LTP:PV1",LTPL1D,"LTP:SP","LTP:END")
+LTP: LINE=(LTP1,LTP2)
+
+l1an: drift,l=-0.2
+whole: line=(ltp,l1an,par)

@@ -1,0 +1,39 @@
+! Example of off-momentum DA calculation
+
+&run_setup
+	lattice = parTrack.lte,
+	use_beamline = par,
+	p_central_mev = 450,
+        semaphore_file = %s.done,
+        rootname = <rootname>,
+        tracking_updates = 0,
+&end
+
+! Ensure dipole modeling is symplectic
+&alter_elements name=*, type=*SBEN*, item=EDGE_ORDER, value=1, allow_missing_elements=1, allow_missing_parameters=1 &end
+&alter_elements name=*, type=*SBEN*, item=ORDER, value=1, allow_missing_elements=1, allow_missing_parameters=1 &end
+
+! Set momentum offset
+&alter_elements name=MAL, item=DP, value="(<offset> 100 /)" &end
+
+&run_control
+        n_passes = 1024
+&end
+
+! Add 100 urad rms tilt errors for quads so there is x-y coupling
+&error_control error_log = %s.erl &end
+&error_element name=*, element_type=KQUAD, item=TILT, amplitude=1e-4, bind=0 &end
+&error_element name=*, element_type=KQUAD, item=FSE,  amplitude=1e-4, bind=0 &end
+
+&find_aperture
+        output = %s.aper,
+        boundary = %s.abnd,
+        xmin = 0, xmax=0.10,
+        ymax = 0.01
+        mode = n-line
+        n_lines = 13,
+        nx = 20
+        n_splits = 2
+        verbosity = 1,
+&end
+

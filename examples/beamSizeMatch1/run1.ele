@@ -1,0 +1,92 @@
+! Determine initial twiss parameters and emittances to match measured beam sizes
+
+&run_setup
+        lattice = fodo.lte
+        use_beamline = blm,
+        p_central_mev = 1000
+        final = %s.fin
+        parameters = %s.param
+&end
+
+&run_control &end
+
+&optimization_setup
+        n_passes = 3, n_evaluations = 1500, n_restarts = 10
+        log_file = /dev/tty, verbose = 0
+        output_sparsing_factor = 30        
+        target = 1e-16
+&end
+
+&optimization_variable
+        name = TWI, item=BETAX, lower_limit=0.01, upper_limit=100, step_size=0.1
+&end
+&optimization_variable
+        name = TWI, item=BETAY, lower_limit=0.01, upper_limit=100, step_size=0.1
+&end
+&optimization_variable
+        name = TWI, item=ALPHAX, lower_limit=-100, upper_limit=100, step_size=0.1
+&end
+&optimization_variable
+        name = TWI, item=ALPHAY, lower_limit=-100, upper_limit=100, step_size=0.1
+&end
+&optimization_variable
+        name = EM, item=EMITX, lower_limit=0, upper_limit=100, step_size=1e-8
+&end
+&optimization_variable
+        name = EM, item=EMITY, lower_limit=0, upper_limit=100, step_size=1e-8
+&end
+
+&optimization_term
+        input_file = run0.terms,
+        input_column = xTerm
+        verbose = 1
+&end
+&optimization_term
+        input_file = run0.terms,
+        input_column = yTerm
+        verbose = 1
+&end
+
+&bunched_beam
+        one_random_bunch = 1,
+        n_particles_per_bunch = 1000
+        enforce_rms_values[0] = 3*1,
+        emit_x = 10e-6,
+        emit_y = 10e-6
+        beta_x = 1
+        beta_y = 1
+        distribution_type[0] = 3*gaussian,
+        distribution_cutoff[0] = 3*3
+&end
+
+&optimize &end
+
+&run_setup
+        lattice = fodo.lte
+        use_beamline = blm,
+        p_central_mev = 1000
+        sigma = %s.sig
+&end
+
+&load_parameters
+        filename = %s.param,
+        change_defined_values = 1
+&end
+
+&run_control &end
+
+&bunched_beam
+        n_particles_per_bunch = 1000
+        enforce_rms_values[0] = 3*1,
+        emit_x = 1e-6,
+        emit_y = 0.5e-6
+        beta_x = 1
+        beta_y = 1
+        distribution_type[0] = 3*gaussian,
+        distribution_cutoff[0] = 3*3
+&end
+
+&track &end
+
+
+

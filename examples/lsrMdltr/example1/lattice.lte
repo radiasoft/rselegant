@@ -1,0 +1,4 @@
+LM: LSRMDLTR,l=0.50,periods=10,Bu=0.5,accuracy=1e-3,method="non-adaptive",n_steps=1000,&
+        laser_peak_power=37e6,laser_w0=3e-3,field_expansion="ideal"
+BL: line=(LM)
+

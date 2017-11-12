@@ -1,0 +1,7 @@
+q1h: quad,l=0.1,k1=1
+q2h: quad,l=0.1,k1=-1
+linA10: rfca,freq=2856e6,l=3,volt=48e6,phase=90,change_p0=1,end1_focus=1,end2_focus=1
+l1: drift,l=0.1
+cell: line=(q1h,l1,linA10,l1,q2h,q2h,l1,linA10,q1h)
+bl: line=(10*cell)
+

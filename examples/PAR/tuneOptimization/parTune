@@ -1,0 +1,11 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists parTune.log] {
+    catch {exec elegant parTune.ele > parTune.log}
+}
+exec sddsplot -layout=2,2 -graph=line,vary -unsup=y -groupby=names -sep=names \
+  -column=s,beta? -col=s,etax -legend=spec=Original parTune.twi \
+  -column=s,beta? -col=s,etax -legend=spec=New parTune.twi.new &
+

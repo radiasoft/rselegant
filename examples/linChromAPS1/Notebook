@@ -1,0 +1,10 @@
+Example of using linear chromatic tracking mode for fast tracking in a
+storage ring with chromatic effects and damping.  In this example, we
+use the use_linear_chromatic_matrix control on the track command.
+Another method is using ILMATRIX, which is actually preferred as it is
+more flexible.
+
+We also show how to correct the chromaticity in this example.
+
+See track1.ele for details.
+

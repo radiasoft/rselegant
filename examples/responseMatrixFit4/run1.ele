@@ -1,0 +1,39 @@
+# Find the response matrix for a perturbed lattice
+
+&run_setup
+        lattice = par.lte,
+        default_order = 1,  ! For speed
+        use_beamline = RING,
+        p_central_mev = 1,
+&end
+
+&run_control &end
+
+&error_control error_log = %s.erl &end
+
+! Quad errors for individual magnets
+&error_element name=P?Q?, item=FSE, amplitude=1e-3, bind=0 &end
+! Cal errors for individual magnets
+&error_element name=P?[HV]?, item=CALIBRATION, amplitude=0.1, bind=0, additive=1 &end
+
+&correct
+        mode = orbit,
+        fixed_length = 1
+&end
+
+! Need this to get the "measured" response matrices
+&correction_matrix_output
+        output_at_each_step = 1,
+        response[0] = %s.hrm, %s.vrm
+&end
+
+! Need this to get the "measured" tunes and dispersion
+&twiss_output
+        output_at_each_step = 1,
+        filename = %s.twi
+&end
+
+&bunched_beam &end
+&track &end
+
+&save_lattice filename = %s.new &end

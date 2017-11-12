@@ -1,0 +1,65 @@
+&run_setup
+        lattice = aps.lte
+        use_beamline = IRING,
+        p_central_mev = 7e3
+        centroid = %s.cen
+        sigma = %s.sig,
+        wrap_around = 0
+        magnets = %s.mag,
+        print_statistics = 0
+&end
+
+&alter_elements name=*:S1, item=K2, value=11.5 &end
+&alter_elements name=*:S2, item=K2, value=-26.5 &end
+&alter_elements name=*:S3, item=K2, value=-14.7 &end
+&alter_elements name=*:S4, item=K2, value=15.5 &end
+&alter_elements name=S??C?, type=RFCA, item=VOLT, value="(9.5e6 16 /)" &end
+
+&alter_elements name=S40IK*, item=STRENGTH, value=-5 &end
+&alter_elements name=S01IK1, item=STRENGTH, value=-5 &end
+&alter_elements name=S02IK1, item=STRENGTH, value=-10 &end
+&alter_elements name=S03IK1, item=STRENGTH, value=-5 &end
+
+! Set some smallish apertures to try roughly emulate the dynamic aperture
+&alter_elements name=INNERAP, item=INSERT_FROM, string_value="+X" &end
+&alter_elements name=OUTERAP, item=INSERT_FROM, string_value="-X" &end
+&alter_elements name=INNERAP, item=POSITION, value=-0.012 &end
+&alter_elements name=OUTERAP, item=POSITION, value=0.007 &end
+
+&rpn_load
+        tag = input,
+        filename = twiss1.twi
+        match_column = ElementName
+        match_column_value = SEPTUMAP2
+&end
+
+&twiss_output
+        filename = %s.twi
+        matched = 0
+        reference_file = twiss1.twi
+        reference_element = SEPTUMAP2
+&end
+
+&run_control
+        n_passes = 50
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 10000,
+        emit_x = 84e-9,
+        emit_y = 8e-9,
+        beta_x = "(input.betax)",
+        alpha_x = "(input.alphax)",
+        beta_y = "(input.betay)",
+        alpha_y = "(input.alphay)",
+        sigma_dp = 9.588230834445406e-04,
+        sigma_s = 0.0058727574706967517,
+        distribution_cutoff[0] = 3*3,
+        enforce_rms_values[0] = 3*1
+        one_random_bunch = 1
+        bunch = %s.bun
+&end
+
+&track &end
+
+

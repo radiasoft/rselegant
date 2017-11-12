@@ -1,0 +1,9 @@
+This run shows show to include longitudinal space charge (LSC) into a
+simulation of a linac with a bunch compressor.  Getting a reliable
+LSC simulation requires using a lot of macroparticles.  The user
+is warned to vary the number of macroparticles, the binning parameters,
+and the smoothing/filtering parameters for LSC and CSR to ensure
+reliable results.
+
+Example by M. Borland, APS.
+

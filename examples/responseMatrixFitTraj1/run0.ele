@@ -1,0 +1,23 @@
+# Find the response matrix for an unperturbed lattice
+
+&run_setup
+        lattice = fodo.lte,
+        default_order = 1,  ! For speed
+        p_central_mev = 1
+        parameters = %s.param,
+&end
+
+&run_control &end
+
+&correct
+        mode = trajectory,
+        fixed_length = 1
+&end
+
+&correction_matrix_output
+        output_at_each_step = 1,
+        response[0] = %s.hrm, %s.vrm
+&end
+
+&bunched_beam &end
+&track &end

@@ -1,0 +1,5 @@
+#!/bin/csh -f
+
+\rm *.cen *.fin *.finc *.fit *.fit.proc *.log *.sdds
+
+

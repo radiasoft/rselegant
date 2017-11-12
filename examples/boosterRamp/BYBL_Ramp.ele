@@ -1,0 +1,46 @@
+&run_setup
+    lattice =BYBL.lte,
+    use_beamline = "ring",
+     p_central = "{sdds2stream -parameter=pCentral RfRamp.sdds}",
+     ! Use first-order tracking for now just to see the basic dynamics
+    default_order = 1,
+    concat_order = 1,
+    parameters = %s.param,
+    wrap_around = 0
+   output=%s.out
+   losses=%s.lost
+&end
+
+
+
+&run_control
+        n_steps = 1,
+        n_passes = "{sdds2stream -parameter=nPasses RfRamp.sdds}"
+&end
+
+
+&twiss_output
+	matched=1
+	radiation_integrals=1
+	filename="%s.twi"
+&end
+
+&bunched_beam 
+ bunch=InjectedBeam.bun
+ n_particles_per_bunch=1000
+ emit_x=155e-9
+ emit_y=155e-9
+ use_twiss_command_values=1
+ matched_to_cell=ring
+ sigma_dp=5e-3
+ sigma_s=0.003
+ distribution_type[0]=3*"gaussian",
+ distribution_cutoff[0]=3*3,
+&end
+
+&track 
+ &end
+
+
+
+

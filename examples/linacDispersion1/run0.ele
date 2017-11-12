@@ -1,0 +1,16 @@
+! Generate dispersion data that will be used in fitting
+
+&run_setup
+        lattice = lattice.lte,
+        always_change_p0 = 1,
+        p_central_mev = 50
+&end
+
+&alter_elements name=M0, item=R16, value=0.05 &end
+&alter_elements name=M0, item=R26, value=0.10 &end
+
+&matrix_output
+        SDDS_output = %s.mat
+        SDDS_output_order = 1
+&end
+        

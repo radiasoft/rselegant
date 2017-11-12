@@ -1,0 +1,29 @@
+#!/bin/csh -f
+set nonomatch
+
+set seed = $1
+
+# Make some histograms of centroid positions at the end of the beamline
+
+sddscollapse -pipe=out run2-$seed.fin \
+    | sddshist2d -pipe=in run2-$seed.xxp2d -columns=Cx,Cxp -xparam=50 -yparam=50
+sddscollapse -pipe=out run2-$seed.fin \
+    | sddshist2d -pipe=in run2-$seed.yyp2d -columns=Cy,Cyp -xparam=50 -yparam=50
+
+sddscontour -shade run2-$seed.xxp2d 
+sddscontour -shade run2-$seed.yyp2d 
+
+# Do some analysis of centroid positions at the end of the beamline
+
+sddscollapse run2-$seed.fin -pipe=out \
+    | sddsprocess -pipe -process=C[xy]*,stand,%sStDev \
+    | sddsprintout -pipe -parameter=Cx*StDev,end -parameter=Cy*StDev
+
+
+# Make envelopes of the trajectories
+
+sddsenvelope run2-$seed.cen run2-$seed.cen-env -copy=s -min=Cx,Cy -max=Cx,Cy \
+    -mean=Cx,Cy
+sddsplot run2-$seed.cen-env -graph=line,vary -legend -layout=1,2 \
+    -column=s,CxMin -column=s,CxMax -column=s,CxMean -end \
+    -column=s,CyMin -column=s,CyMax -column=s,CyMean

@@ -1,0 +1,41 @@
+! This run loads the corresponding set of static errors, then adds
+! dynamic errors
+
+&run_setup
+	lattice = fodo.lte
+	use_beamline = xport,
+	p_central_mev = 100
+	rootname = run2-<seed>,
+	centroid = %s.cen
+	magnets = %s.mag
+	parameters = %s.param
+	final = %s.fin,
+	random_number_seed = "(<seed> 2 +)",
+&end
+
+&load_parameters
+	filename = run1-<seed>.param,
+	change_defined_values = 1
+	force_occurence_data = 1
+&end
+
+&run_control
+	n_steps = <ensembles>
+&end
+
+&error_control
+	clear_error_settings = 1,
+	error_log = %s.erl
+&end
+
+! Quad strength errors 0.1% rms
+&error_element name=Q?, item=FSE, amplitude=1e-3, bind=0 &end
+
+! Corrector strength errors 0.1% rms
+&error_element name=HV*, item=HKICK, amplitude=1e-3, bind=0, fractional=1 &end
+&error_element name=HV*, item=VKICK, amplitude=1e-3, bind=0, fractional=1 &end
+
+&bunched_beam &end
+
+&track &end
+

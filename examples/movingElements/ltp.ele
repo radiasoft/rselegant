@@ -1,0 +1,128 @@
+! Match LTP transport line to the PAR periodic solution
+
+&run_setup
+    lattice = "par.lte",
+    use_beamline = "ltp",
+    p_central = 880,
+    default_order = 1,
+    final = %s.fin,
+    parameters = %s.param
+&end
+
+&twiss_output
+    matched = 0,
+    concat_order = 1,
+    beta_y = 5.54673, alpha_y =  1.67146,
+    beta_x = 5.73409, alpha_x = -1.74977,
+&end
+
+! The end of the septum corresponds to the end of the
+! L1A drift in the PAR.
+
+&rpn_load
+        tag = PAR,
+        filename = par.twi,
+        match_column = ElementName,
+        match_column_value = L1A,
+        matching_row_number = 0
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&optimization_setup
+        mode = minimize,
+        target = 35,
+        tolerance = 1e-10,
+        output_sparsing_factor = 10,
+        n_evaluations = 1500,
+        n_passes = 3,
+        n_restarts = 3,
+        log_file = /dev/tty,
+        verbose = 0
+&end
+
+! Keep beta functions as small as possible
+&optimization_term term = "max.betax  " &end
+&optimization_term term = "max.betay  " &end
+
+! Match final beta functions to 0.001 m
+&optimization_term term = "betax PAR.betax 0.001 sene" &end
+&optimization_term term = "betay PAR.betay 0.001 sene" &end
+
+! Match final alpha functions to 1e-4
+&optimization_term term = "alphax PAR.alphax 1e-4 sene" &end
+&optimization_term term = "alphay PAR.alphay 1e-4 sene" &end
+
+! Match final dispersion to zero
+&optimization_term term = "etax 0 1e-4 sene" &end
+&optimization_term term = "etapx 0 1e-4 sene" &end
+
+&optimization_variable name=LTP:Q8, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q7, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q6, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q5, item=K1, lower_limit=-10, upper_limit=10.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q4, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q3, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q2, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q1, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+
+! Allow quads between start and B1 to vary in position, with fixed total length
+&optimization_variable name=LTPL12, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL11, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL9, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL8A, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL8B, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL7, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+
+&optimization_covariable name=LTPL10, item=L, equation = "
+LTPL10.L0 LTPL12.L0 + LTPL11.L0 + LTPL9.L0 + LTPL8A.L0 + LTPL8B.L0 + LTPL7.L0 + 
+          LTPL12.L - LTPL11.L - LTPL9.L - LTPL8A.L - LTPL8B.L - LTPL7.L - 
+" &end
+
+&optimization_term term = "LTPL10.L 0.1 1e-6 selt" &end
+
+! Allow quads between B1 and end to vary in position, with fixed total length
+&optimization_variable name=LTPL6, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL5, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL4, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL3A, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL3B, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL2A, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL2B, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL1D, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL1C, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTPL1B, item=L, lower_limit=0.1, upper_limit=5.0, step_size=0.01 &end
+
+&optimization_covariable name=LTPL1A, item=L, equation="
+LTPL1A.L0 LTPL6.L0 + LTPL5.L0 + LTPL4.L0 + LTPL3A.L0 + LTPL3B.L0 + LTPL2A.L0 + LTPL2B.L0 + LTPL1D.L0 + LTPL1C.L0 + LTPL1B.L0 +
+          LTPL6.L - LTPL5.L - LTPL4.L - LTPL3A.L - LTPL3B.L - LTPL2A.L - LTPL2B.L - LTPL1D.L - LTPL1C.L - LTPL1B.L -
+" &end
+
+&optimization_term term = "LTPL1A.L 0.1 1e-6 selt" &end
+
+&bunched_beam &end
+
+&optimize &end
+
+&run_setup
+    lattice = "par.lte",
+    use_beamline = "whole",
+    p_central = 880,
+    default_order = 1,
+    magnets = %s.mag
+&end
+
+&load_parameters
+        filename = ltp.param,
+        change_defined_values = 1
+&end
+
+&twiss_output
+    matched = 0,
+    filename = %s.twi,
+    beta_y = 5.54673, alpha_y =  1.67146,
+    beta_x = 5.73409, alpha_x = -1.74977,
+&end
+

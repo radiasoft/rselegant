@@ -1,0 +1,5 @@
+Example of how to make a double-gaussian time distribution using 
+two runs.  The resultant beam would be used in a subsequent run
+using the sdds_beam command.
+
+Example by M. Borland (ANL).

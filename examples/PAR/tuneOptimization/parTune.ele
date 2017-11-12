@@ -1,0 +1,46 @@
+! Uses correct_tunes command to modify the PAR tunes, and
+! chromaticity to restore the chromaticities to zero.
+
+&run_setup
+    lattice = "parTune.lte",
+    magnets = "%s.mag",
+    p_central = 880,
+    use_beamline="par"
+        parameters = %s.param
+&end
+
+&correct_tunes
+        quadrupoles = "Q1 Q3",
+        tune_x = 2.2, tune_y=1.15,
+        n_iterations = 10,
+        change_defined_values = 1,
+        tolerance = 0.0001
+&end
+
+&chromaticity
+    sextupoles = "SDH SFH", n_iterations = 10,
+    change_defined_values = 1,
+    tolerance = 0.00001
+&end
+
+&twiss_output filename = "%s.twi", statistics=1 &end
+
+&run_control
+    n_steps = 1
+&end
+
+&bunched_beam n_particles_per_bunch = 1 &end
+
+&track &end
+
+&save_lattice filename = %s.new &end
+
+&run_setup
+        lattice = "parTune.new",
+        p_central = 880,
+        use_beamline="par"
+&end
+
+&twiss_output filename = "%s.twi.new" &end
+
+&stop &end

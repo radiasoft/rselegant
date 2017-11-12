@@ -1,0 +1,18 @@
+&run_setup
+    lattice =BYBL.lte,
+    use_beamline = "ring",
+     p_central = "{sddsprocess MagRamp.sdds -pipe=out -process=momentum,min,%sMin | sdds2stream -pipe -parameter=momentumMin}",
+    default_order = 1,
+    concat_order = 1,
+&end
+
+
+&run_control
+&end
+
+&twiss_output
+	matched=1
+	radiation_integrals=1
+	filename="%s.twi"
+&end
+

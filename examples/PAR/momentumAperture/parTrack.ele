@@ -1,0 +1,63 @@
+! s-dependent momentum aperture without errors
+
+! 
+! first, set the chromaticity to 0 
+!
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+        semaphore_file = %s.done
+&end
+
+&chromaticity
+    sextupoles = "SDH SFH", n_iterations = 10,
+    change_defined_values = 1,
+    dnux_dp = 0,
+    dnuy_dp = 0,
+    tolerance = 0.001
+&end
+
+&run_control &end
+&bunched_beam &end
+&track &end
+
+&save_lattice filename=%s.new &end
+
+&run_setup
+    lattice = "parTrack.new",
+    p_central = 880,
+    use_beamline="par",
+    magnets = %s.mag
+&end
+
+&twiss_output
+        filename = %s.twi,
+        matched = 1
+        radiation_integrals = 1
+&end
+
+&run_control
+        ! Synchrotron period is 500 turns
+        n_passes = 1000
+&end
+
+&momentum_aperture
+        output = %s.mmap
+        x_initial = 1e-5,
+        y_initial = 1e-5,
+        delta_negative_limit = -0.05,
+        delta_positive_limit = 0.05,
+        delta_step_size = 0.01,
+        steps_back = 1,
+        split_step_divisor = 10,
+        splits = 1,
+        s_start = 0.0,
+        s_end = "(30.6667 2 /)",
+        include_name_pattern = [QSB]*,
+        verbosity = 4
+&end

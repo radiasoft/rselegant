@@ -1,0 +1,19 @@
+&run_setup
+        lattice = fodo.lte,
+        p_central_mev = 1000
+        default_order = 1
+        rootname = <rootname>
+        semaphore_file = %s.done
+&end
+
+&alter_elements
+        name = Q1, item = K1, value=<Q1K1> &end
+&alter_elements
+        name = Q2, item = K1, value=<Q2K1> &end
+
+&twiss_output
+        filename = %s.twi
+        matched = 1
+        concat_order = 1
+&end
+

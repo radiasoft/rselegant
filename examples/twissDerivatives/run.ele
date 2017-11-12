@@ -1,0 +1,38 @@
+! Computes Twiss parameters and their variation with momentum offset
+! for a transport line
+
+&run_setup
+	lattice = "ltp.lte",
+	magnets = "%s.mag",
+	p_central = 880,
+	default_order = 2
+	final = %s.fin
+&end
+
+&run_control 
+	     n_indices = 1,
+&end
+
+&vary_element
+	name=MALIN,
+	item=DP,
+	initial=-0.001,
+	final=0.001,
+	index_number=0,
+	index_limit=11
+&end
+
+&twiss_output
+	filename = "%s.twi", 
+	output_at_each_step = 1
+	matched = 0,
+	beta_x = 5.73409, alpha_x = -1.74977,
+	beta_y = 5.54673, alpha_y =  1.67146,
+&end
+
+&bunched_beam &end
+
+&track &end
+
+
+    

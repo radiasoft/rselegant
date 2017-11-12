@@ -1,0 +1,61 @@
+&run_setup
+        lattice = aps.lte
+        p_central_mev = 7e3
+        semaphore_file = %s.done
+        use_beamline = ringrf
+        rootname = <rootname>
+        ! use fixed value so all runs get the same errors
+        random_number_seed = 3818181221
+&end
+
+&alter_elements name=*Q1, type=*QUAD, item=K1, value=<Q1>, differential=1 &end
+&alter_elements name=*Q2, type=*QUAD, item=K1, value=<Q2>, differential=1 &end
+&alter_elements name=*Q3, type=*QUAD, item=K1, value=<Q3>, differential=1 &end
+
+&run_control
+        n_passes = 500
+&end
+
+&link_elements
+        target = S*S1, source=S1A:S1, item=K2, equation=K2, exclude=S1A:S1 
+&end
+&link_elements
+        target = S*S2, source=S1A:S2, item=K2, equation=K2, exclude=S1A:S2 
+&end
+
+&twiss_output
+        filename = %s.twi
+        matched = 1
+        radiation_integrals = 1
+        final_values_only = 1,
+        concat_order = 2
+        output_at_each_step = 1
+&end
+
+&chromaticity
+        sextupoles = "S1A:S1 S1A:S2",
+        dnux_dp = 6
+        dnuy_dp = 6
+        correction_fraction = 0.9
+        n_iterations = 20
+        sextupole_tweek = 1e-4
+        tolerance = 0.01
+&end
+
+! Add some quad errors and tilts that give the rough behavior of a *corrected* lattice
+&error_control &end
+&error_element name=*, element_type=*QUAD, item=TILT, amplitude=5e-4, bind=0 &end
+&error_element name=*, element_type=*QUAD, item=FSE, amplitude=2e-4, bind=0 &end
+
+&find_aperture
+        output = %s.aper
+        mode = "n-lines",
+        xmax = 0.020
+        ymax = 0.004
+        nx = 11,
+        n_splits = 1,
+        split_fraction = 0.2
+        ! Should probably increase this for production work:
+        n_lines = 7
+&end
+

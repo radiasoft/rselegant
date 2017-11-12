@@ -1,0 +1,8 @@
+q1: quad,l=0.1,k1=1.0
+q2: quad,l=0.1,k1=-1.0
+d1: drift,l=1
+m1: moni
+h1: hkick,l=1e-12
+v1: vkick,l=1e-12
+cell: line=(h1,d1,q2,m1,q2,v1,d1,q1,m1,q1)
+bl: line=(10*cell)

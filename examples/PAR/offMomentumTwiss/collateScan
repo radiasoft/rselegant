@@ -1,0 +1,17 @@
+#!/usr/bin/tclsh  
+
+eval exec sddscombine [lsort [glob par-??.twi]] -pipe=out \
+  | sddsprocess -pipe -process=*,first,%s0 \
+  | sddscollapse -pipe \
+  | sddsxref -pipe=in deltaValues.sdds results.sdds  -take=*
+
+foreach item {nux nuy betax0 betay0} {
+    exec sddspfit results.sdds -column=delta,$item -terms=3 results-$item.fit 
+    lappend plotOptions -column=delta,$item results.sdds -graph=sym,scale=2 -column=delta,${item}Fit results-$item.fit -title=@sddspfitLabel -end
+}
+
+eval exec sddsplot $plotOptions &
+
+set nominal [exec sddsprocess results.sdds -filter=col,delta,-1e-6,1e-6 -pipe=out | sdds2stream -pipe -column=Filename]
+catch {exec sddsprintout $nominal -parameter=dnu?/dp -parameter=dbeta?/dp} result
+puts stderr "$result"

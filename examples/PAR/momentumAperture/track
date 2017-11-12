@@ -1,0 +1,20 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists parTrack.done] {
+    catch {file delete parTrack.log}
+    catch {exec elegant parTrack.ele > parTrack.log}
+} else {
+    puts stdout "Run already done---using existing results"
+    flush stdout
+}
+
+# Plot the momentum aperture 
+
+exec sddsplot -column=s,deltaPositive -col=s,deltaNegative parTrack.mmap \
+    -column=s,Profile parTrack.mag -overlay=xmode=norm,yfact=0.04
+
+# Evaluate the lifetime
+exec touschekLifetime parTrack.tlife -twiss=parTrack.twi -aperture=parTrack.mmap \
+  -charge=6 -coupling=0.1 -rf=voltage=0.040,harmonic=1 

@@ -1,0 +1,7 @@
+Example of how to compute slopes of beta, alpha, and dispersion as a
+function of initial momentum for a transport line.
+
+Could be readily adapted to compute slopes for other initial
+coordinates (e.g., x, y).
+
+Example by M. Borland, APS.

@@ -1,0 +1,23 @@
+&run_setup
+        lattice = par.lte
+        p_central = 880,
+        semaphore_file = %s.done
+&end
+
+&run_control
+        n_passes = 50
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 1000000,
+        emit_x = 3.576020e-07,
+        emit_y = "(3.576020e-07 10 /)",
+        beta_x = 2.00113
+        beta_y = 9.802921
+        sigma_dp = 4.073565e-04
+        sigma_s = "(0.029e-9 c_mks *)",
+        enforce_rms_values[0] = 3*1,
+        distribution_cutoff[0] = 3*5,
+&end
+
+&track &end

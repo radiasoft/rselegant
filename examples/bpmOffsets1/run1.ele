@@ -1,0 +1,26 @@
+! Generate some random misalignments of BPMs
+
+&run_setup
+        lattice = fodo.lte
+        p_central_mev = 1e3,
+        centroid = %s.cen
+&end
+
+
+&run_control
+&end
+
+&error_control
+        error_log = %s.erl
+&end
+
+&error_element
+        name = M1, item = DX, amplitude = 1e-4, bind = 0
+&end
+&error_element
+        name = M1, item = DY, amplitude = 1e-4, bind = 0
+&end
+
+&bunched_beam &end
+
+&track &end

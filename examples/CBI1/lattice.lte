@@ -1,0 +1,11 @@
+d0: drift,l=0
+bl0: line=(d0)
+
+optics: ilmatrix,l=1104,betax=20,betay=3,etax=0.17,nux=36.1,nuy=19.2,nux1m=3,nuy1m=3,alphac=2.28e-4
+rf: rfca,freq="c_mks 1104 / 1296 *",volt=9e6,phase="180 5.35 9 / dasin -",fiducial="pmaximum"
+! Should really use ramp_passes to slowly ramp the cavity impedance
+rfm: rfmode,freq="c_mks 1104 / 1296 * 2e3 +",ra=5e5,q=10,n_bins=100000,bin_size=1e-12,record="%s.rec"
+sr: sreffects,pref="7e3 mev /",exref=2.5e-9,sdeltaref=0.095e-2,coupling=0.01,ddeltaref="-5.35 7e3 /"
+w1: watch,filename="%s.w1",mode="coord"
+q: charge,total=100e-9
+ring: line=(q,optics,rf,rfm,sr,w1)

@@ -1,0 +1,76 @@
+#!/usr/bin/tclsh 
+
+# Script to scan the tunes using previously set up tune knobs.
+# M. Borland, ANL.
+
+
+
+# Set this to 0 if you don't run on a cluster, or 1 if you are lucky 
+set cluster 1
+
+# Compute starting values
+if ![file exists startingPoint.done] {
+    catch {exec elegant startingPoint.ele} result
+    if ![file exists startingPoint.done] {
+        puts stderr "*** ERROR: $result"
+        exit 1
+    }
+}
+
+
+# Compute x tune limits and step size
+# Scan nux from .05 to .45 in 0.01 steps
+set nuxS [exec sdds2stream -parameter=nux startingPoint.twi]
+set nux0 [expr int($nuxS)+0.05]
+set nux1 [expr int($nuxS)+0.45]
+# Probably want a smaller step size for production work.
+set dnux 0.01
+set nx [expr int(($nux1-$nux0)/$dnux+1.5)]
+
+# Compute y tune limits and step size
+# Scan nuy from .05 to .45 in 0.01 steps
+set nuyS [exec sdds2stream -parameter=nuy startingPoint.twi]
+set nuy0 [expr int($nuyS)+0.05]
+set nuy1 [expr int($nuyS)+0.45]
+# Probably want a smaller step size for production work.
+set dnuy 0.01
+set ny [expr int(($nuy1-$nuy0)/$dnuy+1.5)]
+
+# Loop over the tunes
+for {set ix 0} {$ix<$nx} {incr ix} {
+    set nux [expr int(100*($nux0 + $ix*$dnux)+0.5)/100.0]
+    set nuxChange [expr $nux - $nuxS]
+    for {set iy 0} {$iy<$ny} {incr iy} {
+        set nuy [expr int(100*($nuy0 + $iy*$dnuy)+0.5)/100.0]
+        set nuyChange [expr $nuy - $nuyS]
+        puts stderr "Working on nux=$nux, nuy=$nuy"
+        set rootname [format scan-%5.2f-%5.2f $nux $nuy]
+        regsub -all "\\." $rootname p rootname
+        if [file exists $rootname.done] {
+            puts stderr "Run already completed---skipping"
+            continue
+        }
+        # Compute changes for tune knob quads
+        exec sddsmakedataset vector.sdds -column=dnu,type=double -data=$nuxChange,$nuyChange
+        exec sddsmatrixmult tuneResponse.inv vector.sdds -pipe=out \
+          | sddsxref -pipe=in tuneResponse.inv -take=FamilyName changes.sdds
+        set fnList [exec sdds2stream -column=FamilyName changes.sdds]
+        set valueList [exec sdds2stream -column=dnu changes.sdds]
+        set macroList rootname=$rootname
+        foreach fn $fnList value $valueList {
+            lappend macroList $fn=$value
+        }
+        if $cluster {
+            # Submit job to cluster
+            catch {exec csub elegant daTemplate.ele -macro=[join $macroList ,]} result
+            puts stderr "$result"
+        } else {
+            # Run job and wait for it to complete
+            if {[catch {exec elegant daTemplate.ele -macro=[join $macroList ,]} result] || \
+                  ![file exists $rootname.done]} {
+                puts stderr "*** ERROR: $result"
+                exit 1
+            }
+        }
+    }
+}

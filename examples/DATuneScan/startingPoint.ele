@@ -1,0 +1,20 @@
+! Computes the nominal lattice, needed as a starting point
+! for the whole process (knob determination, tune scanning)
+
+&run_setup
+        lattice = aps.lte,
+        p_central_mev = 7e3
+        magnets = %s.mag
+        semaphore_file = %s.done
+        use_beamline = ring
+&end
+
+&twiss_output
+        filename = %s.twi
+        matched = 1
+        concat_order = 2
+&end
+
+&run_control &end
+&bunched_beam &end
+&track &end

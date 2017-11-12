@@ -1,0 +1,7 @@
+Computes beam moments for PAR ring with quadrupole tilt errors.
+
+Example by M. Borland (ANL)
+
+% elegant parMoments.ele
+# Plot vertical beam sizes
+% sddsplot -column=s,s3 parMoments.mom -split=page 

@@ -1,0 +1,7 @@
+M0: ematrix,r11=1,r22=1,r33=1,r44=1,r55=1,r66=1
+L1: rfca,freq=2856e6,volt=20e6,l=3,phase=90
+Q1: quad,l=0.1,k1=7
+D1: drift,l=0.25
+BPM: moni
+Q2: quad,l=0.1,k1=-7
+bl: line=(m0,10*(l1,d1,q1,d1,bpm,d1,q2,d1))

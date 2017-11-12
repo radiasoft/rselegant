@@ -1,0 +1,77 @@
+&run_setup
+        lattice = one.lte,
+        default_order = 1,
+        use_beamline = bl1
+        p_central = 1e3,
+        final = %s.fin,
+&end
+
+&twiss_output
+        matched = 0,
+        beta_x = 10, alpha_x = 1,
+        beta_y = 5, alpha_y = -1
+        output_at_each_step=1,
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+
+&optimization_setup
+	equation = "0
+betax betay - sqr +
+betax 5 - sqr +
+alphax sqr +
+alphay sqr + ",
+	mode = "minimize", method = "simplex",
+        target = 1e-8,
+        tolerance = 1e-16, n_passes = 3, n_evaluations = 250, log_file = /dev/tty, 
+        n_restarts = 10,
+        verbose = 0, output_sparsing_factor = 10
+&end
+
+&optimization_variable
+        name = q1h, item=K1, lower_limit=-20, upper_limit=20, step_size = 0.5 &end
+&optimization_variable
+        name = q2h, item=K1, lower_limit=-20, upper_limit=20, step_size = 0.5 &end
+&optimization_variable
+        name = q3h, item=K1, lower_limit=-20, upper_limit=20, step_size = 0.5 &end
+&optimization_variable
+        name = q4h, item=K1, lower_limit=-20, upper_limit=20, step_size = 0.5 &end
+
+&bunched_beam
+        n_particles_per_bunch = 1
+&end
+ 
+&optimize summarize_setup=1 &end
+
+&save_lattice filename = %s.new &end
+
+&run_setup
+        lattice = one.new,
+        default_order = 1,
+        use_beamline = bl1,
+        p_central = 1e3,
+        parameters = %s.param
+        magnets = %s.mag
+&end
+
+&twiss_output
+        matched = 0,
+        beta_x = 10, alpha_x = 1,
+        beta_y = 5, alpha_y = -1
+        statistics = 1,
+        filename = %s.twi
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&bunched_beam &end
+
+&track &end
+
+&stop &end
+

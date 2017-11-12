@@ -1,0 +1,9 @@
+! peak electric field gives Delta E = 187 MeV
+TESLA_CAV: RFTMEz0, L=1.34923180000001308, frequency=1.3e9, change_p0=1, &
+                  inputfile="efld9.sdds", zcolumn="s", Ezcolumn="Ez", &
+                  Ez_Peak="15.625e6 1.824 *", &
+                  phase="-90 12.5 - 180 / pi *", &
+                  method="non-adaptive runge-kutta", radial_order=1
+
+bl: line=(TESLA_CAV)
+

@@ -1,0 +1,4 @@
+w1: watch,filename="%s-%02ld.w1",mode="coord"
+c1: script,command="runBeamShower -input %i -output %o",l=0.11,drift_matrix=1
+d1: drift,l=1.0
+bl: line=(w1,c1,w1,d1,w1)

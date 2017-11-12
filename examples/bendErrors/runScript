@@ -1,0 +1,33 @@
+#!/bin/csh  -f
+set nonomatch
+
+if ( -e run.log ) then
+    \rm run.log
+endif
+
+elegant run.ele > run.log
+
+# Make and plot histograms of the R matrix elements
+sddscollapse run.fin -pipe=out | sddsmultihist -pipe=in run.Rhis -bins=100 -sep -columns=R??
+sddsplot -column=*,%sFrequency run.Rhis -layout=5,6 -separate
+
+# Print statistics of the R matrix elements
+sddscollapse run.fin -pipe=out \
+| sddsprocess -pipe -process=R??,standarddeviation,%sStDev \
+| sddscollapse -pipe \
+| sddsprintout -pipe \
+ -column=R1?StDev,end \
+ -column=R2?StDev,end \
+ -column=R3?StDev,end \
+ -column=R4?StDev,end \
+ -column=R5?StDev,end 
+
+# Make and plot histograms of the error values imparted to the elements
+sddscollapse run.fin -pipe=out | sddsmultihist -pipe=in run.Ehis -bins=100 -sep -columns=*.*
+sddsplot -column=*,%sFrequency run.Ehis -layout=2,2 -separate
+
+# Print statistics of the errors
+sddscollapse run.fin -pipe=out \
+| sddsprocess -pipe -process=*.*,standarddeviation,%sStDev \
+| sddscollapse -pipe \
+| sddsprintout -pipe -column=*.* 

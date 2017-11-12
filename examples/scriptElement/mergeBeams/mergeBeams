@@ -1,0 +1,18 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+set fid [open junk3 w]
+puts $fid "file opened"
+close $fid
+if [llength $argv]!=3 {
+    return -code error "usage: mergeBeams <mainBeamInputFile> <additionalBeamFile> <newBeamFile>"
+}
+
+set input [lindex $argv 0]
+set additionalBeam [lindex $argv 1]
+set output [lindex $argv 2]
+file delete -force $output
+if ![file exists $additionalBeam] {
+    return -code error "not found: $additionalBeam"
+}
+exec sddscombine $input $additionalBeam -merge $output

@@ -1,0 +1,11 @@
+This is a simple example of optimizing a system by tracking a beam.
+We use a beam generated with the rf gun simulation program spiffe, for
+the APS thermionic rf gun.  We track through a drift space with an
+alpha magnet.  The alpha magnet strength and drift length are optimized
+to minimize the bunch length.
+
+compress.ele    elegant command file
+compress.lte    lattice file
+rfgunBeam.sdds  beam input file
+
+Example by M. Borland, APS.

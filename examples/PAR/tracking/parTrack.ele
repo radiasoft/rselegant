@@ -1,0 +1,52 @@
+! tracking example
+!   dipoles are CSBEND (canonical)
+!   sextupoles are kick elements
+!   quads and drifts are 1st-order matrix
+
+! tracks particles in (x, x') phase space
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    ! use first order quads & drifts and concatenate for speed
+    default_order = 1,
+    concat_order = 1,
+    rootname = "parTrack-x"
+&end
+
+&run_control
+        n_indices = 1,
+        n_passes = 1024
+&end
+
+&vary_element 
+        name=mal, item=dx, initial=1e-2, final=8e-2, 
+        index_number=0, index_limit=16 &end
+
+&bunched_beam n_particles_per_bunch = 1 &end
+
+&track &end
+! tracks particles in (y, y') phase space
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    default_order = 1,
+    concat_order = 1,
+    rootname = "parTrack-y"
+&end
+
+&run_control
+        n_indices = 1,
+        n_passes = 1024
+&end
+
+&vary_element 
+        name=mal, item=dy, initial=1e-2, final=8e-2, 
+        index_number=0, index_limit=16 &end
+
+&bunched_beam n_particles_per_bunch = 1 &end
+
+&track &end

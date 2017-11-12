@@ -1,0 +1,10 @@
+#!/bin/csh -f
+
+set i = 1
+set seed = `rpnl rnd 1e8 mult int 2 mult int 1 +`
+while ($i < 11) 
+      elegant run1.ele -macro=seed=$seed
+      elegant run2.ele -macro=seed=$seed,ensembles=10
+      set i = `rpnl $i 1 +`
+      set seed = `rpnl $seed 2 +`
+end

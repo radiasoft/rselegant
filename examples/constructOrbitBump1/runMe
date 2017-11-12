@@ -1,0 +1,12 @@
+#!/bin/csh -f
+
+set nonomatch
+
+elegant run.ele
+
+sddsplot -align=qpin=0.2 \
+        -column=s,x run.orb \
+        -column=s,x run.orb -graph=sym,type=0 -match=col,ElementType=*MON* \
+        -column=s,ParameterValue run.cor -match=parameter,Plane=horizontal -graph=impulse,type=1 -yscale=names -ylabel="Kick (rad)" \
+        -col=s,Profile run.mag -overlay=xmode=norm,yfact=0.04 
+

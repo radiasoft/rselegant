@@ -1,0 +1,4 @@
+Simple example of using sddsemitproc to "measure" the emittance from a simulation.
+
+This is just like emitProc1, except we have an accelerating structure in the system.
+

@@ -1,0 +1,7 @@
+q1: quad,l=0.5,k1=1
+l1: drift,l=0.25
+q2: quad,l=0.5,k1=-1
+l2: drift,l=1.5
+bl: line=(q1,l1,q2,l2)
+l0: drift,l=0
+genbeam: line=(l0)

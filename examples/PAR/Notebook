@@ -1,0 +1,35 @@
+twissCalculation
+        Very basic run to compute Twiss parameters.     
+
+tuneOptimization
+        Alters the tune and matches the chromaticity
+
+emittanceOptimization
+        Optimization run to reduce the emittance.
+
+tracking
+        Tracks particles to look at phase space in (x, x') and (y, y').
+
+chromTracking
+        tracks off-momentum particles to determine the chromaticity,
+        and compares to twiss parameter computation
+
+frequencyMap
+        Tracks particles to make a frequency map
+
+dynamicAperture
+        dynamic aperture vs energy offset
+
+momentumAperture
+        s-dependent momentum aperture
+
+ejectionOptimization
+        Optimizes a three-kicker, two-turn ejection system
+
+bunchLengthening
+        Simulates a passive bunch lengthening cavity.
+
+offMomentumDA
+        Simulates dynamic aperture at various momentum offsets.
+
+Examples by M. Borland, APS.

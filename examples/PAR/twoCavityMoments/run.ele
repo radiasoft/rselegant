@@ -1,0 +1,26 @@
+&run_setup
+    lattice = "par.lte",
+    magnets = "%s.mag",
+    p_central = 880,
+    use_beamline="parrf",
+    default_order = 1,
+        final = %s.fin
+&end
+
+&moments_output 
+        filename = "%s.mom", 
+        radiation = 1,
+        output_at_each_step=1,
+        matched = 1, 
+        verbosity = 2
+&end
+
+&run_control
+        n_indices = 1
+&end
+
+&vary_element name=RF12, item=VOLT, initial=0, final=60e3, index_number=0, index_limit=11 &end
+
+&bunched_beam &end
+
+&track &end

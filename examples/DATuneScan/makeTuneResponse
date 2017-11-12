@@ -1,0 +1,31 @@
+#!/bin/bash 
+
+# Script to compute the inverse response matrix for multi-quad tune knobs.
+# M. Borland, ANL
+
+# Clean up any old files
+\rm tuneResponse-*.done
+
+for family in Q1 Q2 Q3 ; do
+    # Run elegant once for each family with a small strength offset (dK1=1e-4)
+    elegant tuneResponseTemplate.ele -macro=family=$family 
+    sddscollapse tuneResponse-$family.twi0 tuneResponse-$family.twi0c
+    sddscollapse tuneResponse-$family.twi -pipe=out \
+        | sddsconvert -pipe -retain=column,nux,nuy \
+        | sddsxref -pipe tuneResponse-$family.twi0c -take=nux,nuy -rename=col,nux=nux0,nuy=nuy0 \
+        | sddsprocess -pipe "-define=col,d%s/dK1,%s %s0 - 1e-4 /,select=nu?0,edit=%/0//" \
+        | sddsconvert -pipe -retain=column,dnux/dK1,dnuy/dK1 \
+        | sddstranspose -pipe -oldColumnNames=Response \
+        | sddsconvert -pipe=in -rename=column,Column=$family tuneResponse-$family.sdds
+done
+
+# Make the tune response matrix
+sddsxref tuneResponse-Q?.sdds tuneResponse.sdds
+
+# Invert the matrix and clean up column names
+sddspseudoinverse tuneResponse.sdds -pipe=out \
+    | sddsconvert -pipe=in -edit=column,dnu*,%+/dK1++ai+dK1/+ -rename=col,OldColumnNames=FamilyName tuneResponse.inv 
+
+# Remove working files
+\rm tuneResponse-Q?.*
+

@@ -1,0 +1,52 @@
+#!/bin/csh -f
+set nonomatch
+
+# Find envelopes of orbits
+sddsenvelope run3.clo run3.clo.env -copy=s -largest=x,y -standard=x,y 
+sddsplot -graph=line,vary -layout=1,2 -legend \
+        "-title=Envelopes of orbits after correction" \
+        -column=s,xLargest -col=s,xStDev run3.clo.env -end \
+        -column=s,yLargest -col=s,yStDev run3.clo.env 
+
+# Find envelopes of twiss parameters
+sddsenvelope run3.twi run3.twi.env -copy=s -min=beta?,etax -max=beta?,etax -mean=beta?,etax
+sddsplot -graph=line,vary -layout=1,3 -legend \
+        -title="Envelopes of twiss parameters after correction" \
+        -column=s,betax* run3.twi.env -end \
+        -column=s,etax* run3.twi.env -end \
+        -column=s,betay* run3.twi.env 
+
+# Make histograms of Max and RMS monitor readings, corrector strengths after final step of correction
+sddsprocess run3.stat -pipe=out -match=parameter,Final=y -match=parameter,Plane=horizontal \
+    | sddscombine -pipe -merge \
+    | sddsmultihist -pipe=in run3.hstat.his -separate -columns=Krms,Prms,Kmax,Pmax -bins=20 -expand=0.1
+sddsprocess run3.stat -pipe=out -match=parameter,Final=y -match=parameter,Plane=vertical \
+    | sddscombine -pipe -merge \
+    | sddsmultihist -pipe=in run3.vstat.his -separate -columns=Krms,Prms,Kmax,Pmax -bins=20 -expand=0.1
+sddsplot \
+    -title="Histograms of monitor readings and corrector kicks" \
+    -column=*,%sFrequency run3.hstat.his  run3.vstat.his -layout=2,2 -separate -topline=@Plane 
+
+# Make histograms of beam position at sextupoles relative to sextupole centers
+# First, find the sextupole offsets
+foreach item ( dx dy )
+    sddsprocess run3.param run3.param.sext$item -match=column,ElementType=*SEXT* -match=column,ElementParameter=+$item \
+        -define=column,$item,ParameterValue,units=m 
+end
+# Second, find the orbit at the sextupoles and import the DX, DY values
+sddsprocess run3.clo -pipe=out -match=col,ElementType=*SEXT*  \
+    | sddsxref -pipe run3.param.sextdx run3.param.sextdy -match=ElementName -take=* \
+    | sddsprocess -pipe \
+    "-define=column,xOffset,x dx -,units=m" "-define=column,yOffset,y dy -,units=m" \
+    | sddscombine -pipe -merge \
+    | sddsprocess -pipe \
+    -process=?Offset,rms,%sRms \
+    -convert=parameter,xOffsetRms,mm,m,1e3 \
+    -convert=parameter,yOffsetRms,mm,m,1e3 \
+    "-print=parameter,offsetStatLabel,rms values: x=%.3f mm  y=%.3f mm,xOffsetRms,yOffsetRms" \
+    | sddsmultihist -pipe=in run3.sextdxy.his -bins=200 \
+    -separate -columns=xOffset,yOffset
+sddsplot -column=*Offset,%sFrequency run3.sextdxy.his -graph=line,vary -legend \
+    -topline=@offsetStatLabel \
+    -title="Histogram of beam position relative to sextupole centers" 
+

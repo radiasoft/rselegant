@@ -1,0 +1,21 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+set fd [open "|elegant parTrack.ele" r]
+while {![eof $fd]} {
+    gets $fd data
+    puts stdout $data
+    flush stdout
+}
+
+
+# Cross reference the initial particle coordinates into the
+# lost particle data
+
+exec sddsxref parTrack.los parTrack.bun parTrack.da -equate=particleID -take=x,y -rename=col,x=x0,y=y0 
+
+# Plot results color-code by the pass on which loss occurred.  Maximum pass is 400 (from .ele file)
+# so we use a width of 4/100 (100 colors available)
+
+exec sddsplot -column=x0,y0 parTrack.da -split=column=Pass,width=4 -order=spect -graph=sym,fill,vary=subtype

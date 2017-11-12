@@ -1,0 +1,17 @@
+&run_setup
+	lattice = run0.new,
+	use_beamline = RINGRF,
+	p_central = "{rpnl 7.0e3 mev /}",
+	default_order = 1,
+        rootname = skewResponse-<skew>,
+        semaphore_file = %s.done,
+&end
+
+&alter_elements name=<skew>, item=K1, value=0.01, &end
+
+&moments_output
+        filename = "%s.mom",
+        matched = 1,
+        equilibrium = 1,
+        radiation = 1,
+&end

@@ -1,0 +1,8 @@
+This is an example of a linac with a bunch compressor in the middle,
+showing how to simulate phase and voltage errors.
+
+To run:
+% ./jitter
+% ./cleanUp
+
+Example by M. Borland, APS.

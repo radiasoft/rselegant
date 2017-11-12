@@ -1,0 +1,9 @@
+Example of using BPM offsets from an "external" source and correcting the
+trajectory to those offsets.
+
+In this case, we actually use elegant to produce the list of offsets, but the
+offsets could come from a beam-based measurement, mechanical measurements, etc.
+
+See runScript for more details.
+
+M. Borland (ANL, 12/2010)

@@ -1,0 +1,25 @@
+&run_setup
+	lattice = "rbendCSB.lte",
+	p_central = 13e3,
+	default_order = 1,
+        output = %s.out,
+&end
+
+&run_control
+        n_steps = 50
+&end
+
+&error_control
+        error_log = %s.erl
+&end
+
+&error_element name=B1, item=FSE, amplitude=0.005 &end
+
+&bunched_beam
+        n_particles_per_bunch = 2
+        emit_x = 1e-12,
+        beta_x = 1e6
+        distribution_type[0] = "line"
+&end
+
+&track &end

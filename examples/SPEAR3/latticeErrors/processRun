@@ -1,0 +1,120 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+set quadList [list QD QF]
+set sextList [list SD SF]
+set rootname spear
+
+foreach quad $quadList {
+    lappend quadFileList $rootname.$quad.hist
+}
+foreach sext $sextList {
+    lappend sextFileList $rootname.$sext.hist
+}
+
+eval exec sddsenvelope $rootname.twi -pipe=out \
+  -copy=s,ElementName -max=*x,*y -min=*x,*y -mean=*x,*y \
+  -rms=*x,*y \
+  | sddsprocess -pipe=in ${rootname}.twi.env \
+  {"-define=column,%sBeat,%sMax %sMin - %sMean /,select=beta*Mean,edit=%/Mean//"} 
+eval exec sddscollapse $rootname.twi $rootname.param.twi
+set nsims [lindex [exec sdds2stream -rows $rootname.param.twi] 0]
+set bins1 [expr $nsims/3]
+foreach prop {Jx Jdelta alphac ex0} {
+    eval exec sddshist $rootname.param.twi -pipe=out -data=$prop \
+      -bins=$bins1 -statistics \
+      | sddsprocess -pipe=in $rootname.$prop.hist \
+      {"-print=param,HistLabel,$prop  statistics      Mean: %.3f  StDev: %.3f,${prop}Mean,${prop}StDev"}
+}
+foreach quad $quadList {
+    eval exec sddsprocess $rootname.qsl -pipe=out -match=column,QuadrupoleName=${quad} \
+      | sddshist -bins=$nsims -dataColumn=K1 -pipe -statistics \
+      -norm=area \
+      | sddsprocess -pipe=in ${rootname}.${quad}.hist \
+      {"-print=param,HistLabel,$quad statistics      Mean: %.3f  StDev: %.3f,K1Mean,K1StDev"}
+    lappend quadFileList $rootname.$quad.hist
+}
+foreach sext $sextList {
+    eval exec sddsprocess $rootname.ssl -pipe=out -match=column,SextupoleName=${sext} \
+      | sddshist -bins=$nsims -dataColumn=K2 -pipe -statistics \
+      -norm=area \
+      | sddsprocess -pipe=in ${rootname}.${sext}.hist \
+      {"-print=param,HistLabel,Mean: %.3f  StDev: %.3f,K2Mean,K2StDev"}
+    lappend sextFileList $rootname.$sext.hist
+}
+exec sddsprocess -nowarning ${rootname}.scor tmp.scor -match=param,Final=y \
+  -delete=column,Iteration,Cycle,Cdelta,Stage 
+exec sddsprocess -nowarning tmp.scor -pipe=out -match=param,Plane=horizontal \
+  | sddscombine -merge -pipe=in -overwrite ${rootname}.hscor 
+exec sddsprocess tmp.scor -pipe=out -match=param,Plane=vertical \
+  | sddscombine -merge -pipe=in -overwrite ${rootname}.vscor
+set xyPlane x
+foreach plane {h v} {
+    set name "corrector kick"
+    foreach item {Kmax Pmax} {
+        exec sddshist ${rootname}.${plane}scor -pipe=out -datacolumn=$item -bins=$bins1 \
+          -norm=area \
+          | sddsprocess -pipe=in ${rootname}.${plane}scor.$item.his \
+          "-print=parameter,xyPlane,$xyPlane" \
+          "-print=param,HistLabel,Distribution of maximum $name for $xyPlane plane for $nsims random machines"
+        set name "monitor readout"
+    }
+    set xyPlane y
+}
+exec sddsprocess $rootname.orb -pipe=out -nowarning -match=param,Stage=corrected \
+  -delete=column,Particles,ElementOccurence,ElementType \
+  -process=x,stand,xStDev -process=y,stand,yStDev \
+  -process=x,large,xLargest -process=y,large,yLargest \
+  | sddscollapse -pipe=in ${rootname}.orb.stat
+foreach plane {x y} {
+    foreach item {StDev Largest} {
+        exec sddshist ${rootname}.orb.stat -pipe=out \
+          -data=$plane$item -bins=$nsims -norm=area \
+          | sddsprocess -pipe=in ${rootname}.orb.${plane}${item}.his \
+          "-print=parameter,xyPlane,$plane" \
+          "-print=parameter,HistLabel,Distribution of $item $plane for $nsims random machines"
+    }
+}
+
+set nsims [lindex [exec sdds2stream -rows $rootname.param.twi] 0]
+
+set plotDev motif
+set plotEnd &
+
+catch {eval exec sddsplot -dev=$plotDev -graph=line,vary \
+         -col=s,betaxBeat -uns=y ${rootname}.twi.env -legend=spec=x \
+         {"-ylabel= (BetaMax-BetaMin)/<Beta>"} \
+         {"-topline=Envelope of beta beats for $nsims random machines after correction."} \
+         -col=s,betayBeat -uns=y ${rootname}.twi.env -legend=spec=y -end \
+         {-col=s,(etaxMin,etaxMax)} {"-ylabel=Envelope of horizontal dispersion (m)"} \
+         -legend=edit=%/etax// \
+         {"-topline=$nsims random machines after correction."} ${rootname}.twi.env -end \
+         {-col=s,(etayMin,etayMax)} {"-ylabel=Envelope of vertical dispersion (m)"} \
+         -legend=edit=%/etay// \
+         {"-topline=$nsims random machines after correction."} ${rootname}.twi.env -end \
+         -column=K1,frequency -title=@HistLabel $quadFileList \
+         -sep {"-topline=quadrupole distribution for $nsims random machines after correction."} -end \
+         -column=Jx,frequency -title=@HistLabel ${rootname}.Jx.hist \
+         -sep {"-topline=Jx distribution for $nsims random machines after correction."} -end \
+         -column=Jdelta,frequency -title=@HistLabel ${rootname}.Jdelta.hist \
+         -sep {"-topline=Jdelta distribution for $nsims random machines after correction."} -end \
+         -column=alphac,frequency -title=@HistLabel ${rootname}.alphac.hist \
+         -sep {"-topline=alphac distribution for $nsims random machines after correction."} -end \
+         -column=ex0,frequency -title=@HistLabel ${rootname}.ex0.hist \
+         -sep {"-topline=emittance distribution for $nsims random machines after correction."} -end \
+         -column=K2,frequency -title=@HistLabel $sextFileList \
+         -sep {"-topline=sextupole distribution for $nsims random machines after correction."} -end \
+         -column=Kmax,frequency -legend=param=xyPlane \
+         {"-topline=Maximum kick distribution for $nsims random machines after correction."} \
+         ${rootname}.hscor.Kmax.his ${rootname}.vscor.Kmax.his \
+         -graph=line,vary -end \
+         -column=frequency,*StDev -graph=line,vary -legend=param=xyPlane \
+         {"-xlabel=edit=z(i/orbit standard deviation /"} \
+         -swap {"-topline=Results for $nsims random machines after coorection"} \
+         [glob ${rootname}.orb.*StDev.his] -end \
+         -column=frequency,*Largest -graph=line,vary -legend=param=xyPlane \
+         {"-xlabel=edit=z(i/largest orbit readback /"} \
+         [glob ${rootname}.orb.*Largest.his] \
+         -swap {"-topline=Results for $nsims random machines after coorection"} -end \
+         $plotEnd}

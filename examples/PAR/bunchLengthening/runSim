@@ -1,0 +1,11 @@
+#!/bin/csh -f
+set nonomatch
+
+if (! -e run.done ) then
+    elegant run.ele
+endif
+
+sddsplot -unsup=y -layout=2,2 -separate -col=Pass,'(Ss,Sdelta,Cdelta)' run.w1 -col=Pass,V run.rec
+
+sddsplot -topline="Press m to play movie" \
+    -col=t,p run.w2 -graph=dot -same -split=page -sep=page -factor=yp=pCentral,yinv -offset=yp=pCentral,yinv,xp=PassCentralTime,xinv -title=@Pass,edit='i/Pass = /'

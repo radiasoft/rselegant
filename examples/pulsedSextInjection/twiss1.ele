@@ -1,0 +1,17 @@
+&run_setup
+        lattice = aps.lte
+        use_beamline = RING,
+        p_central_mev = 7e3
+        magnets = %s.mag,
+&end
+
+&alter_elements name=*:S1, item=K2, value=11.5 &end
+&alter_elements name=*:S2, item=K2, value=-26.5 &end
+&alter_elements name=*:S3, item=K2, value=-14.7 &end
+&alter_elements name=*:S4, item=K2, value=15.5 &end
+
+&twiss_output
+        filename = %s.twi
+        matched = 1
+        radiation_integrals = 1
+&end

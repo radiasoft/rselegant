@@ -1,0 +1,39 @@
+&run_setup
+        lattice = linac.lte
+        p_central_mev = 100
+        magnets = %s.mag
+        sigma = %s.sig
+        default_order = 1
+&end
+
+&run_control
+&end
+
+&twiss_output
+        filename = %s.twi
+        matched = 1
+        cavities_are_drifts_if_matched = 0
+        concat_order = 1 
+&end
+
+&rpn_load
+        filename = run-cell.twi
+        match_column = ElementName
+        match_column_value = _BEG_
+        tag = start
+&end
+
+&bunched_beam
+        emit_nx = 1e-6
+        emit_ny = 1e-6
+        beta_x = "(start.betax)"
+        alpha_x = "(start.alphax)"
+        beta_y = "(start.betay)"
+        alpha_y = "(start.alphay)"
+        n_particles_per_bunch = 10000,
+        symmetrize = 1,
+        distribution_cutoff[0] = 3*3,
+        enforce_rms_values[0] = 3*1,
+&end
+
+&track &end

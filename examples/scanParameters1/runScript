@@ -1,0 +1,19 @@
+#!/bin/csh -f
+set nonomatch
+
+sddsmakedataset scan.sdds \
+    -column=Q1,type=double -data=-2,-1.5,-1.0,-0.5,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1 \
+    -column=Q2,type=double -data=0.1,0.1,0.1,0.1,0.1,0.5,1.0,1.5,2.0,2.5 
+
+elegant quad.ele
+
+sddscollapse quad.fin quad.finc
+sddsemitproc quad.finc -pipe=out -sigmaData=Sx,Sy -nErrorSets=10 -errorLevel=1e-4,1e-4 \
+    | sddsprocess -pipe=in quad.emit -define=column,Point,i_row,type=short
+
+sddsplot -ylabel="Beamsize (m)" -topline=@EmittanceLabel \
+    -column=Point,?SigmaData quad.emit -graph=sym,vary=subtype -legend=edit=%/Sigma// \
+    -column=Point,?SigmaFit quad.emit -graph=line,vary -legend=edit=%/Sigma//
+
+
+

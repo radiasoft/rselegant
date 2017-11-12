@@ -1,0 +1,23 @@
+# Example of fiducialization with a fiducial bunch and a
+# perturbed bunch.  The system in question is a linac with
+# 50 structures, a four dipole chicane, then 50 more structures.
+# Example by M. Borland, APS.
+
+# Generate the beam and accelerate it to the chicane center
+elegant makeBeam1.ele
+
+# Apply scattering and energy loss to the beam
+elegant makeBeam2.ele
+
+# Combine the ideal and scattered beams, one per page
+sddscombine beam1.out beam2.out -overwrite combined.out
+
+# Run both beams through the rest of the chicane and the second
+# half of the linac.  The first (unscattered) beam is used 
+# as the fiducial.
+elegant run.ele
+
+# Make some plots
+sddsplot run.out -col=t,p -graph=dot,vary -split=page
+sddsplot run.cen -col=s,Cdelta -graph=line,vary -split=page
+sddsplot run.sig -col=s,s56 -graph=line,vary -split=page

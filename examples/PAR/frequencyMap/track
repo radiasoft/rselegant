@@ -1,0 +1,18 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists parTrack.log] {
+    catch {exec elegant parTrack.ele > parTrack.log}
+}
+
+exec sddsplot -layout=1,2 \
+    -column=x,y parTrack.fma -split=column=nux \
+    -graph=sym,vary=subtype,fill,scale=2,type=2 -order=spect \
+    -end \
+    -column=x,y parTrack.fma -split=column=nuy \
+    -graph=sym,vary=subtype,fill,scale=2,type=2 -order=spect &
+
+
+exec sddsplot -col=x,y parTrack.fma -split=col=diffusion -order=spect -graph=sym,vary=subtype,fill,type=2,scale=3 &
+

@@ -1,0 +1,41 @@
+&run_setup
+        lattice = fourDipoleCSR.lte,
+        default_order = 1,
+        use_beamline = bl,
+        p_central = 107.6,
+        sigma = %s.sig,
+        centroid = %s.cen,
+        output = %s.out,
+        final = %s.fin,
+        magnets = %s.mag,
+        print_statistics = 1
+&end
+
+&sasefel
+        output = %s.sase,
+        beta = 1,
+        undulator_K = 3.1,
+        undulator_period = 0.033,
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 50000,
+        one_random_bunch=0,
+        emit_x = 4.6e-8,
+        emit_y = 4.6e-8,
+        beta_x = 10, alpha_x = 1,
+        beta_y = 10, alpha_y = 1,
+        sigma_dp = 0.001,
+        sigma_s = 650e-6,
+        distribution_type[0] = 3*"gaussian",
+        distribution_cutoff[0] = 3*3,
+        symmetrize = 1,
+        enforce_rms_values[0] = 1,1,1,
+        bunch = %s.bun
+&end
+ 
+&track &end

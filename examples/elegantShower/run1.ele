@@ -1,0 +1,20 @@
+&run_setup
+        lattice = lattice.lte
+        p_central_mev = 2.7,
+&end
+
+&run_control &end
+
+&bunched_beam 
+              n_particles_per_bunch = 10000,
+              emit_nx = 0.1e-6,
+              emit_ny = 0.1e-6,
+              beta_x = 10
+              beta_y = 10
+              distribution_type[0] = 3*"uniform",
+              distribution_cutoff[0] = 3*1
+              enforce_rms_values[0] = 3*1
+              limit_in_4d = 1,
+&end
+
+&track &end

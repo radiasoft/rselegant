@@ -1,0 +1,22 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# Look at horizontal and energy acceptance of a transport line
+# Example by M. Borland (ANL).
+
+catch {exec elegant horizontal.ele} result
+puts stderr "$result"
+
+exec sddsplot -col=x,xp horizontal.acc -graph=sym "-title=Horizontal acceptance"
+exec sddshist horizontal.los horizontal.los.his -data=s -bins=1000
+exec sddsplot -graph=line,vary -yscale=names -col=s,frequency horizontal.los.his  -clip=1,0 -col=s,betax horizontal.twi "-title=Loss location histogram"
+
+catch {exec elegant energy.ele} result
+puts stderr "$result"
+exec sddsxref energy.los energy.bun -pipe=out -leave=* -transfer=param,pCentral \
+     | sddsprocess -pipe=in energy.los1 "-define=col,delta,p pCentral - pCentral /"
+exec sddshist2d energy.los1 energy.los.h2d -col=s,delta -xparam=400 -yparam=50 
+file delete energy.los1
+exec sddscontour -shade energy.los.h2d "-title=Loss distribution with initial energy offset"
+

@@ -1,0 +1,47 @@
+&run_setup
+        lattice = "compress.lte",
+        default_order = 1,
+        use_beamline = BL,
+        p_central = 5.7410
+        final = %s.fin,
+        output = %s.out,
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+
+&optimization_setup
+	mode = "minimize", method = "simplex",
+        target = 1e-13,
+        tolerance = 1e-14, n_passes = 5, n_evaluations = 200, log_file = "/dev/tty",
+        n_restarts = 3
+&end
+
+! minimize the time length of the central 95% of the beam
+&optimization_term
+	term = "Dt95",
+&end
+
+! allow the alpha magnet strength and drift length to be varied
+&optimization_variable
+        name = alpha, item=xmax, lower_limit=0.01, upper_limit=0.2, step_size = 0.01 &end
+&optimization_variable
+        name = l2, item=l, lower_limit=0.01, upper_limit=1.5, step_size = 0.01 &end
+
+! use beam file from spiffe. 
+&sdds_beam 
+        input = rfgunBeam.sdds,
+        input_type = "spiffe",
+        n_particles_per_ring = 1,
+        reuse_bunch = 1,
+        one_random_bunch = 1,
+&end
+
+&optimize summarize_setup=1 &end
+
+&save_lattice filename = %s.new &end
+
+
+

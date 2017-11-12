@@ -1,0 +1,27 @@
+&run_setup
+        lattice = latticeProf.lte
+        p_central_mev = 3000
+        output = %s.out,
+        semaphore_file = %s.done
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 10000
+        bunch = %s.bun
+        emit_nx = 0,
+        emit_ny = 0,
+        beta_x = 10
+        beta_y = 10
+        alpha_x = 1
+        alpha_y = 1
+        sigma_s = 5e-3,
+        enforce_rms_values[0] = 3*1,
+        distribution_cutoff[0] = 3*3,
+        distribution_type[2] = "uniform"
+&end
+
+&track &end

@@ -1,0 +1,9 @@
+This is an example of using Pelegant to perform FMA.
+Example by M. Borland and Y. Wang.
+
+You need to modify the path variable in run_Pelegant to match your MPI
+installation.  Following that, try
+
+run_Pelegant fma1p.ele 
+
+sddsplot -column=x,y fma1p.fma -graph=sym,vary=subtype,fill,scale=3 -order=spect -split=column=diffusion

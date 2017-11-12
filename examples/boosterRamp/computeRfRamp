@@ -1,0 +1,58 @@
+#!/bin/sh  
+# \
+exec oagtclsh "$0" "$@"
+
+set auto_path [linsert $auto_path 0  /usr/local/oag/apps/lib/$env(HOST_ARCH)]
+set auto_path [linsert $auto_path 0 /usr/local/oag/lib_patch/$env(HOST_ARCH)]
+APSStandardSetup
+
+set usage {usage: computeRfRamp -twiss <filename> -momentum <filename>=<t>+<p> -output <filename> -overVoltage <factor> -Vped <MV> -Vmax <MV> -harmonic <n>}
+set twiss ""
+set momentum ""
+set output ""
+set overVoltage 1.4
+set Vmax 9.5
+set Vped 0.04
+set harmonic 432
+set args $argv
+if {[APSStrictParseArguments {twiss momentum output overVoltage Vped Vmax harmonic}] || \
+   ![string length $twiss] || ![string length $momentum] || ![string length $output] || \
+      ![string match *=*+* $momentum] || [expr $overVoltage<=1] || [expr $Vped<=0] || [expr $Vmax<=0]} {
+    return -code error "$usage"
+}
+
+if ![file exists $twiss] {
+   return -code error "not found: $twiss"
+}
+set tmom [lindex [split $momentum "=+"] 1]
+set mom [lindex [split $momentum "=+"] 2]
+set momentum [lindex [split $momentum "=+"] 0]
+if ![file exists $momentum] {
+   return -code error "not found: $momentum"
+}
+
+set sMax [exec sddsprocess $twiss -process=s,max,sMax -pipe=out | sdds2stream -pipe -param=sMax]
+set T0 [expr $sMax/2.9979e8]
+
+exec sddsderiv $momentum -pipe=out -differentiate=$mom -versus=$tmom \
+     | sddsprocess -pipe=in $momentum.deriv \
+     "-define=col,dERamp,${mom}Deriv $T0 * mev *,units=MeV/Turn" 
+
+exec sddsxref $momentum $twiss -pipe=out -leave=* -transfer=parameter,U0,pCentral \
+     | sddsxref $momentum.deriv -take=* -pipe \
+     | sddsprocess -pipe=in $output \
+     -process=$tmom,max,totalTime \
+     -define=parameter,overVoltage,$overVoltage \
+     "-define=parameter,T0,$T0,units=s" \
+     "-define=parameter,nPasses,totalTime T0 / int,type=long" \
+     "-define=parameter,Vmax,$Vmax 1e6 *,units=V" \
+     "-define=parameter,Vped,$Vped 1e6 *,units=V" \
+     "-define=col,dETotal,U0 $mom pCentral / 4 pow * dERamp + 1e6 *,units=eV" \
+     "-define=col,Voltage,dETotal $overVoltage * Vmax > ? Vmax : pop $ Vped +,units=V" \
+     "-define=col,Phase,180 dETotal Voltage /  dasin -,units=deg" \
+     "-define=column,MomentumRatio,$mom pCentral /" \
+     "-define=column,Frequency,$harmonic $T0  /,units=Hz" 
+
+# Local Variables:
+# mode: tcl
+# End:

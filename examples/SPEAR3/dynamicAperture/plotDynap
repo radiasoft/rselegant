@@ -1,0 +1,11 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+set seeds [lindex [exec sddscollapse spear.aper -pipe=out | sdds2stream -rows -pipe] 0]
+eval exec sddscombine spear.aper -pipe=out -merge \
+| sddshist2d -column=x,y -x=41,-0.03,0.03 -y=27,0,.02 -pipe=in dynap.h2d
+exec sddscontour -shade=16 dynap.h2d \
+        "-title=$seeds elegant runs with $seeds seeds   M. Borland ANL/APS March 1999" \
+        "-topline=SPEAR3 200-Turn Dynamic Aperture" {-ylabel=$dy (m)$i} &
+

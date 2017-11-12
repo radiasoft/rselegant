@@ -1,0 +1,10 @@
+Example of matching a transport line to a ring.
+
+! First find the periodic solution for the ring
+% elegant par.ele
+! Now match the transport line to this
+% elegant ltp.ele
+! Plot the results
+% sddsplot -graph=line,vary -align=qpin=0.25 -column=s,beta* ltp.twi -yscale=id=beta -column=s,etax ltp.twi 
+
+Example by M. Borland, APS.

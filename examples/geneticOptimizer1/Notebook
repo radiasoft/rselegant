@@ -1,0 +1,33 @@
+Example of using the geneticOptimizer script.  M. Borland (APS), 6/2009.
+
+To use this script, you need to have a linux cluster available that
+allows submitting jobs using the "csub" command.  You may need to
+modify geneticOptimizer to use your local job submission scheme.
+
+This example is an optimization problem that one should not actually
+use a genetic optimizer for, as elegant's internal optimizer will be
+faster than more effective. However, it illustrates how to implement a
+genetic optimization.  It runs fairly quickly so it is easy to monitor
+and understand.
+
+Input files:
+optim1.sdds      Configuration file
+runJob1          Script to run a job
+processJob1      Script to compute penalty function from the job
+template.ele     Elegant input file template
+fodo.lte         Lattice file
+
+To execute:
+% geneticOptimizer -input optim1.sdds -reduce 1
+Let it run for a while.  In a separate window, look at the results using
+% sddsplot -device=motif,"-movie true -keep 1" -repeat -column=runID,penaltyValue optim1.all -graph=sym
+The results will initial be quite noisy.
+After a while, use control-C to exit geneticOptimizer.  Then restart with 10x smaller errors
+% geneticOptimizer -input optim1.sdds -reduce 1 -contin 1 -errorFactor 0.1
+Continue this procedure until it converges satisfactorily
+
+Output files:
+optim1.all      Log of all the function evaluations
+optim1.best     Best results so far
+optim1-*        Results for individual runs. Using "-reduce 1" means that geneticOptimizer
+                only keeps the best results.

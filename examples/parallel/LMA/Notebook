@@ -1,0 +1,12 @@
+This is an example of using Pelegant to perform momentum aperture computations.
+Example by M. Borland and Y. Wang.
+
+You need to modify the path variable in run_Pelegant to match your MPI
+installation.  Following that, try
+
+elegant run0.ele
+run_Pelegant run1.ele 
+
+sddsplot -column=s,delta????tive run1.mmap 
+
+

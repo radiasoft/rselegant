@@ -1,0 +1,64 @@
+tube: maxamp,x_max=0.06,y_max=0.019
+bap: rcol,x_max=0.0555,y_max=0.019
+kap: ecol,x_max=0.04,y_max=0.017
+swall: scraper,position=-0.02,direction=2
+hcor: hkicker, l=1.0e-12
+vcor: vkicker, l=1.0e-12
+hmon: hmonitor, l=0.0
+vmon: vmonitor, l=0.0
+l1a: drift, l=0.2
+l1b: drift, l=1.531675
+! non-chromatic sextupole plus horizontal and vertical steering
+s1h: sextupole, l=0.1, k2=0.0
+s1: line=(s1h,hcor,vcor,s1h)
+l2: drift, l=0.08
+lqb: drift, l=0.24
+q1: quadrupole, l=0.23, k1=1.786022448154
+b1: sbend, l=0.8, angle=-0.785398163397, e1=-0.445, e2=-0.445, k2=0.1375, &
+hgap=0.0225, fint=0.41
+b2: sbend, l=0.8, angle=-0.785398163397, e1=-0.445, e2=-0.445, k2=0.1375, &
+hgap=0.0225, fint=0.41
+q2: quadrupole, l=0.23, k1=2.295915530046
+l3: drift, l=1.47
+l3a: drif,l=0.568095770758662
+l3b: drif,l=0.551904229241338
+! LHK is half the effective length of a kicker
+lhk: drift, l=0.175
+l34a: drif,l=0.811087
+l34b: drif,l=0.308913
+! markers for the centers of the injection and ejection kickers
+ik1: marker
+ik2: marker
+ek: marker
+! vertical chromaticity sextupole plus vertical steering magnet
+sdh: sextupole, l=0.1, k2=5.95873739969822
+sd: line=(sdh,vcor,sdh)
+l4: drift, l=0.08
+q3: quadrupole, l=0.23, k1=0.0
+q4: quadrupole, l=0.23, k1=2.270174600496
+l5: drift, l=0.325
+! horizontal chromaticity sextupole plus horizontal steering magnet
+sfh: sextupole, l=0.1, k2=-1.65546424863732
+sf: line=(sfh,hcor,sfh)
+! markers for the septum center and the center of the RF straight
+msept: marker
+mrf: marker
+! quadrant 1, less half of SF
+quadr1: line=(l1a,swall,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,kap,l3a,lhk,ik1,&
+    lhk,l3b,kap,sd,l4,vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+! quadrant 2, less half of SF
+quadr2: line=(l1a,swall,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,kap,l3a,lhk,ik2,&
+    lhk,l3b,kap,sd,l4,vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+! quadrant 3, less half of SF
+quadr3: line=(l1a,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,l3,sd,l4,&
+    vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+! quadrant 4, less half of SF
+quadr4: line=(l1a,l1b,s1,l2,hmon,vmon,q1,lqb,bap,b1,bap,lqb,q2,hmon,vmon,kap,l34a,lhk,ek,&
+    lhk,l34b,kap,sd,l4,vmon,q3,lqb,bap,b2,bap,lqb,q4,hmon,l5)
+half23: line=(msept,quadr2,sf,-quadr3,mrf)
+half41: line=(mrf,quadr4,sf,-quadr1,msept)
+half12: line=(hcor,sfh,-quadr1,msept,quadr2,sfh,hcor)
+half: line=(tube,quadr2,sf,-quadr2,swall)
+! full PAR, starting at septum and ending at septum
+par: line=(swall,half23,half41,swall)
+return

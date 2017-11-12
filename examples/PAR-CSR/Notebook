@@ -1,0 +1,5 @@
+Example of tracking the APS PAR with CSR impedance.  The CSR impedance was created with
+the command
+% csrImpedance csrZ.sdds -height=0.039 -radius=1.02 -frequency=max=500e9 -cutoff=0.2,0.25 -n=10
+
+Example by M. Borland (ANL).

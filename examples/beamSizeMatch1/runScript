@@ -1,0 +1,19 @@
+#!/bin/bash 
+
+# Make a first run that simulates a measurement
+elegant run0.ele 
+
+# Create columns with expressions for optimization terms
+sddsprocess run0.sig run0.terms \
+        -match=col,ElementName=M1 \
+        -print=col,xTerm,"%s#%ld.Sx %le / 1 1e-3 sene",ElementName,ElementOccurence,Sx \
+        -print=col,yTerm,"%s#%ld.Sy %le / 1 1e-3 sene",ElementName,ElementOccurence,Sy
+
+# Peform fitting
+elegant run1.ele
+
+# Display fit
+sddsplot -layout=1,2 -graph=line,vary -groupby=names -sep=names \
+        -col=s,S[xy] run0.sig -legend=spec=Ideal \
+        -col=s,S[xy] run1.sig -legend=spec=Fit
+

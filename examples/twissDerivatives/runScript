@@ -1,0 +1,32 @@
+#!/bin/csh -f
+set nonomatch
+
+elegant run.ele
+
+# Just need a single page with s coordinate in it for later
+
+sddsconvert run.twi run.twi0 -retain=col,s -topage=1
+
+# What this pipeline does:
+# 1. Transfer the parameter MALIN.DP from run.fin into the stream run.twi, renaming
+#    it delta = deltaP/P0 in the process
+# 2. Create a column called Rootname, which is identical to the element name.  
+#    sddsvslopes won't run without this present.
+# 3. Run sddsvslopes (vector slopes) to make linear fits for many columns across
+#    many pages row-by-row, as a function of delta.  So for the first row, for 
+#    column betax, it takes the value from each page and fits them vs delta, etc.
+#    The result is a single page with slopes and intercepts of all the fits.
+# 4. Use sddsxref to import the s coordinate from run.twi0
+
+sddsxref run.twi run.fin -pipe=out \
+    -leave=* -transfer=parameter,MALIN.DP -rename=parameter,MALIN.DP=delta \
+    | sddsprocess -pipe -print=column,Rootname,%s,ElementName \
+    | sddsvslopes -pipe \
+    -columns=beta*,alpha*,etax,etaxp -independentVariable=delta  \
+    | sddsxref -pipe=in run.twi0 -take=s run.deriv
+
+# Plot the slopes
+
+sddsplot -column=s,*Slope -separate run.deriv -graph=line,type=1 \
+    -column=s,Profile run.mag -overlay=xmode=norm,yfact=0.04  -omnipresent
+

@@ -1,0 +1,22 @@
+Scripts to perform coupling correction for the APS ring, emulating what is done
+in APS operations.
+
+M. Borland, APS
+
+run0.ele
+        Runs the full lattice to test and get twiss parameters
+
+makeSkewKnobFiles
+        Makes a set of knob files for use in coupling minimization using run0.twi
+
+makeSkewReponse
+skewResponseTemplate.ele
+        Script and template for computing response of s36 to skew strength, plus inverse
+
+correctCoupling
+        Script to perform coupling correction and adjust vertical emittance
+        Uses skewResponse.inv and skew knob files.
+        Also uses
+        etayCorrTemplate.ele --- Template file for etay correction
+        couplingCorrTemplate.ele --- Template file for coupling minimization and ey setting
+

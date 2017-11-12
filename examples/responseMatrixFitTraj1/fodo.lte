@@ -1,0 +1,42 @@
+qf0: quad,l=0.1,k1=1
+qf1: quad,l=0.1,k1=1
+qf2: quad,l=0.1,k1=1
+qf3: quad,l=0.1,k1=1
+qf4: quad,l=0.1,k1=1
+qf5: quad,l=0.1,k1=1
+qf6: quad,l=0.1,k1=1
+qf7: quad,l=0.1,k1=1
+qf8: quad,l=0.1,k1=1
+qf9: quad,l=0.1,k1=1
+qd0: quad,l=0.1,k1=-1
+qd1: quad,l=0.1,k1=-1
+qd2: quad,l=0.1,k1=-1
+qd3: quad,l=0.1,k1=-1
+qd4: quad,l=0.1,k1=-1
+qd5: quad,l=0.1,k1=-1
+qd6: quad,l=0.1,k1=-1
+qd7: quad,l=0.1,k1=-1
+qd8: quad,l=0.1,k1=-1
+qd9: quad,l=0.1,k1=-1
+d1: drif,l=1
+xm: hmon
+ym: vmon
+xy: line=(xm,ym)
+hc: hkick,l=0.1
+vc: vkick,l=0.1
+hv: line=(hc,vc)
+dhv: drif,l=0.1
+bl: line=(&
+hv,d1,qf0,d1,xy,dhv,qd0,&
+hv,d1,qf1,d1,xy,dhv,qd1,&
+hv,d1,qf2,d1,xy,dhv,qd2,&
+hv,d1,qf3,d1,xy,dhv,qd3,&
+hv,d1,qf4,d1,xy,dhv,qd4,&
+hv,d1,qf5,d1,xy,dhv,qd5,&
+hv,d1,qf6,d1,xy,dhv,qd6,&
+hv,d1,qf7,d1,xy,dhv,qd7,&
+hv,d1,qf8,d1,xy,dhv,qd8,&
+hv,d1,qf9,d1,xy,dhv,qd9,&
+hv,d1,xy)
+
+

@@ -1,0 +1,15 @@
+This directory contains files to simulate girder misalignment for
+NSLS-II.  The files were created by S. Kramer and M. Borland.
+
+To run the simulations:
+% runAlignmentSeq
+This will automatically process and plot the results.  It will take some
+time as 100 ensembles are simulated.   By reading the script runAlignmentSeq,
+one can learn how the simulation is done.
+
+To reprocess and display the results:
+% processAlignmentSeq
+
+To clean up results files
+% cleanUp
+

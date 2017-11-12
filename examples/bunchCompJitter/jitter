@@ -1,0 +1,23 @@
+#!/bin/csh -f
+
+if (! -e jitter.done) then
+  elegant jitter.ele
+else
+  echo "Using previous results"
+  echo "To rerun elegant, delete jitter.done"
+endif
+
+# Make histograms of the timing and energy jitter
+foreach file (jitter.w?) 
+        sddscombine $file -merge -pipe=out \
+        | sddsprocess -pipe \
+                -process=Ct,first,Ct0 \
+                -redefine=column,dCt,"Ct Ct0 - 1e12 *",units=ps \
+                -clip=1,0 \
+        | sddsmultihist -pipe=in $file.his -bins=20 -column=Cdelta,dCt -separate
+end
+
+sddsplot -column=Cdelta,CdeltaFrequency jitter.w?.his -graph=line,vary \
+        -legend=filename,edit=Z.2f100d 
+sddsplot -column=dCt,dCtFrequency jitter.w?.his -graph=line,vary \
+        -legend=filename,edit=Z.2f100d 

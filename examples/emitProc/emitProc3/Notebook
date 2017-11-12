@@ -1,0 +1,4 @@
+Simple example of using sddsemitproc to "measure" the emittance from a simulation
+when there is dispersion present.
+
+In this case, the errors on the measurements are constant values of 1e-4 m.

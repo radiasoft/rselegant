@@ -1,0 +1,33 @@
+&run_setup
+	lattice = run0.new,
+	use_beamline = RINGRF,
+	p_central_mev = 7e3,
+	default_order = 1,
+        rootname = <rootname>
+        semaphore_file = %s.done,
+&end
+
+&load_parameters
+        filename = <inputParameters>
+        change_defined_values = 1
+        allow_missing_elements = 1
+&end
+
+&moments_output
+        filename = "%s.mom",
+        matched = 1,
+        equilibrium = 1,
+        radiation = 1,
+&end
+
+&twiss_output
+        matched = 1
+        filename = %s.twi
+        concat_order = 1 
+&end
+
+&run_control &end
+
+&bunched_beam &end
+
+&track &end

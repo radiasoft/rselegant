@@ -1,0 +1,38 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# Compute higher-order dispersion in a transport line by tracking particles
+# Example by M. Borland (ANL).
+
+file delete scan.log
+exec elegant scan.ele > scan.log
+
+exec sddscollapse scan.fin scan.finc
+
+exec sddscombine scan.cen -pipe=out -merge \
+    | sddsprocess -pipe "-print=column,Tag,%s#%ld,ElementName,ElementOccurence" \
+    | sddssort -pipe -column=s -column=Tag \
+    | sddsbreak -pipe -change=Tag \
+    | sddsprocess -pipe -process=Tag,first,ElementTag -process=s,first,s \
+    | sddsxref -pipe=in scan.finc scan.proc -take=* -reuse=page \
+
+exec sddspfit scan.proc scan.fit -terms=5 -column=MALIN.DP,Cx -copyParameters
+    
+
+exec sddsplot -split=page -separate=page -group=page \
+    -column=MALIN.DP,Cx scan.proc -graph=sym,scale=2 \
+    -title=@ElementTag \
+    -column=MALIN.DP,CxFit scan.fit -topline=@sddspfitLabel &
+
+exec sddsconvert scan.fit -pipe=out -delete=column,* \
+    | sddsarray2column -pipe -convert=Order -convert=Coefficient -convert=CoefficientUnits \
+    | sddsexpand -pipe \
+    | sddscollapse -pipe \
+    | sddssort -pipe -column=Order -column=s -column=ElementTag \
+    | sddsbreak -pipe -change=Order \
+    | sddsprocess -pipe=in scan.fit.proc -process=Order,first,Order0 "-print=parameter,OrderLabel,Order: %.0lf,Order0" 
+
+exec sddsplot -column=s,Coefficient -split=page -sep=page "-title=@OrderLabel" scan.fit.proc &
+
+

@@ -1,0 +1,299 @@
+# Fit the response matrix
+
+&run_setup
+        lattice = fodo.lte,
+        default_order = 1,  ! For speed
+        p_central_mev = 1
+        final = %s.fin,
+        parameters = %s.param
+&end
+
+&run_control &end
+
+&correct
+        mode = trajectory,
+        verbose = 0
+        use_perturbed_matrix = 1
+&end
+
+&correction_matrix_output
+        output_at_each_step = 1,
+        fixed_length = 1
+&end
+
+&optimization_setup
+        method = simplex,
+        tolerance = 1e-12,
+        target = 1e-6,
+        n_passes = 3, n_evaluations = 1500, n_restarts = 15,
+        output_sparsing_factor = 100,
+        verbose = 0,
+        log_file = /dev/tty
+&end
+
+
+&optimization_variable name=QF0, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD0, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF1, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD1, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF2, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD2, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF3, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD3, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF4, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD4, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF5, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD5, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF6, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD6, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF7, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD7, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF8, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD8, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QF9, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=QD9, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+
+&optimization_term term = "HR_XM#1_HC#1.KICK 2.124445e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#1.KICK 4.474887e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#1.KICK 6.739106e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#1.KICK 8.874219e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#1.KICK 1.086625e+01 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#1.KICK 1.270345e+01 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#1.KICK 1.434375e+01 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#1.KICK 1.580016e+01 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#1.KICK 1.703661e+01 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#1.KICK 1.796833e+01 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#1.KICK 1.935781e+01 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#2.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#2.KICK 2.124992e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#2.KICK 4.458353e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#2.KICK 6.706785e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#2.KICK 8.847749e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#2.KICK 1.086197e+01 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#2.KICK 1.270836e+01 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#2.KICK 1.439211e+01 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#2.KICK 1.587488e+01 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#2.KICK 1.707373e+01 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#2.KICK 1.858095e+01 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#3.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#3.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#3.KICK 2.122269e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#3.KICK 4.456240e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#3.KICK 6.719691e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#3.KICK 8.886051e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#3.KICK 1.091574e+01 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#3.KICK 1.280602e+01 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#3.KICK 1.451682e+01 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#3.KICK 1.596801e+01 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#3.KICK 1.757435e+01 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#4.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#4.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#4.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#4.KICK 2.123155e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#4.KICK 4.465456e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#4.KICK 6.742143e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#4.KICK 8.915886e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#4.KICK 1.097613e+01 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#4.KICK 1.288178e+01 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#4.KICK 1.455711e+01 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#4.KICK 1.623157e+01 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#5.KICK 2.125211e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#5.KICK 4.468962e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#5.KICK 6.745474e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#5.KICK 8.936563e+00 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#5.KICK 1.100090e+01 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#5.KICK 1.286859e+01 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#5.KICK 1.457936e+01 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#6.KICK 2.122392e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#6.KICK 4.465783e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#6.KICK 6.753210e+00 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#6.KICK 8.943763e+00 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#6.KICK 1.097450e+01 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#6.KICK 1.269456e+01 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#7.KICK 2.124763e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#7.KICK 4.475209e+00 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#7.KICK 6.760025e+00 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#7.KICK 8.924113e+00 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#7.KICK 1.062850e+01 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#8.KICK 2.126315e+00 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#8.KICK 4.470693e+00 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#8.KICK 6.735317e+00 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#8.KICK 8.398043e+00 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#9.KICK 2.122933e+00 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#9.KICK 4.459546e+00 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#9.KICK 6.059556e+00 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#10.KICK 2.123163e+00 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#10.KICK 3.637361e+00 - sqr" &end
+&optimization_term term = "HR_XM#1_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#2_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#3_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#4_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#5_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#6_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#7_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#8_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#9_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#10_HC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "HR_XM#11_HC#11.KICK 1.150000e+00 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#1.KICK 2.265452e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#1.KICK 4.837962e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#1.KICK 7.362014e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#1.KICK 9.807747e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#1.KICK 1.212250e+01 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#1.KICK 1.424923e+01 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#1.KICK 1.617090e+01 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#1.KICK 1.782760e+01 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#1.KICK 1.920960e+01 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#1.KICK 2.036337e+01 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#1.KICK 1.981424e+01 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#2.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#2.KICK 2.264947e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#2.KICK 4.856433e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#2.KICK 7.395765e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#2.KICK 9.835674e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#2.KICK 1.212368e+01 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#2.KICK 1.423670e+01 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#2.KICK 1.611618e+01 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#2.KICK 1.774792e+01 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#2.KICK 1.916877e+01 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#2.KICK 1.882856e+01 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#3.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#3.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#3.KICK 2.267459e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#3.KICK 4.856948e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#3.KICK 7.380277e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#3.KICK 9.790416e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#3.KICK 1.205865e+01 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#3.KICK 1.412878e+01 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#3.KICK 1.598237e+01 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#3.KICK 1.764601e+01 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#3.KICK 1.752058e+01 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#4.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#4.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#4.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#4.KICK 2.266642e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#4.KICK 4.848187e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#4.KICK 7.356434e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#4.KICK 9.757319e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#4.KICK 1.199756e+01 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#4.KICK 1.405466e+01 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#4.KICK 1.594467e+01 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#4.KICK 1.603551e+01 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#5.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#5.KICK 2.264746e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#5.KICK 4.843962e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#5.KICK 7.351499e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#5.KICK 9.737570e+00 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#5.KICK 1.197587e+01 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#5.KICK 1.407176e+01 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#5.KICK 1.437779e+01 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#6.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#6.KICK 2.267346e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#6.KICK 4.846718e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#6.KICK 7.345438e+00 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#6.KICK 9.733762e+00 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#6.KICK 1.200628e+01 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#6.KICK 1.252303e+01 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#7.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#7.KICK 2.265159e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#7.KICK 4.838832e+00 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#7.KICK 7.341204e+00 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#7.KICK 9.756172e+00 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#7.KICK 1.047609e+01 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#8.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#8.KICK 2.263727e+00 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#8.KICK 4.843352e+00 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#8.KICK 7.365224e+00 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#8.KICK 8.277560e+00 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#9.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#9.KICK 2.266846e+00 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#9.KICK 4.853622e+00 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#9.KICK 5.943068e+00 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#10.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#10.KICK 2.266635e+00 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#10.KICK 3.517444e+00 - sqr" &end
+&optimization_term term = "VR_YM#1_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#2_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#3_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#4_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#5_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#6_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#7_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#8_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#9_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#10_VC#11.KICK 0.000000e+00 - sqr" &end
+&optimization_term term = "VR_YM#11_VC#11.KICK 1.050000e+00 - sqr" &end
+&bunched_beam &end
+&optimize &end

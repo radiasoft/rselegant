@@ -1,0 +1,69 @@
+! Corrects the trajectory (one pass), then the orbit
+! A useful technique when the orbit is very large
+
+&run_setup
+    lattice = "par.lte",
+    magnets = "%s.mag",
+    p_central = 880,
+    use_beamline="par_tl",
+    parameters = %s.param0
+    default_order = 1
+&end
+
+&twiss_output
+filename = "%s.twi", 
+&end
+
+&run_control
+        n_steps = 10
+&end
+
+&error_control error_log = %s.erl &end
+&error_element name=*, element_type=QUAD, item=DX, amplitude=1e-3, bind=0 &end
+&error_element name=*, element_type=QUAD, item=DY, amplitude=1e-3, bind=0 &end
+
+&correct
+        mode = trajectory
+        method = global
+        n_iterations = 4
+&end
+
+&bunched_beam &end
+
+&track &end
+
+! Corrects the trajectory (one pass), then the orbit
+! A useful technique when the orbit is very large
+
+&run_setup
+    lattice = "par.lte",
+    magnets = "%s.mag",
+    p_central = 880,
+    use_beamline="par",
+    parameters = %s.param1
+    default_order = 1
+&end
+
+&load_parameters
+        filename = %s.param0
+        allow_missing_elements = 1
+&end
+
+&twiss_output
+filename = "%s.twi", 
+&end
+
+&run_control
+        n_steps = 10
+&end
+
+&correct
+        mode = orbit,
+        method = global
+        n_iterations = 4
+        prezero_correctors = 0
+&end
+
+&bunched_beam &end
+
+&track &end

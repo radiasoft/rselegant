@@ -1,0 +1,18 @@
+q: charge,total=1e-9
+malin: malign
+linA10: rfca,freq=2856e6,l=0.3,volt="48e6 10 /",phase="90 28 -",change_p0=1
+linB10: rfca,freq=2856e6,l=0.3,volt="48e6 10 /",phase="90 6 +",change_p0=1
+B1: sbend,angle=0.146607657167524,l=0.200718260855179,e1=0,e2=0.146607657167524
+B2: sbend,angle=-0.146607657167524,l=0.200718260855179,e1=-0.146607657167524,e2=0
+B3: sbend,angle=-0.146607657167524,l=0.200718260855179,e1=0,e2=-0.146607657167524
+B4: sbend,angle=0.146607657167524,l=0.200718260855179,e1=0.146607657167524,e2=0
+l1: drift,l=0.758132998376353
+l2: drift,l=0.5
+l3: drift,l=1.0
+linacA: line=(30*linA10)
+linacB: line=(80*linB10)
+w1: watch,filename="%s.w1",mode="param"
+w2: watch,filename="%s.w2",mode="param"
+w3: watch,filename="%s.w3",mode="param"
+w4: watch,filename="%s.w4",mode="param"
+bl: line=(q,malin,w1,linacA,w2,B1,L1,B2,L2,B3,L1,B4,l3,w3,linacB,w4)

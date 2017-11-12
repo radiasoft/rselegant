@@ -1,0 +1,16 @@
+&run_setup
+        lattice = lattice.lte
+        p_central_mev = 1000,
+        output = %s.out
+&end
+
+&run_control &end
+
+&bunched_beam 
+        bunch = %s.bun,
+        n_particles_per_bunch = 1000
+        distribution_type[2] = "line",
+        sigma_s = 0.01
+&end
+
+&track &end

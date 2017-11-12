@@ -1,0 +1,10 @@
+#!/bin/bash 
+
+for family in A B ; do
+    for func in sin cos ; do 
+        sddsprocess run0.twi skew${family}-${func}.sdds -match=col,ElementName=*${family}:QS -define=col,factor,"psix psiy - 17 * nux nuy - / $func betax betay * sqrt /" \
+            -process=factor,largest,factor0 -define=col,coefficient,"factor factor0 /"
+        done
+    done
+
+sddsplot -column=s,coefficient skew?-???.sdds -graph=line,vary -mode=y=norm -legend=filename,edit=Zw%/.sdds//

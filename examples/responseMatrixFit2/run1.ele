@@ -1,0 +1,44 @@
+# Find the response matrix for a perturbed lattice
+
+&run_setup
+        lattice = par.lte,
+        default_order = 1,  ! For speed
+        use_beamline = RING,
+        p_central_mev = 1,
+&end
+
+&run_control &end
+
+&error_control error_log = %s.erl &end
+
+! Quad errors (for families)
+&error_element name=PQ?, item=FSE, amplitude=1e-3, bind=1, bind_number=4 &end
+
+! Give all bends the same angle error and FINT error (design errors)
+&error_element name=PBM, item=E1, amplitude=5e-3, bind=1, bind_number=8 &end
+&error_element name=PBM, item=FINT, amplitude=5e-3, bind=1, bind_number=8 &end
+
+&link_control verbosity=1 &end
+&link_elements target=PBM, item=E2, source=PBM, equation=E1 &end
+
+&correct
+        mode = orbit,
+        fixed_length = 1
+&end
+
+! Need this to get the "measured" response matrices
+&correction_matrix_output
+        output_at_each_step = 1,
+        response[0] = %s.hrm, %s.vrm
+&end
+
+! Need this to get the "measured" tunes and dispersion
+&twiss_output
+        output_at_each_step = 1,
+        filename = %s.twi
+&end
+
+&bunched_beam &end
+&track &end
+
+&save_lattice filename = %s.new &end

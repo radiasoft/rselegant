@@ -1,0 +1,37 @@
+These files are used for performing a 2d tune scan of the dynamic
+aperture.  Example by M. Borland, ANL.
+
+N.B.: I doubt this example will run on Windows computers.  If anyone
+wants to modify it, I'd appreciate having the modified version.
+
+The lattice file for this example is aps.lte, which is a simplified APS lattice.
+
+To run this example, proceed as follows
+1. Determine nominal lattice functions and tunes:
+% elegant startingPoint.ele
+
+2. Make the tune knob response matrix and inverse
+% makeTuneResponse
+
+3. Run the tune scan
+% scanTunes
+
+If you have a cluster, edit scanTunes first to set "cluster" to 1 and (optionally) replace the
+csub command with your own job submission command.
+
+4. Look at the results
+% collateScan
+
+You can do this while the tune scan proceeds.  It will show partial results if at least two
+runs have completed.
+
+List of files:
+aps.lte                        Lattice file
+collateScan	               Script to collate tune scan results
+daTemplate.ele	               Template for dynamic aperture runs, used by scanTunes script.
+                               Some errors are included to reduce the DA (too much, actually)
+makeTuneResponse               Script to make tune response matrix and inverse
+scanTunes                      Script to perform tune scans
+startingPoint.ele              elegant input file for determining the nominal lattice parameters
+tuneResponseTemplate.ele       Template for tune knob determination
+cleanUp                        Cleans up (deletes) results files

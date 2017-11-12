@@ -1,0 +1,31 @@
+! Generate a beam and accelerate it through a linac to
+! the midpoint of a chicane.
+
+&run_setup
+    lattice = "slc.lte",
+    p_central = 1e3,
+    default_order = 1,
+    concat_order = 1,
+    output = "beam1.out",
+	use_beamline = linac1,
+&end
+
+&run_control
+    n_passes = 1
+&end
+
+&bunched_beam 
+        n_particles_per_bunch = 1000,
+        one_random_bunch = 1,
+        emit_x = 1e-9,
+        beta_x = 2,
+        emit_y = 1e-9,
+        beta_y = 2,
+        sigma_dp = 1e-4,
+        sigma_s = 1e-4,
+	distribution_type[0] = 3*"gaussian",
+	distribution_cutoff[0] = 3*3,
+&end
+
+&track &end
+

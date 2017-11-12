@@ -1,0 +1,4 @@
+#!/bin/bash
+
+elegant run.ele 
+sddsplot -column=t,p bunch.sdds -graph=dot

@@ -1,0 +1,26 @@
+&run_setup
+        lattice = lattice.lte
+        p_central_mev = 7e3,
+        use_beamline = bl0
+        output = %s.out
+&end
+
+&run_control
+        n_passes = 1
+        bunch_frequency = "(c_mks 1104 / 1296 *)"
+        n_steps = 10
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 1000,
+        emit_x = 2.5e-9,      
+        sigma_dp = 1e-3,
+        sigma_s = "(20e-12 c_mks *)",
+        emit_y = 25e-12,
+        beta_x = 20,
+        beta_y = 3,
+        eta_x = .17,
+        enforce_rms_values[0] = 3*1,
+&end
+        
+&track &end

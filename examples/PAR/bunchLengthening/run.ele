@@ -1,0 +1,34 @@
+&run_setup
+    lattice = "par.lte",
+    magnets = "%s.mag",
+    p_central = 880,
+    use_beamline="parrf",
+    default_order = 1,
+        semaphore_file = %s.done,
+        concat_order = 1
+&end
+
+&twiss_output
+        filename = %s.twi
+        radiation_integrals = 1
+        matched = 1
+&end
+
+&run_control
+        ! This is much less than a damping time, but we seem to
+        ! get away with it by ramping the cavity on slowly
+        n_passes = 200000
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 1000
+        emit_x = 0.37e-6,
+        emit_y = 0.0037e-6,
+        matched_to_cell = par,
+        sigma_s = 0.26269914590008825
+        sigma_dp = 4.070667946177567e-04
+        enforce_rms_values[0] = 3*1,
+        distribution_cutoff[0] = 3*3,
+&end
+
+&track &end

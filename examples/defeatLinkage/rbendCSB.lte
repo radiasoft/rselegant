@@ -1,0 +1,2 @@
+B1:     csbend, angle=0.01, K1=1000, l=0.1, e1=0, e2=0, n_kicks=100
+bl: line=(B1)

@@ -1,0 +1,11 @@
+SDDS1
+&parameter name=referenceRadius, units=m, type=double, &end
+&column name=LEGOorder, type=long,  &end
+&column name=an, type=double,  &end
+&column name=bn, type=double,  &end
+&column name=order, type=long,  &end
+&data mode=ascii, &end
+! page number 1
+ 3.000000000000000e-02
+                   1
+2  1.000000000000000e-04  0.000000000000000e+00 1 

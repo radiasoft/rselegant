@@ -1,0 +1,19 @@
+Example of laser modulator with a time profile.
+Note that the time profile applies to the laser fields, not the amplitudes.
+
+M. Borland, ANL.
+
+# Command to make a gaussian laser profile with 3ps rms for fields, 3/sqrt(2) ps rms for intensity
+sddssequence -pipe=out -define=t,units=s,type=double -seq=begin=-2e-11,end=2e-11,n=1000 \
+        | sddsprocess -pipe=in laserProfile.sdds -define=col,A,"t 3e-12 / sqr -2 / exp"
+
+# This will take some time, suggest using Pelegant if available
+elegant run1.ele
+
+# Plot output phase space
+sddsplot -col=t,p run1.out -graph=dot -mode=x=meancenter
+
+# Compute and plot change in momentum
+sddsxref run1.out run1.bun -pipe=out -take=p -rename=col,p=p0  \
+        | sddsprocess -pipe=in run1.out1 -define=col,dp,"p p0 -" 
+sddsplot -col=t,dp run1.out1 -graph=dot -mode=x=meancenter

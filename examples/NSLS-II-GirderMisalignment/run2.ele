@@ -1,0 +1,56 @@
+! Do trajectory correction to get orbit in range for Global correction
+
+!  Filename= Run2.ele
+
+&run_setup
+        lattice = lattice.lte,
+        p_central_mev = 3e3,
+        use_beamline = RINGT,
+        magnets = %s.mag,
+        centroid = %s.cen,
+        parameters = %s.param,
+        random_number_seed = <seednum>
+        semaphore_file = %s.done,
+&end
+
+&load_parameters
+        filename_list = "run1.dx run1.dy " 
+&end
+
+! Enable all the monitors
+&alter_elements name=P*, type=MONI, item=WEIGHT, value=1 &end
+
+&run_control n_steps=<seeds> &end
+
+! Use only a subset of correctors
+&steering_element
+        plane = h,
+        name = C*XY,
+        item = HKICK,
+        tweek = 1e-5
+&end
+
+&steering_element
+        plane = v,
+        name = C*XY,
+        item = VKICK
+        tweek = 1e-5
+&end
+
+&correct
+        mode = trajectory, method = global,
+        n_xy_cycles = 10,
+        n_iterations = 10,
+        fixed_length = 1,
+        correction_fraction[0] = 2*0.5,
+        closed_orbit_accuracy = 1e-10,
+        closed_orbit_iterations = 500,
+        closed_orbit_iteration_fraction = 0.1,
+        trajectory_output = %s.traj
+        corrector_output = %s.cor,
+        statistics = %s.stat
+&end
+
+&bunched_beam &end
+
+&track center_on_orbit=1 &end

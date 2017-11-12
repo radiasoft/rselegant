@@ -1,0 +1,37 @@
+! Borland  Jan 31,2008 Filename= Run1.ele
+&run_setup
+        lattice = lattice.lte,
+        p_central_mev = 3e3,
+	use_beamline = RING,
+        magnets = %s.mag,
+        parameters = %s.param,
+        random_number_seed = <seednum>,   
+        semaphore_file = %s.done
+&end
+
+&run_control n_steps=<seeds>  &end
+! generate the alignment and field errors for individual magnets
+
+&error_control clear_error_settings=1 &end
+
+&error_element name=Q*, item=DX, element_type=*QUAD*, amplitude=30e-6, cutoff=3, bind=0 &end
+&error_element name=Q*, item=DY, element_type=*QUAD*, amplitude=30e-6, cutoff=3, bind=0 &end
+&error_element name=P*, item=DX, element_type=*MONI*, amplitude=10e-6, cutoff=3, bind=0 &end
+&error_element name=P*, item=DY, element_type=*MONI*, amplitude=10e-6, cutoff=3, bind=0 &end
+&error_element name=S*, item=DX, element_type=*SEXT*, amplitude=30e-6, cutoff=3, bind=0 &end
+&error_element name=S*, item=DY, element_type=*SEXT*, amplitude=30e-6, cutoff=3, bind=0 &end
+&error_element name=G*, item=DX, element_type=*MULT*, amplitude=100e-6, cutoff=3, bind=0 &end
+&error_element name=G*, item=DY, element_type=*MULT*, amplitude=100e-6, cutoff=3, bind=0 &end
+&error_element name=B*, item=DX, element_type=*SBEND*, amplitude=100e-6, cutoff=3, bind=0 &end
+&error_element name=B*, item=DY, element_type=*SBEND*, amplitude=100e-6, cutoff=3, bind=0 &end
+
+! Need this for the s data
+&twiss_output
+        filename = %s.twi
+        matched = 1,
+        radiation_integrals = 1
+&end
+
+&bunched_beam &end
+
+&track &end

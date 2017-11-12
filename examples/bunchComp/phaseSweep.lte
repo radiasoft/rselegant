@@ -1,0 +1,12 @@
+q: charge,total=1e-9
+linA10: rfca,freq=2856e6,l=0.3,volt="48e6 10 /",phase="90 28 -",change_p0=1
+linB10: rfca,freq=2856e6,l=0.3,volt="48e6 10 /",phase="90 6 +",change_p0=1
+B1: csbend,angle=0.146607657167524,l=0.200718260855179,e1=0,e2=0.146607657167524,nonlinear=1,integration_order=4,n_kicks=20
+B2: csbend,angle=-0.146607657167524,l=0.200718260855179,e1=-0.146607657167524,e2=0,nonlinear=1,integration_order=4,n_kicks=20
+B3: csbend,angle=-0.146607657167524,l=0.200718260855179,e1=0,e2=-0.146607657167524,nonlinear=1,integration_order=4,n_kicks=20
+B4: csbend,angle=0.146607657167524,l=0.200718260855179,e1=0.146607657167524,e2=0,nonlinear=1,integration_order=4,n_kicks=20
+l1: drift,l=0.758132998376353
+l2: drift,l=0.5
+linacA: line=(30*linA10)
+linacB: line=(80*linB10)
+linac: line=(linacA,B1,L1,B2,L2,B3,L1,B4,linacB)

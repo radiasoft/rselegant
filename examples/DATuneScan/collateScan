@@ -1,0 +1,61 @@
+#!/usr/bin/tclsh 
+
+# Collate results from tune scan
+# Can be used while tune scan is running, or after all runs are complete.
+# M. Borland, ANL
+
+set nDone [llength [set doneList [lsort [glob -nocomplain scan-*p*-*p*.done]]]]
+# Find all the runs that are done so far
+if $nDone<2 {
+    puts stderr "Too few completed runs!"
+    exit 1
+}
+puts stderr "$nDone runs done"
+
+# Find corresponding twiss and aperture data files
+foreach done $doneList {
+    lappend twiList [file rootname $done].twi
+    lappend aperList [file rootname $done].aper
+}
+
+# Combine the twiss files in a way that puts all the parameters into columns
+# along with the lattice functions (note use of final_values_only=1 in twiss_output command
+# in daTemplate.ele!)
+eval exec sddscombine $twiList -pipe=out \
+  | sddsexpand -pipe | sddscollapse -pipe=in scan.twi
+
+# Combine the aperture files and cross-reference in the twiss results
+# Also compute the spread in DA area
+eval exec sddscombine $aperList -collapse -pipe=out \
+  | sddsxref -pipe scan.twi \
+  | sddsprocess -pipe=in \
+  "{-convertUnits=column,Area,\$gm\$rm\$a2\$n,m\$a2\$n,1e6}" \
+  -process=Area,spread,%sSpread scan.results
+
+# Make resonance diagram
+set nux [exec sdds2stream -parameter=nux startingPoint.twi]
+set nuy [exec sdds2stream -parameter=nuy startingPoint.twi]
+exec sddsresdiag scan.resdiag -integer=[expr int($nux)],[expr int($nuy)] -order=4
+
+# Grab the spread in DA area
+set delta [expr [exec sdds2stream -parameter=AreaSpread scan.results]/100.1]
+set scale [expr 40.0/sqrt([llength $doneList])]
+
+# Make plot
+exec sddsplot -aspect=1 -limit=xmax=[expr int($nux)+0.55],ymax=[expr int($nuy)+0.55],auto \
+  -column=nux,nuy -split=column=Area,width=$delta scan.results -graph=sym,vary=subtype,type=2,scale=$scale,fill -order=spect \
+  -column=nux,nuy scan.resdiag &
+exec sddsplot -device=lpng,onwhite -output=tuneScan.png -aspect=1 -limit=xmax=[expr int($nux)+0.55],ymax=[expr int($nuy)+0.55],auto \
+  -column=nux,nuy -split=column=Area,width=$delta scan.results -graph=sym,vary=subtype,type=2,scale=$scale,fill -order=spect \
+  -column=nux,nuy scan.resdiag &
+
+foreach chrom {dnux/dp dnuy/dp } {
+    # Compute the spread 
+    set delta [expr [exec sddsprocess scan.results -pipe=out -process=$chrom,spread,%sSpread  | sdds2stream -pipe -parameter=${chrom}Spread]/100.1]
+    # Make plot
+    exec sddsplot -aspect=1 -order=spect \
+      -column=nux,nuy -split=column=$chrom,width=$delta scan.results -graph=sym,vary=subtype,type=2,scale=2,fill &
+}
+
+
+

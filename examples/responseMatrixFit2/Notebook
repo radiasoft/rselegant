@@ -1,0 +1,38 @@
+Example of fitting a "measured" response matrix, dispersion, and tunes. 
+In this variant, we fit the magnets in families and also determine the
+edge parameters of the diples.
+
+M. Borland, APS.
+
+par.lte                 lattice file for PAR (Particle Accumulator Ring)
+run0.ele                Run to compute unperturbed lattice. 
+run1.ele                Run to compute response matrices for perturbed lattice (FSE errors on quads).
+
+makeResponseStatements  Tcl script that uses data from run0 and run1 to make an
+                        elegant input file to compute the quadrupole FSEs by matching the
+                        response matrix.
+
+fittingStatements.ele   partial elegant input file used by makeResponseStatements.
+
+
+How to use:
+% elegant run0.ele
+% elegant run1.ele
+! Show the errors assigned to the quad FSEs.  We'll try to recover these
+% sddsprintout -col run1.erl
+! Create the elegant input file to do the matching
+% makeResponseStatements
+! Do the matching
+% elegant match1.ele
+! Examine results.  Compare to run1.erl printout
+% sddsprocess match1.fin -pipe=out -filter=param,optimized,1,1 -nowarning | sddsprintout -pipe -param=*.*
+
+% Take difference actual errors and inferred errors
+% sddsmxref run1.erl match1.param -pipe=out -match=ElementName -match=ElementParameter -take=ParameterValue \
+        -rename=col,ParameterValue=FittedParameterValue \
+        | sddsprocess -pipe -define=col,Difference,"ParameterValue FittedParameterValue -" \
+        | sddsprintout -pipe -col=ElementName -col=ParameterValue -col=Difference
+
+! The FSEs are off on the Q3's because these quadrupoles are very weak.
+
+

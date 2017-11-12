@@ -1,0 +1,15 @@
+#!/bin/csh 
+
+# Run simulation with initial dispersion errors
+elegant run0.ele 
+
+# Make fit terms, but add some random noise.
+sddsprocess run0.mat run0.terms \
+            -match=col,ElementName=BPM \
+            "-define=column,MeasuredR16,R16 1e-2 2 grndl * +" \
+            "-print=column,Term,FM1#%ld.R16 %e 1e-5 sene,ElementOccurence,MeasuredR16"
+
+# Try to fit the "measured" values
+elegant run1.ele
+
+sddsplot -col=s,MeasuredR16 run0.terms -legend=spec=Measured -graph=sym -col=s,R16 run1.mat -legend=spec=Fit

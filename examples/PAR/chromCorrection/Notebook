@@ -1,0 +1,6 @@
+Example of simple chromaticity correction with two families.  We also
+illustrate use of saving/loading a parameter file to bring the chromaticity
+solution into a new run.
+
+Example by M. Borland, ANL.
+

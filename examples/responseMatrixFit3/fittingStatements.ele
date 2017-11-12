@@ -1,0 +1,42 @@
+# Partial file to fit the response matrix, dispersion, and tunes.
+# The script makeResponseStatments will use this file as part of
+# the file it creates (match1.ele).
+
+&run_setup
+        lattice = par.lte,
+        default_order = 1,  ! For speed
+        use_beamline = RING,
+        p_central_mev = 1
+        final = %s.fin,
+        parameters = %s.param
+&end
+
+&run_control &end
+
+&correct
+        mode = orbit,
+        fixed_length = 1
+        verbose = 0
+        use_perturbed_matrix = 1
+&end
+
+&correction_matrix_output
+        output_at_each_step = 1,
+        fixed_length = 1
+&end
+
+&twiss_output
+        output_at_each_step = 1,
+        concat_order = 1
+&end
+        
+&optimization_setup
+        method = simplex,
+        tolerance = 1e-12,
+        target = 1e-6,
+        n_passes = 3, n_evaluations = 1500, n_restarts = 15,
+        output_sparsing_factor = 100,
+        verbose = 0,
+        log_file = /dev/tty
+&end
+

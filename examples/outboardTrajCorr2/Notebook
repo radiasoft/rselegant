@@ -1,0 +1,6 @@
+Demonstration of how to use the inverse matrix computed by elegant to 
+correct a trajectory outside of elegant.
+M. Borland (ANL)
+
+lattice.lte     FODO lattice
+runDemo         Annotated file to perform demo

@@ -1,0 +1,33 @@
+! Macros:
+! <delta> is the fractional momentum offset in percent
+! <rootname> is the rootname
+
+&run_setup
+    lattice = "par.lte",
+    magnets = "%s.mag",
+    p_central_mev = 450,
+    default_order = 2
+    rootname = <rootname>
+&end
+
+&twiss_output filename = "%s.twi", 
+              output_at_each_step = 1
+              concat_order = 2,
+&end
+
+! Change the momentum offset
+&alter_elements name=MALIN, item=DP, value="(<delta> 100 /)" &end
+
+&closed_orbit
+        output = %s.clo 
+&end
+
+&run_control
+&end
+
+&bunched_beam 
+&end
+
+&track
+&end
+

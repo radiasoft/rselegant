@@ -1,0 +1,6 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+eval file delete -force -- [glob -nocomplain *.log *.bun *.cen *.out *.sase *.w? *.sig *.fin *.csr *.sweep *.his *.done *.erl *.new]
+

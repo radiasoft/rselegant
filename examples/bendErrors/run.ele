@@ -1,0 +1,23 @@
+&run_setup
+        lattice = chicane.lte
+        p_central_mev = 100
+        final = %s.fin
+&end
+
+&run_control
+        n_steps = 1000
+&end
+
+&error_control
+&end
+        
+&error_element
+        name = *, element_type = *BEN*, item = FSE, amplitude = 1e-3, bind=0
+&end
+&error_element
+        name = *, element_type = *BEN*, item = ETILT, amplitude = 1e-3, bind=0
+&end
+
+&bunched_beam &end
+
+&track &end

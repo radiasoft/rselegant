@@ -1,0 +1,7 @@
+Example of matching a ring, then matching a transport line to the new ring solution.
+
+% elegant match.ele
+! Plot the results
+% sddsplot -graph=line,vary -align=qpin=0.25 -column=s,beta* match.twi -yscale=id=beta -column=s,etax match.twi 
+
+Example by M. Borland, APS.

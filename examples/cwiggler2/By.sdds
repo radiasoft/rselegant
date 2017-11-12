@@ -1,0 +1,9 @@
+SDDS1
+&column name=Cmn type=double &end
+&column name=KxOverKw type=double &end
+&column name=KyOverKw type=double &end
+&column name=KzOverKw type=double &end
+&column name=Phase type=double &end
+&data mode=ascii no_row_counts=1 &end
+1.0	0.0	1.0	1.0	0.0
+0.5     2.0     2.2360679 1.0     0.0

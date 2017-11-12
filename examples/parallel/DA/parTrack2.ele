@@ -1,0 +1,39 @@
+&run_setup
+    lattice = "parTrack1.new",
+    p_central = 880,
+    use_beamline="par",
+    magnets = %s.mag
+    final = %s.fin,
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+! put some 8-pole and 10-pole in the dipoles to make things more interesting
+
+&alter_elements name=*, type=CSBEND, item=K3, value=1e2 &end
+&alter_elements name=*, type=CSBEND, item=K4, value=1e3 &end
+
+&twiss_output
+        output_at_each_step = 1,
+        filename = %s.twi,
+&end
+
+&run_control
+        n_passes = 400
+&end
+
+&find_aperture
+    output = %s.aper,
+    mode = "n-line",
+    verbosity = 1,
+    xmin = -0.05,
+    xmax =  0.05,
+    ymin =  0.0,
+    ymax =  0.05,
+    nx  = 21,
+    n_lines = 31,
+    split_fraction = 0.1
+    n_splits = 1
+&end
+

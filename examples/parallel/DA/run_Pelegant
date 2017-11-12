@@ -1,0 +1,27 @@
+#! /bin/bash
+# Script for multi-core personal laptop/computer with mpd as the process manager.
+# User should make sure Pelegant and mpiexec
+# in the path and the system libraries for Pelegant available.
+# By Yusong Wang 9/2007
+
+if [ $# == 0 ] ; then
+    echo "usage: run_Pelegant <inputfile>"
+    exit 1
+fi
+
+n_cores=`grep processor /proc/cpuinfo | wc -l`
+echo The system has $n_cores cores.
+n_proc=$((n_cores-1))
+echo $n_proc processes will be started.
+
+if [ ! -e ~/.mpd.conf ]; then
+  echo "MPD_SECRETWORD=secretword" > ~/.mpd.conf
+  chmod 600 ~/.mpd.conf
+fi
+
+# Path should be customized for your installation
+path=/data/mpich2_mpd_nemesis/bin/
+
+$path/mpdboot
+$path/mpiexec -host $HOSTNAME -n $n_proc Pelegant  $1 $2 $3 $4 $5 $6 $7 $8 $9
+$path/mpdallexit

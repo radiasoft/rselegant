@@ -1,0 +1,27 @@
+! Computes beam moments for PAR ring in presence of quad tilt errors
+
+&run_setup
+    lattice = "par.lte",
+    magnets = "%s.mag",
+    p_central = 880,
+    use_beamline="par",
+    default_order = 2
+&end
+
+&run_control
+        n_steps = 10
+&end
+
+&error_control error_log = %s.erl &end
+&error_element name=*, element_type=*QUAD*, item=TILT, bind=0, amplitude=1e-3 &end
+
+&moments_output
+        filename = %s.mom
+        output_at_each_step=1
+        matched = 1
+        equilibrium = 1
+        radiation = 1
+&end
+
+&bunched_beam &end
+&track &end

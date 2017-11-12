@@ -1,0 +1,6 @@
+q1h: quad,l=0.25,k1=1 
+q2h: quad,l=0.25,k1=-1
+d1: drift,l=1
+m1: moni
+hv: kick,l=1e-12
+bl: line=(10*(q1h,hv,d1,d1,m1,q2h,q2h,hv,d1,d1,m1,q1h))

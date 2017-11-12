@@ -1,0 +1,25 @@
+Example of  using cross-plane response matrix and vertical dispersion to correct the coupling.
+M. Borland, ANL
+
+! First, make the response matrix for the skew quadrupoles S*:QS
+! We'll look only at the A:P2, A:P4, B:P4, and A:P2 BPMs to limit the matrix size
+! Similarly we use only the A:H2 and A:V2 correctors
+! This makes three files
+! skewResp.qsResp : response matrix
+! skewResp.qsSval : singular values
+! skewResp.qsInv : inverse matrix
+! Since we have only 20 skew quads, we use all singular values
+makeSkewResponseCP -rootname skewResp -lattice aps.lte -beamline RINGRF -skewPattern S*QS -bpmPattern "*[AB]:P[24]" \
+                   -hcPattern *A:H2 -vcPattern *A:V2
+
+! Next make a parameter file with quadrupole tilts to provide something to fix.
+! In reality you'd use another parameter file that has a whole set of errors
+sddsprocess aps.twi  tiltErrors.param -match=col,ElementType=*QUAD -match=col,ElementName=*QS,\! -print=col,ElementParameter,TILT \
+            -define=col,ParameterValue,"2 grndl 4e-4 *"
+
+! Compute the correction and apply 100% of it in 1 iteration
+! Then, use an imagined emittance diagnostic at S1END#1 to raise the emittance to 35 pm using a 
+! zeroth harmonic knob that should not drive the coupling resonance
+correctCoupling -rootname test1 -input tiltErrors.param -eyTarget 35 -inverse skewResp.qsInv -diagnostic S1END#1 -fraction 1 -iterations 1
+
+sddsplot -graph=line,vary -col=s,ey test1-orig.mom -legend=spec=uncorrected -col=s,ey test1-correction.mom -legend=spec=corrected -col=s,ey test1-CC.mom -legend=spec="emittance incr" -unsup=y

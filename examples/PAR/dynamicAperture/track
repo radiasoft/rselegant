@@ -1,0 +1,40 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# make a file with a sequence of values of delta
+exec sddssequence deltaValues.sdds \
+    "-define=delta,type=double,symbol=\$gd\$r" \
+    -sequence=begin=-0.015,end=0.015,delta=0.005 
+
+# do tracking for each value of delta
+
+if ![file exists parTrack.log] {
+    catch {exec elegant parTrack.ele -macro=deltaFile=deltaValues.sdds > parTrack.log}
+}
+
+
+# add the twiss file parameter data to the aperture output
+exec sddsxref parTrack.aper parTrack.twi -leave=* -transfer=param,* -pipe=out \
+ | sddsprocess -pipe=in parTrack.aper1 \
+    "-print=parameter,Label1,\$gd\$r: %.3f    \$gn\$r\$bx\$n: %.3f    \$gn\$r\$bx\$n: %.3f,MAL.DP,nux,nuy"
+
+# plot DA
+exec sddsplot -split=page -separate=page -groupby=page -layout=3,3 \
+    -column=x,y parTrack.aper1 -graph=symbol,type=0 -title=@Label1 \
+    -column=x,y parTrack.abnd -graph=symbol,type=1,connect -omnipresent &
+
+# add the delta variation parameter data to the twiss output
+exec sddsxref parTrack.twi parTrack.aper -leave=* -transfer=param,* -pipe=out \
+ | sddsprocess -pipe=in parTrack.twi1 \
+    "-print=parameter,Label1,\$gd\$r: %.3f    \$gn\$r\$bx\$n: %.3f    \$gn\$r\$bx\$n: %.3f,MAL.DP,nux,nuy"
+
+# plot orbit and beta functions
+exec sddsplot -split=page -separate=request -groupby=page,request -layout=1,2 \
+    -column=s,x parTrack.clo -same=y "-topline=closed orbit" \
+    -column=s,beta? parTrack.twi1 -title=@Label1 -graph=line,vary -same=y -unsup=y \
+    "-topline=beta functions" \
+    -column=s,Profile parTrack.mag -omnipresent -overlay=xmode=norm,yfact=0.04 &
+ 
+
+

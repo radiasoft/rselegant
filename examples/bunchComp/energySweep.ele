@@ -1,0 +1,35 @@
+&run_setup
+        lattice = energySweep.lte,
+        default_order = 2,
+        use_beamline = LINAC,
+        final = %s.fin,
+        p_central = 107.6
+&end
+
+&run_control
+        n_indices = 1,
+        reset_rf_for_each_step = 1,
+        first_is_fiducial = 0
+&end
+
+! Vary the voltage by +/- 50% from nominal
+&vary_element
+        name=LINA10, item=VOLT, initial="(48e6 10 / 0.5 *)", final="(48e6 10 / 1.5 *)", index_number=0, index_limit=11 
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 1000,
+        one_random_bunch=1,
+        emit_x = 4.6e-8,
+        emit_y = 4.6e-8,
+        beta_x = 10, alpha_x = 1,
+        beta_y = 10, alpha_y = 1,
+        sigma_dp = 0.001,
+        sigma_s = 650e-6,
+        distribution_type[0] = 3*"gaussian",
+        distribution_cutoff[0] = 3*3,
+        symmetrize = 1,
+        enforce_rms_values[0] = 1,1,1,
+&end
+
+&track &end

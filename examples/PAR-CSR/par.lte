@@ -1,0 +1,18 @@
+! This is three-times the nominal maximum, but less than the maximum (21nC) ever stored
+q: charge,total=18e-9
+! Single-turn linear matrix
+rmat: ilmatrix,l=30.6667,nux=2.17,nuy=1.217,betax=2.00113,betay=9.802921,alphac=2.465300e-01
+! Synchrotron radiation
+sr: sreffects,pRef=880,exRef=3.576020e-07,SdeltaRef=4.073565e-04,ddeltaRef="3.561296e-03 -450 /",coupling=0.01,&
+        Jx=1.241862,Jdelta=1.758138
+! CSR impedance for 3.9-cm full chamber gap with 1.02 m bending radius
+csr: zlongit,zreal="csrZ.sdds=f+ZReal",zimag="csrZ.sdds=f+ZImag",interpolate=1
+! first-harmonic cavity at the "actual" voltage
+rf1: rfca,freq="880 beta.p c_mks * 30.6667 /",volt=40e3,phase="180 3.561296 40 / dasin  -"
+! 12th-harmonic cavity at 100 times real voltage (to shorten the bunch)
+rf12: rfca,freq="880 beta.p c_mks * 30.6667 / 12 *",volt=3000e3,phase=180,change_t=1
+w1: watch,filename="%s.w1",mode="coord"
+w2: watch,filename="%s.w2",mode="parameter"
+h1: histogram,filename="%s.h1",y_data=0,x_data=0,bins=500,normalize=1
+par: line=(q,csr,sr,rf1,rf12,w1,w2,h1,rmat)
+return

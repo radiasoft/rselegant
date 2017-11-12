@@ -1,0 +1,14 @@
+#!/bin/csh -f
+set nonomatch
+
+elegant quad.ele
+
+sddscollapse quad.fin quad.finc
+sddsemitproc quad.finc quad.emit -sigmaData=Sx,Sy -nErrorSets=10 -errorLevel=1e-4,1e-4
+
+sddsplot -ylabel="Beamsize (m)" -topline=@EmittanceLabel \
+    -column=Q1.K1,?SigmaData quad.emit -graph=sym,vary=subtype -legend=edit=%/Sigma// \
+    -column=Q1.K1,?SigmaFit quad.emit -graph=line,vary -legend=edit=%/Sigma//
+
+
+

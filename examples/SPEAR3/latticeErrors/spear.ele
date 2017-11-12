@@ -1,0 +1,175 @@
+&run_setup
+        lattice = "spear.lte",
+        magnets = "%s.mag",
+        p_central = 5870.85,
+        use_beamline = ring,
+        default_order = 2,
+        random_number_seed = 0
+&end
+
+&run_control
+        n_steps = 25
+&end
+
+&twiss_output filename = "%s.twi",  statistics=1, radiation_integrals=1,
+        output_at_each_step=1, &end
+
+&error_control clear_error_settings = 1,  &end
+
+&error_element  name="qf", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qd", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfc", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdx", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfx", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdy", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfy", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdz", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfz", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sd", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sf", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sdi", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sfi", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="bend", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="b34", item="dx", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+
+&error_element  name="qf", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qd", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfc", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdx", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfx", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdy", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfy", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdz", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfz", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sd", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sf", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sdi", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sfi", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="bend", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="b34", item="dy", amplitude=0.2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+
+&error_element  name="qf", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qd", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfc", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdx", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfx", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdy", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfy", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qdz", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="qfz", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sd", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sf", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sdi", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="sfi", item="tilt", amplitude=0.5e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="bend", item="etilt", amplitude=0.3e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="b34", item="etilt", amplitude=0.3e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+
+&error_element  name="qf", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qd", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qfc", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qdx", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qfx", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qdy", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qfy", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qdz", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="qfz", item="k1", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="sd", item="k2", amplitude=2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="sf", item="k2", amplitude=2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="sdi", item="k2", amplitude=2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="sfi", item="k2", amplitude=2e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=1 &end
+&error_element  name="bend", item="fse", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+&error_element  name="b34", item="fse", amplitude=1e-3, type = "gaussian", cutoff=2.0, 
+      bind=0, fractional=0 &end
+
+
+&error_control summarize_error_settings=1 &end
+
+
+&correct_tunes 
+        quadrupoles="QF QD", 
+        n_iterations=3, 
+        strength_log=%s.qsl
+&end
+
+&chromaticity
+        sextupoles = "SD SF",
+        n_iterations = 2,
+        strength_log = %s.ssl
+&end
+
+&correct
+        mode = "orbit", method = "global",
+        verbose = 1, n_iterations = 4, n_xy_cycles = 100,
+        correction_fraction[0] = 0.5, 0.5,
+        bpm_noise[0] = 0e-6, 0e-6,
+        correction_accuracy[0] = 1e-6, 1e-6,
+        trajectory_output = "%s.orb",
+        corrector_output = "%s.cor",
+        statistics = "%s.scor",
+        closed_orbit_iteration_fraction = 0.5,
+        closed_orbit_iterations = 40,
+        closed_orbit_accuracy = 1e-9,
+&end
+
+&bunched_beam n_particles_per_bunch = 1 &end
+
+&track &end

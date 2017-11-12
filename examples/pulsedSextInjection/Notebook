@@ -1,0 +1,26 @@
+Files to demonstrate use and optimization of MBUMPER elements for simulating
+multiple kicker magnets.
+
+Example by M. Borland, ANL.
+
+aps.lte
+        APS lattice file
+
+twiss1.ele
+        Run to compute twiss parameters.  Output of this run is needed by other runs.
+
+waveform.sdds
+        Waveform file for the kickers (half sine-wave)
+
+inj1Test0.ele
+        Runs 50 passes around APS with multiple kickers set at some values that were    
+        chosen by hand.  The beam is completely lost fairly quickly.
+        
+inj1.ele
+        Optimizes the kicker strengths to improve capture.
+        Best run with parallel elegant.
+
+inj1Test1.ele
+        Runs with optimized strengths for 50 turns.  Not much better.
+
+

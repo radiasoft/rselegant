@@ -1,0 +1,25 @@
+#!/bin/sh  
+# \
+exec oagtclsh "$0" "$@"
+
+set auto_path [linsert $auto_path 0  /usr/local/oag/apps/lib/$env(HOST_ARCH)]
+set auto_path [linsert $auto_path 0 /usr/local/oag/lib_patch/$env(HOST_ARCH)]
+APSStandardSetup
+
+set usage {usage: runBeamShower -input <filename> -output <filename>}
+set input ""
+set output ""
+set args $argv
+if {[APSStrictParseArguments {input output}] || ![string length $input] || ![string length $output]} {
+    return -code error "$usage"
+}
+
+
+exec elegant2shower $input $input.shin
+exec replaceText inputTemplate.geom $input.geom -orig=<output> -repl=$output.shout
+catch {exec shower $input.shin -geometry=$input.geom -root=$input -keepInOutput=electron -summary=$input.sum}
+exec shower2elegant $output.shout $output
+file delete -force $input.shin $output.shout $input.geom $input.sum
+# Local Variables:
+# mode: tcl
+# End:

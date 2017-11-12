@@ -1,0 +1,15 @@
+Basic example of multibunch instability simulation using elegant.
+M. Borland
+
+! prepare a 10-bunch beam
+elegant run1.ele
+
+! run beam through ring 
+elegant run2.ele
+
+! show instability (press m for a movie)
+sddsplot -column=t,p run2.w1 -graph=dot -split=page -separate=page -mode=x=meancenter -same -factor=ypar=pCentral,yinv -offset=ypar=pCentral,yinv -ylabel='$gd$r' 
+
+! show voltage in cavity mode
+sddsplot -column=Pass,VReal run2.rec
+

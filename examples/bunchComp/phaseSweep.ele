@@ -1,0 +1,24 @@
+&run_setup
+        lattice = phaseSweep.lte,
+        default_order = 2,
+        use_beamline = LINAC,
+        final = %s.fin,
+        p_central = 107.6
+&end
+
+&run_control
+        n_indices = 1,
+        reset_rf_for_each_step = 0,
+        first_is_fiducial = 1
+&end
+
+&vary_element name=LINA10, item=PHASE, enumeration_file = phaseSweep.sweep,
+        enumeration_column = deltaPhase, differential=1
+&end
+
+
+&bunched_beam
+        n_particles_per_bunch = 1,
+&end
+
+&track &end

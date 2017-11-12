@@ -1,0 +1,145 @@
+#!/bin/sh  
+# \
+exec oagtclsh "$0" "$@"
+
+set auto_path [linsert $auto_path 0  /usr/local/oag/apps/lib/$env(HOST_ARCH)]
+set auto_path [linsert $auto_path 0 /usr/local/oag/lib_patch/$env(HOST_ARCH)]
+APSStandardSetup
+
+set usage {usage: makeSkewResponseCP -rootname <string> -lattice <filename> -beamline <string> -skewPattern <string> -bpmPattern <string> -hcPattern <string> -vcPattern <string> -tweek <value>}
+set lattice ""
+set rootname ""
+set beamline RINGRF
+set skewPattern "S*QS"
+set bpmPattern {*[AB]:P[24]}
+set hcPattern "*A:H2"
+set vcPattern "*A:V2"
+set tweek 0.001
+set args $argv
+if {[APSStrictParseArguments {lattice beamline rootname skewPattern bpmPattern hcPattern vcPattern tweek}] || \
+    ![string length $lattice] || ![string length $rootname]} {
+    return -code error "$usage"
+}
+
+# Do a basic run
+catch {exec elegant skewResponse0Template.ele -macro=rootname=${rootname}0,lattice=$lattice,beamline=$beamline} result
+if ![file exists ${rootname}0.done] {
+    puts stderr "$result"
+    exit 1
+}
+APSAddToTempFileList ${rootname}0.done ${rootname}0.twi
+
+set hasCsub 1
+catch {exec csub} result
+if [string match "*no such file*" $result] {
+    puts stderr "No csub detected: using serial mode"
+    set hasCsub 0
+}
+
+# Make skew response matrix for cross-plane orbit response matrix
+set doneList ""
+set index 0
+foreach skew [exec sddsprocess ${rootname}0.twi -pipe=out -match=col,ElementName=*QS -match=col,ElementType=*QUAD* | sdds2stream -col=ElementName -pipe] \
+    occurence [exec sddsprocess ${rootname}0.twi -pipe=out -match=col,ElementName=*QS -match=col,ElementType=*QUAD* | sdds2stream -col=ElementOccurence -pipe] {
+
+    set fd [open ${rootname}-job$index.csh w]
+    puts $fd "elegant skewResponseCPTemplate.ele -macro=rootname=$rootname,skew=$skew,occurence=$occurence,tweek=$tweek,lattice=$lattice,hcPattern=$hcPattern,vcPattern=$vcPattern,bpmPattern=$bpmPattern"
+    close $fd
+
+    exec chmod +x ${rootname}-job$index.csh
+    APSAddToTempFileList ${rootname}-job$index.csh
+    if $hasCsub {
+        catch {exec csub -noEmail 1 ${rootname}-job$index.csh} result
+        puts stderr "$result"
+    } else {
+        catch {exec ${rootname}-job$index.csh} result
+    }
+
+    lappend doneList ${rootname}-$skew-$occurence.done
+    incr index
+}
+
+set undone [llength $doneList]
+set undoneList $doneList
+while {$undone} {
+    puts stderr "Waiting for $undone runs... ($undoneList)"
+    set undone 0
+    set undoneList ""
+    foreach done $doneList {
+	if ![file exists $done] {
+	    incr undone 1
+            lappend undoneList $done
+	}
+    }
+    if $undone {
+        after 15000
+    }
+}
+catch {eval APSAddToTempFileList [glob -nocomplain ${rootname}-job*.csh.o*]}
+APSDeleteTempFiles
+
+foreach done $doneList {
+    set skew [os editstring Z-S/-/100D $done]
+    set occurence [os editstring 2Z-%/.done// $done]
+    puts stderr "Working on $skew $occurence"
+    set index 0
+    set fileList ""
+    foreach pattern [list $vcPattern $hcPattern] type {hv vh} Type {HV VH} {
+	set rmFile [os editstring %/.done/.${type}rm/ $done]
+	set corList [APSGetSDDSNames -class column -fileName $rmFile]
+        set count 0
+	foreach cor $corList {
+	    if ![string match $pattern $cor] continue
+	    if [catch {exec sddsconvert $rmFile -pipe=out -retain=col,BPMName,$cor -rename=column,$cor=$skew#$occurence,BPMName=ElementName \
+			   | sddsprocess -pipe=in ${rootname}-rvector.$index "-print=col,ElementTag,%s_${cor}_${skew}_${occurence},ElementName"} result] {
+		puts stderr "$result"
+		exit 1
+	    }
+            incr count
+	    lappend fileList ${rootname}-rvector.$index
+	    incr index
+	}
+        if $count==0 {
+            puts stderr "No correctors selected for $Type ($pattern) from $corList"
+        }
+    }
+    exec sddsconvert  [os editstring %/.done/.mom/ $done] -pipe=out -retain=column,ElementName,ElementOccurence,s36 \
+	-rename=column,s36=$skew#$occurence \
+	| sddsprocess -pipe=in -match=col,ElementName=$bpmPattern ${rootname}-retay.$index  \
+        "-print=column,ElementTag,%s#%ld,ElementName,ElementOccurence"
+    lappend fileList ${rootname}-retay.$index
+    eval exec sddscombine $fileList ${rootname}-$skew-$occurence.resp -merge -overwrite -delete=column,ElementName,ElementOccurence
+    eval file delete -force $fileList
+    lappend respList ${rootname}-$skew-$occurence.resp
+}
+
+puts stderr "Combining and inverting"
+eval exec sddsxref $respList -pipe=out \
+    | sddsprocess -pipe=in "{-redefine=col,%s,%s $tweek /,select=${skewPattern}#*}" ${rootname}.qsResp \
+    {"-print=parameter,skewPattern,$skewPattern"} \
+    {"-print=parameter,bpmPattern,$bpmPattern"} \
+    {"-print=parameter,hcPattern,$hcPattern"} \
+    {"-print=parameter,vcPattern,$vcPattern"} \
+    {"-print=parameter,lattice,$lattice"} \
+    {"-print=parameter,beamline,$beamline"}
+
+eval file delete -force $respList
+
+exec sddspseudoinverse ${rootname}.qsResp -pipe=out -sFile=${rootname}.qsSval \
+    | sddsprocess -pipe=in ${rootname}.qsInv \
+    "-print=parameter,skewPattern,$skewPattern" \
+    "-print=parameter,bpmPattern,$bpmPattern" \
+    "-print=parameter,hcPattern,$hcPattern" \
+    "-print=parameter,vcPattern,$vcPattern" \
+    "-print=parameter,lattice,$lattice" \
+    "-print=parameter,beamline,$beamline"
+
+
+foreach done $doneList {
+    catch {eval file delete -force [glob -nocomplain [file root $done].*]}
+}
+
+
+
+
+

@@ -1,0 +1,10 @@
+l0: drift,l=0
+bl0: line=(l0)
+! remove lower energy 50% of particles
+momfil: pfilter,lowerfraction=0.5
+! match the beamline central momentum to the particles that are left
+ematch: energy,match_beamline=1
+l1: drift,l=1.0
+l2: drift,l=1.0
+alpha: alph,xmax=0.09,order=2
+bl: line=(momfil,ematch,l1,alpha,l2)

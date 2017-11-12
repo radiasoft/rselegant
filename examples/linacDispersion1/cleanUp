@@ -1,0 +1,3 @@
+#!/bin/csh
+
+\rm run0.mat run0.terms run1.mat run1.fin run1.param

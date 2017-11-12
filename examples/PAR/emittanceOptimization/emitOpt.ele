@@ -1,0 +1,93 @@
+! Optimization run to reduce the emittance of the PAR
+! by adjusting the quadrupoles.
+
+&run_setup
+        lattice = "par.lte",
+        magnets = "%s.mag",
+        p_central = 880,
+        use_beamline="par",
+        default_order=1,
+        final = "%s.fin"
+&end
+
+&twiss_output 
+        radiation_integrals=1,
+        output_at_each_step=1, 
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&optimization_setup
+	equation = "ex0 abs R11 R22 + abs R33 R44 + abs + 4 / 20 pow +",
+	mode = "minimize", method = "simplex",
+	tolerance = 1e-10, n_passes = 2, n_evaluations = 15, log_file = "/dev/tty",
+        n_restarts = 6, verbose = 0
+&end
+
+&optimization_variable
+        name = q1, item=k1, 
+        lower_limit=-2.8, upper_limit=2.8, step_size=0.001 
+&end
+&optimization_variable
+        name = q2, item=k1, 
+        lower_limit=-2.8, upper_limit=2.8, step_size=0.001 
+&end
+&optimization_variable
+        name = q3, item=k1, 
+        lower_limit=-2.8, upper_limit=2.8, step_size=0.001 
+&end
+&optimization_variable
+        name = q4, item=k1, 
+        lower_limit=-2.8, upper_limit=2.8, step_size=0.001 
+&end
+
+&bunched_beam n_particles_per_bunch = 1 &end
+
+&optimize summarize_setup=1 &end
+
+&save_lattice filename = %s.new &end
+
+! Reload the new lattice, then fix the chromaticity
+
+&run_setup
+        lattice = "emitOpt.new",
+        magnets = "%s.mag",
+        p_central = 880,
+        use_beamline="par",
+        default_order=2,
+&end
+
+&twiss_output 
+        output_at_each_step=1,
+&end
+
+&chromaticity
+        sextupoles = "SFH SDH",
+        change_defined_values = 1
+&end
+
+&run_control &end
+
+&bunched_beam &end
+
+&track &end
+
+&save_lattice filename = %s.new &end
+
+! Reload the new lattice, generate final twiss parameters etc.
+
+&run_setup
+        lattice = "emitOpt.new",
+        magnets = "%s.mag",
+        p_central = 880,
+        use_beamline="par",
+        default_order=2,
+&end
+
+&twiss_output 
+        filename = %s.twi,
+        radiation_integrals = 1,
+&end
+

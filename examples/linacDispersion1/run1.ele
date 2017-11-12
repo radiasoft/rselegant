@@ -1,0 +1,57 @@
+&run_setup
+        lattice = lattice.lte,
+        always_change_p0 = 1,
+        p_central_mev = 50
+        final = %s.fin
+        parameters = %s.param
+&end
+
+! Insert marker elements after each BPM
+&insert_elements
+        name = BPM,
+        element_def = "FM1: MARK,FITPOINT=1" 
+&end
+
+&run_control &end
+
+&optimization_setup
+        n_evaluations = 1500,
+        n_passes = 3,
+        n_restarts = 1
+        log_file = /dev/tty,
+        verbose = 0
+&end
+
+&optimization_term
+        input_file = run0.terms
+        input_column = Term
+&end
+
+&optimization_variable
+        name = M0, item = R16, lower_limit = -1e6, upper_limit = 1e6, step_size = 1e-3 &end
+&optimization_variable
+        name = M0, item = R26, lower_limit = -1e6, upper_limit = 1e6, step_size = 1e-3 &end
+
+&bunched_beam &end
+
+&optimize &end
+
+
+&run_setup
+        lattice = lattice.lte,
+        always_change_p0 = 1,
+        p_central_mev = 50
+&end
+
+&load_parameters
+        filename = %s.param
+        change_defined_values = 1
+        exclude_name_pattern = FM1
+&end
+
+&matrix_output
+        SDDS_output = %s.mat,
+        SDDS_output_order = 1
+&end
+
+

@@ -1,0 +1,5 @@
+#!/bin/csh -f
+
+\rm *.mag *.twi *.param *.done
+
+

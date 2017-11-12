@@ -1,0 +1,7 @@
+#!/bin/csh -f
+
+foreach offset (-2 -1 0 1 2)
+        elegant runTemplate.ele -macro=rootname=run_$offset,offset=$offset
+end
+
+sddsplot -col=x,y run_-2.aper run_-1.aper run_0.aper run_1.aper run_2.aper -graph=line,vary -legend=filename,edit=Z_%/.aper//

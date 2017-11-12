@@ -1,0 +1,21 @@
+#!/bin/csh -f
+set nonomatch
+
+elegant quad.ele
+
+# Collapse the file and compute the horizontal beamsize less dispersion contribution
+# This won't be correct if there is dispersion upstream of the simulated beamline!
+
+sddscollapse quad.fin -pipe=out \
+    | sddsprocess -pipe=in quad.finc \
+    "-define=col,Sx1,Sx sqr R16 Sdelta * sqr - sqrt,units=m" 
+
+sddsemitproc quad.finc quad.emit -sigmaData=Sx1,Sy -nErrorSets=10 -errorLevel=1e-4,1e-4 
+
+sddsplot -ylabel="Beamsize (m)" \
+    -column=Q1.K1,Sx quad.finc -graph=sym,vary=subtype -legend=spec="Sx total" \
+    -column=Q1.K1,?SigmaData quad.emit -graph=sym,vary=subtype -legend=edit=%/Sigma// -topline=@EmittanceLabel \
+    -column=Q1.K1,?SigmaFit quad.emit -graph=line,vary -legend=edit=%/Sigma//
+
+
+

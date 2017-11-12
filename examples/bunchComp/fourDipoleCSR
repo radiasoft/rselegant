@@ -1,0 +1,10 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists fourDipoleCSR.log] {
+    catch {exec elegant fourDipoleCSR.ele > fourDipoleCSR.log}
+}
+exec sddsplot -layout=1,3 -split=page -sep=names -groupby=page,names fourDipoleCSR.B4.csr \
+    -column=s,LinearDensity -column=s,LinearDensityDeriv -column=s,DeltaGamma &
+eval exec sddsplot -column=t,p -graph=dot [glob -nocomplain fourDipoleCSR.w?] fourDipoleCSR.out -sep &

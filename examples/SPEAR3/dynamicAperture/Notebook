@@ -1,0 +1,9 @@
+Example of dynamic aperture with errors using a version of the SPEAR3
+lattice supplied by J. Corbett (SSRL).  
+
+% elegant spear.ele
+% ./plotDynap
+% ./cleanUp
+
+Example by M. Borland, APS.
+

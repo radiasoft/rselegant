@@ -1,0 +1,4 @@
+Simple example of using sddsemitproc to "measure" the emittance from a simulation.
+
+In this case, the errors on the measurements are supplied in additional columns of data Ex and Ey.
+

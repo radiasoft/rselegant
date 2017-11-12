@@ -1,0 +1,10 @@
+In this example, we use beam moments analysis to compute the bunch length
+in the presence of two cavities with different rf frequencies.
+
+To run and plot results
+% runSim
+
+To clean up:
+% cleanUp
+
+Example by M. Borland, APS.

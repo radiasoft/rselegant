@@ -1,0 +1,30 @@
+Example of simulation of a ramping booster.  In this case, it is an NSLS-II booster
+design (R. Fliller).
+
+Example by M. Borland (ANL), and R. Fliller (BNL).  It probably won't run on windows without modification.
+
+To run:
+0. Create the file MagRamp.sdds, with columns time (s) and momentum (beta*gamma) units. This gives the
+ramp of the momentum vs time.
+
+1. Compute lattice parameters at initial energy:
+% elegant BYBL0.ele
+
+2. Make rf ramps:
+% computeRfRamp -twiss BYBL0.twi -momentum MagRamp.sdds=time+momentum -output RfRamp.sdds -Vmax 1.2 -harmonic 264 -overVoltage 1.5 -Vped 0.25
+
+Where MagRamp.sdds gives the momentum vs time.  
+Vmax is the maximum rf voltage (1.2 MV in this case).
+harmonic is the harmonic number
+overVoltage is the desired over-voltage factor
+Vped is the rf voltage pedestal (0.25 MV in this case, probably unnecessarily high).
+
+3. Run booster simulation:
+elegant BYBL_Ramp.ele
+
+This takes about 14 hours on a single CPU.  Using Pelegant is recommended.
+
+4. Make some plots
+% sddsplot -sep -col=Pass,Particles -col=Pass,Sdelta -col=Pass,St -col=Pass,ex -col=Pass,ey BYBL_Ramp.w1 
+% sddsplot -col=t,p BYBL_Ramp.w2 -graph=dot -split=page -sep=page -mode=x=meancenter -factor=yparam=pCentral,yinv -offset=yparam=pCentral,yinv -same -ylabel='$gd$r' 
+

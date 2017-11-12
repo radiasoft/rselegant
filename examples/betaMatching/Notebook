@@ -1,0 +1,7 @@
+A simple-minded matching example.
+
+one.ele matches to a waist in using four quadrupoles.
+two.ele takes the results of one.ele and matches back
+to the input values, with x and y planes reverse.
+
+Example by M. Borland, APS.

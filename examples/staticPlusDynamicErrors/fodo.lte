@@ -1,0 +1,7 @@
+q1: quad,l=0.1,k1=0.5
+d1: drift,l=1
+q2: quad,l=0.1,k1=-0.5
+m: moni
+hv: kick,l=0.1
+cell: line=(q1,d1,q2,d1)
+xport: line=(10*(hv,cell,m))

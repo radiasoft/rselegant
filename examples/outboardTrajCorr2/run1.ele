@@ -1,0 +1,11 @@
+&run_setup
+        p_central_mev = 1e3
+        lattice = lattice.lte
+        magnets = %s.mag
+&end
+
+&twiss_output
+        filename = %s.twi
+        matched = 1
+&end
+        

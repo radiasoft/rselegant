@@ -1,0 +1,48 @@
+&run_setup
+        p_central_mev = 1e3
+        lattice = lattice.lte
+        magnets = %s.mag
+&end
+
+&twiss_output
+        filename = %s.twi
+        matched = 1
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&error_control error_log = %s.erl &end
+        
+&error_element
+        name = Q1, item=DX, amplitude=1e-4, bind_number=2 &end
+&error_element
+        name = Q1, item=DY, amplitude=1e-4, bind_number=2 &end
+&error_element
+        name = Q2, item=DX, amplitude=1e-4, bind_number=2 &end
+&error_element
+        name = Q2, item=DY, amplitude=1e-4, bind_number=2 &end
+&error_element 
+        name = M1, item=DX, amplitude=1e-4, bind=0 &end
+&error_element 
+        name = M1, item=DY, amplitude=1e-4, bind=0 &end
+
+&correct
+        mode = trajectory, method = global,
+        n_xy_cycles = 1
+        n_iterations = 1
+        trajectory_output = %s.traj
+        corrector_output = %s.cor
+&end
+
+&correction_matrix_output
+        response[0] = %s.hrm, %s.vrm
+        inverse[0] = %s.hirm, %s.virm
+&end
+
+&bunched_beam &end
+
+&track &end
+
+                

@@ -1,0 +1,19 @@
+&run_setup
+        lattice = lattice.lte
+        p_central_mev = 7e3,
+        use_beamline = ring
+&end
+
+&twiss_output
+        matched = 1
+&end
+
+&run_control
+        n_passes = 500
+&end
+
+&sdds_beam
+        input = run1.out
+&end
+        
+&track &end

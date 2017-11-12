@@ -1,0 +1,27 @@
+! frequency map analysis example 
+
+&run_setup
+    lattice = parTrack.lte,
+    p_central_mev = 450,
+    use_beamline="par0",
+        semaphore_file = %s.done
+&end
+
+&run_control
+        n_passes = 256
+&end
+
+&twiss_output
+	filename = %s.twi,
+&end
+
+&frequency_map
+        output = %s.fma,
+        xmin = -0.02
+        xmax = 0.02,
+        ymin = 1e-6,
+        ymax = 0.02,
+        nx = 41,
+        ny = 41,
+        include_changes = 1
+&end

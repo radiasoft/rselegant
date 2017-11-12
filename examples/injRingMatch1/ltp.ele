@@ -1,0 +1,94 @@
+! Match LTP transport line to the PAR periodic solution
+
+&run_setup
+    lattice = "par.lte",
+    use_beamline = "ltp",
+    p_central = 880,
+    default_order = 1,
+    final = %s.fin,
+    parameters = %s.param
+&end
+
+&twiss_output
+    matched = 0,
+    concat_order = 1,
+    beta_y = 5.54673, alpha_y =  1.67146,
+    beta_x = 5.73409, alpha_x = -1.74977,
+&end
+
+! The end of the septum corresponds to the end of the
+! L1A drift in the PAR.
+
+&rpn_load
+        tag = PAR,
+        filename = par.twi,
+        match_column = ElementName,
+        match_column_value = L1A,
+        matching_row_number = 0
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&optimization_setup
+        mode = minimize,
+        target = 1e-8,
+        tolerance = 1e-10,
+        output_sparsing_factor = 10,
+        n_evaluations = 1500,
+        n_passes = 3,
+        n_restarts = 3,
+        log_file = /dev/tty,
+        verbose = 0
+&end
+
+! Keep beta functions under 25 m if possible
+&optimization_term term = "max.betax 25 1 segt " &end
+&optimization_term term = "max.betay 25 1 segt " &end
+
+! Match final beta functions to 0.001 m
+&optimization_term term = "betax PAR.betax 0.001 sene" &end
+&optimization_term term = "betay PAR.betay 0.001 sene" &end
+
+! Match final alpha functions to 1e-4
+&optimization_term term = "alphax PAR.alphax 1e-4 sene" &end
+&optimization_term term = "alphay PAR.alphay 1e-4 sene" &end
+
+! Match final dispersion to zero
+&optimization_term term = "etax 0 1e-4 sene" &end
+&optimization_term term = "etapx 0 1e-4 sene" &end
+
+&optimization_variable name=LTP:Q8, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q7, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q6, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q5, item=K1, lower_limit=-10, upper_limit=10.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q4, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q3, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q2, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+&optimization_variable name=LTP:Q1, item=K1, lower_limit=-5, upper_limit=5.0, step_size=0.01 &end
+
+&bunched_beam &end
+
+&optimize &end
+
+&run_setup
+    lattice = "par.lte",
+    use_beamline = "whole",
+    p_central = 880,
+    default_order = 1,
+    magnets = %s.mag
+&end
+
+&load_parameters
+        filename = ltp.param,
+        change_defined_values = 1
+&end
+
+&twiss_output
+    matched = 0,
+    filename = %s.twi,
+    beta_y = 5.54673, alpha_y =  1.67146,
+    beta_x = 5.73409, alpha_x = -1.74977,
+&end
+

@@ -1,0 +1,12 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists parTwiss.log] {
+    catch {exec elegant parTwiss.ele > parTwiss.log}
+}
+exec sddsplot -graph=line,vary -unsup=y \
+                -column=s,etax -yscale=id=2 parTwiss.twi -legend \
+                -column=s,beta? -yscale=id=1 parTwiss.twi -legend \
+                -column=s,Profile -overlay=xmode=norm,yfact=0.04 \
+                -graph=line,type=0 parTwiss.mag &

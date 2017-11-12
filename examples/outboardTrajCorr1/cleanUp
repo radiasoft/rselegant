@@ -1,0 +1,3 @@
+#!/bin/bash
+
+\rm *.twi* *.mag *.traj* *.cor *.xcen *.*rm* *.cen

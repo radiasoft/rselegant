@@ -1,0 +1,13 @@
+#!/bin/bash
+
+for n in 1 2 ; do
+        elegant run$n.ele
+        sddscombine run$n.erl -merge -overwrite run$n.erlm
+        sddsprocess run$n.out -pipe=out -process=x*,spread,%sSpread | sddscollapse -pipe | sddsxref run$n.erlm -pipe=in run$n.result
+done
+
+sddsplot -graph=sym,vary=subtype -xlabel=FSE \
+    -column=ParameterValue,xpSpread run1.result -legend=spec=Linked \
+    -column=ParameterValue,xpSpread run2.result -legend=spec=Unlinked 
+
+

@@ -1,0 +1,7 @@
+CW: cwiggler,l=0.5,b_max=0.5,periods=10,synch_rad=1,sinusoidal=1,steps_per_period=32
+blw: line=(cw)
+LM: LSRMDLTR,l=0.50,periods=10,Bu=0.5,accuracy=1e-3,method="non-adaptive",n_steps=4000,&
+        laser_peak_power=37e6,laser_w0=3e-3,field_expansion="ideal",&
+        time_profile="laserProfile.sdds=t+A",time_offset=0
+BL: line=(LM)
+

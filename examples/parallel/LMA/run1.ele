@@ -1,0 +1,31 @@
+&run_setup
+    lattice = "run0.new",
+    p_central = 880,
+    use_beamline="par",
+    magnets = %s.mag
+        semaphore_file = %s.done
+&end
+
+&twiss_output
+        filename = %s.twi,
+        matched = 1
+        radiation_integrals = 1
+&end
+
+&run_control
+        ! Synchrotron period is 500 turns
+        n_passes = 1000
+&end
+
+&momentum_aperture
+        output = %s.mmap
+        x_initial = 1e-5,
+        y_initial = 1e-5,
+        delta_negative_limit = -0.05,
+        delta_positive_limit = 0.05,
+        delta_step_size = 0.0025,
+        steps_back = 1,
+        split_step_divisor = 10,
+        splits = 2,
+        verbosity = 4
+&end

@@ -1,0 +1,78 @@
+! Example elegant run to match a multi-turn ejection bump
+
+&run_setup
+	lattice = "ejoptk.lte",                 
+	use_beamline = "eject",
+        final = "%s.fin",
+	p_central = 880.6272752566893587,
+	default_order = 2,
+        final = %s.finOpt,
+        parameters = %s.paramOpt,
+&end
+
+&run_control
+	n_steps = 1, 
+&end
+
+! Will minimize the quantity |<x>|+|<x'>|, stopping when the value is below 10^-12.
+! function is (|<x>|+|<x'>|)/(Transmission+1e-6), which gets large if the particle
+! is lost
+
+&optimization_setup
+	equation = "Cx abs Cxp abs + Particles 1e-6 + /",
+	mode = "minimize", method = "simplex", target=1e-12,
+	tolerance = 1e-12, n_passes = 5, n_evaluations = 500, log_file = "/dev/tty",
+        verbose = 0
+&end
+
+! Primary variables are the ejection kicker angle and the septum strength "error"
+&optimization_variable name="ekm", item="angle", lower_limit=-0.013, upper_limit=0.013, step_size=1e-8 &end
+&optimization_variable name="bsept", item="fse", lower_limit=-0.015, upper_limit=0.02, step_size=1e-8 &end
+
+! Require that the injection kicker strengths be equal in magnitude to the ejection kicker strength
+&optimization_covariable name="ik1m", item="angle", equation="EKM.ANGLE chs" &end
+&optimization_covariable name="ik2m", item="angle", equation="EKM.ANGLE chs" &end
+
+&bunched_beam
+	n_particles_per_bunch = 1
+&end
+
+! This is the action command to do the optimization 
+&optimize summarize_setup = 1 &end
+
+! Use the new lattice and track to get the centroid vs z
+&run_setup
+	lattice = "ejoptk.lte",
+	p_central = 880.6272752566893587,
+	use_beamline = "eject",
+	default_order = 2,
+        magnets = "ejoptk.mag",
+        centroid = "%s.cen",
+        wrap_around = 0
+&end
+
+&load_parameters
+        filename = %s.paramOpt,
+        change_defined_values = 1
+&end
+
+&run_control
+	n_steps = 1, 
+&end
+
+&bunched_beam  
+    n_particles_per_bunch = 1000,
+    one_random_bunch = 0,
+    symmetrize = 1,
+    matched_to_cell = "match",
+    bunch = "%s.bun",
+    emit_x = 0.37e-6, emit_y = 0.37e-6,
+    sigma_dp = 0.041e-2, sigma_s = 0.089,
+    distribution_type[0] = "gaussian", "gaussian", "gaussian",
+    distribution_cutoff[0] = 3, 3, 3,
+    enforce_rms_values[0] = 1, 1, 1
+&end
+
+&track &end
+
+&stop &end

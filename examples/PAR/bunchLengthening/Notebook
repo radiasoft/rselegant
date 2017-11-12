@@ -1,0 +1,11 @@
+In this example, we simulate a passive bunch lengthening cavity using
+the RFMODE element.
+
+To run and plot results
+% runSim
+The run time is considerable so be patient.
+
+To clean up:
+% cleanUp
+
+Example by M. Borland, APS.

@@ -1,0 +1,375 @@
+# Fit the response matrix
+
+&run_setup
+        lattice = par.lte,
+        default_order = 1,  ! For speed
+        use_beamline = RING,
+        p_central_mev = 1
+        final = %s.fin,
+        parameters = %s.param
+&end
+
+&run_control &end
+
+&correct
+        mode = orbit,
+        fixed_length = 1
+        verbose = 0
+        use_perturbed_matrix = 1
+&end
+
+&correction_matrix_output
+        output_at_each_step = 1,
+        fixed_length = 1
+&end
+
+&optimization_setup
+        method = simplex,
+        tolerance = 1e-12,
+        target = 1e-6,
+        n_passes = 3, n_evaluations = 1500, n_restarts = 15,
+        output_sparsing_factor = 100,
+        verbose = 0,
+        log_file = /dev/tty
+&end
+
+
+&optimization_variable name=P2Q1, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P2Q2, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P2Q3, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P2Q4, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P3Q4, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P3Q3, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P3Q2, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P3Q1, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P4Q1, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P4Q2, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P4Q3, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P4Q4, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P1Q4, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P1Q3, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P1Q2, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+&optimization_variable name=P1Q1, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end
+
+&optimization_term term = "HR_P2P1H#1_P2H1#1.KICK 3.123122e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P2H1#1.KICK 3.251745e+00 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P2H1#1.KICK 6.901788e-01 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P2H1#1.KICK -1.676772e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P2H1#1.KICK -2.291974e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P2H1#1.KICK -1.792508e+00 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P2H1#1.KICK -1.320274e+00 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P2H1#1.KICK 8.467787e-02 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P2H1#1.KICK 3.569604e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P2H1#1.KICK 2.857789e+00 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P2H1#1.KICK -3.130536e-01 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P2H1#1.KICK -3.280536e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P2H1#1.KICK -3.593113e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P2H1#1.KICK -1.620935e+00 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P2H1#1.KICK 4.332484e-01 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P2H1#1.KICK 1.956342e+00 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P2H2#1.KICK 1.077282e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P2H2#1.KICK 1.493342e+00 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P2H2#1.KICK 8.986284e-01 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P2H2#1.KICK 1.842285e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P2H2#1.KICK 1.653951e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P2H2#1.KICK 8.328744e-02 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P2H2#1.KICK -1.599120e+00 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P2H2#1.KICK -1.911147e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P2H2#1.KICK 1.423479e-01 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P2H2#1.KICK 8.589852e-01 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P2H2#1.KICK 9.474071e-01 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P2H2#1.KICK 1.061746e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P2H2#1.KICK 7.211641e-01 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P2H2#1.KICK -4.475042e-01 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P2H2#1.KICK -1.716613e+00 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P2H2#1.KICK -1.607060e+00 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P2H3#1.KICK -1.907307e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P2H3#1.KICK -1.316998e-01 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P2H3#1.KICK 1.965756e+00 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P2H3#1.KICK 3.992333e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P2H3#1.KICK 4.001618e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P2H3#1.KICK 1.908761e+00 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P2H3#1.KICK -2.690943e-01 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P2H3#1.KICK -2.014071e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P2H3#1.KICK -3.490208e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P2H3#1.KICK -2.042682e+00 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P2H3#1.KICK 1.274381e+00 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P2H3#1.KICK 4.410571e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P2H3#1.KICK 4.385207e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P2H3#1.KICK 1.198666e+00 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P2H3#1.KICK -2.172674e+00 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P2H3#1.KICK -3.612647e+00 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P3H2#1.KICK -1.833055e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P3H2#1.KICK -1.534998e+00 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P3H2#1.KICK 7.586360e-02 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P3H2#1.KICK 1.582164e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P3H2#1.KICK 1.783397e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P3H2#1.KICK 8.636810e-01 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P3H2#1.KICK 1.479495e+00 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P3H2#1.KICK 1.090442e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P3H2#1.KICK -1.538921e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P3H2#1.KICK -1.670588e+00 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P3H2#1.KICK -4.300588e-01 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P3H2#1.KICK 7.123162e-01 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P3H2#1.KICK 1.040214e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P3H2#1.KICK 9.241807e-01 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P3H2#1.KICK 8.338404e-01 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P3H2#1.KICK 1.484732e-01 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P3H1#1.KICK 7.764687e-02 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P3H1#1.KICK -1.383848e+00 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P3H1#1.KICK -1.868652e+00 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P3H1#1.KICK -2.386514e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P3H1#1.KICK -1.775044e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P3H1#1.KICK 6.941388e-01 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P3H1#1.KICK 3.368314e+00 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P3H1#1.KICK 3.248813e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P3H1#1.KICK 1.932731e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P3H1#1.KICK 3.717384e-01 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P3H1#1.KICK -1.684132e+00 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P3H1#1.KICK -3.657993e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P3H1#1.KICK -3.309492e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P3H1#1.KICK -2.735111e-01 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P3H1#1.KICK 2.970518e+00 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P3H1#1.KICK 3.718157e+00 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P4H1#1.KICK 3.574888e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P4H1#1.KICK 2.891452e+00 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P4H1#1.KICK -2.794761e-01 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P4H1#1.KICK -3.249130e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P4H1#1.KICK -3.597869e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P4H1#1.KICK -1.632861e+00 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P4H1#1.KICK 4.176158e-01 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P4H1#1.KICK 1.938216e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P4H1#1.KICK 3.132930e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P4H1#1.KICK 3.279260e+00 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P4H1#1.KICK 7.186903e-01 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P4H1#1.KICK -1.644966e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P4H1#1.KICK -2.258894e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P4H1#1.KICK -1.818893e+00 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P4H1#1.KICK -1.414256e+00 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P4H1#1.KICK -2.696258e-02 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P4H2#1.KICK 1.073747e-01 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P4H2#1.KICK 8.316663e-01 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P4H2#1.KICK 9.505700e-01 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P4H2#1.KICK 1.094790e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P4H2#1.KICK 7.655960e-01 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P4H2#1.KICK -4.246868e-01 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P4H2#1.KICK -1.716988e+00 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P4H2#1.KICK -1.592786e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P4H2#1.KICK 1.106359e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P4H2#1.KICK 1.515774e+00 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P4H2#1.KICK 8.967113e-01 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P4H2#1.KICK 1.815542e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P4H2#1.KICK 1.610809e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P4H2#1.KICK 6.584710e-02 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P4H2#1.KICK -1.587687e+00 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P4H2#1.KICK -1.915433e+00 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P1H3#1.KICK -3.509798e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P1H3#1.KICK -2.091317e+00 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P1H3#1.KICK 1.236789e+00 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P1H3#1.KICK 4.386626e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P1H3#1.KICK 4.409153e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P1H3#1.KICK 1.226141e+00 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P1H3#1.KICK -2.145743e+00 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P1H3#1.KICK -3.559845e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P1H3#1.KICK -1.875828e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P1H3#1.KICK -1.337967e-01 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P1H3#1.KICK 1.927011e+00 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P1H3#1.KICK 3.913650e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P1H3#1.KICK 3.902438e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P1H3#1.KICK 1.906687e+00 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P1H3#1.KICK -1.622416e-01 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P1H3#1.KICK -1.895013e+00 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P1H2#1.KICK -1.528943e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P1H2#1.KICK -1.680318e+00 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P1H2#1.KICK -4.517062e-01 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P1H2#1.KICK 6.793434e-01 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P1H2#1.KICK 1.018350e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P1H2#1.KICK 9.221203e-01 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P1H2#1.KICK 8.516364e-01 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P1H2#1.KICK 1.545124e-01 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P1H2#1.KICK -1.868321e+00 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P1H2#1.KICK -1.573133e+00 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P1H2#1.KICK 6.416206e-02 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P1H2#1.KICK 1.593170e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P1H2#1.KICK 1.790848e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P1H2#1.KICK 8.881553e-01 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P1H2#1.KICK 1.525312e+00 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P1H2#1.KICK 1.152033e+00 - sqr" &end
+&optimization_term term = "HR_P2P1H#1_P1H1#1.KICK 1.949897e+00 - sqr" &end
+&optimization_term term = "HR_P2P2H#1_P1H1#1.KICK 3.742899e-01 - sqr" &end
+&optimization_term term = "HR_P2P3H#1_P1H1#1.KICK -1.701100e+00 - sqr" &end
+&optimization_term term = "HR_P2P4H#1_P1H1#1.KICK -3.697828e+00 - sqr" &end
+&optimization_term term = "HR_P3P4H#1_P1H1#1.KICK -3.373335e+00 - sqr" &end
+&optimization_term term = "HR_P3P3H#1_P1H1#1.KICK -2.839953e-01 - sqr" &end
+&optimization_term term = "HR_P3P2H#1_P1H1#1.KICK 3.020861e+00 - sqr" &end
+&optimization_term term = "HR_P3P1H#1_P1H1#1.KICK 3.723441e+00 - sqr" &end
+&optimization_term term = "HR_P4P1H#1_P1H1#1.KICK -3.399358e-02 - sqr" &end
+&optimization_term term = "HR_P4P2H#1_P1H1#1.KICK -1.476479e+00 - sqr" &end
+&optimization_term term = "HR_P4P3H#1_P1H1#1.KICK -1.864257e+00 - sqr" &end
+&optimization_term term = "HR_P4P4H#1_P1H1#1.KICK -2.288612e+00 - sqr" &end
+&optimization_term term = "HR_P1P4H#1_P1H1#1.KICK -1.647362e+00 - sqr" &end
+&optimization_term term = "HR_P1P3H#1_P1H1#1.KICK 7.602083e-01 - sqr" &end
+&optimization_term term = "HR_P1P2H#1_P1H1#1.KICK 3.368741e+00 - sqr" &end
+&optimization_term term = "HR_P1P1H#1_P1H1#1.KICK 3.259279e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P2V1#1.KICK 6.357190e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P2V1#1.KICK 6.367224e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P2V1#1.KICK 6.454932e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P2V1#1.KICK 2.243168e+00 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P2V1#1.KICK -5.701838e-01 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P2V1#1.KICK -4.892335e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P2V1#1.KICK -6.334347e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P2V1#1.KICK -7.532762e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P2V1#1.KICK -8.229763e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P2V1#1.KICK -7.404137e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P2V1#1.KICK -6.430150e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P2V1#1.KICK -1.441515e+00 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P2V1#1.KICK 1.833414e+00 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P2V1#1.KICK 6.792760e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P2V1#1.KICK 7.405043e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P2V1#1.KICK 7.834180e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P2V2#1.KICK 6.426542e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P2V2#1.KICK 5.471843e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P2V2#1.KICK 4.502529e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P2V2#1.KICK 1.971015e+00 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P2V2#1.KICK 2.576805e-01 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P2V2#1.KICK -2.396376e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P2V2#1.KICK -3.817170e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P2V2#1.KICK -4.972681e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P2V2#1.KICK -6.498245e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P2V2#1.KICK -6.179758e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P2V2#1.KICK -5.838920e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P2V2#1.KICK -1.717261e+00 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P2V2#1.KICK 1.003521e+00 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P2V2#1.KICK 5.149318e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P2V2#1.KICK 6.128041e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P2V2#1.KICK 6.853382e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P2V3#1.KICK 8.655983e-01 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P2V3#1.KICK 9.769556e-01 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P2V3#1.KICK 1.130254e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P2V3#1.KICK 4.962840e-01 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P2V3#1.KICK 4.941155e-01 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P2V3#1.KICK 1.132038e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P2V3#1.KICK 9.838075e-01 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P2V3#1.KICK 8.776607e-01 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P2V3#1.KICK 2.402373e-01 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P2V3#1.KICK -8.758758e-03 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P2V3#1.KICK -3.260241e-01 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P2V3#1.KICK -3.484748e-01 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P2V3#1.KICK -3.530937e-01 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P2V3#1.KICK -3.428095e-01 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P2V3#1.KICK -2.663309e-02 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P2V3#1.KICK 2.215257e-01 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P3V2#1.KICK -4.972297e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P3V2#1.KICK -3.819342e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P3V2#1.KICK -2.396125e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P3V2#1.KICK 2.596879e-01 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P3V2#1.KICK 1.973627e+00 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P3V2#1.KICK 4.547976e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P3V2#1.KICK 5.539743e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P3V2#1.KICK 6.519227e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P3V2#1.KICK 6.953783e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P3V2#1.KICK 6.203383e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P3V2#1.KICK 5.312618e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P3V2#1.KICK 1.126352e+00 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P3V2#1.KICK -1.619464e+00 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P3V2#1.KICK -5.773499e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P3V2#1.KICK -6.212449e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P3V2#1.KICK -6.513867e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P3V1#1.KICK -7.531712e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P3V1#1.KICK -6.337588e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P3V1#1.KICK -4.891581e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P3V1#1.KICK -5.649700e-01 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P3V1#1.KICK 2.262680e+00 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P3V1#1.KICK 6.545735e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P3V1#1.KICK 6.479534e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P3V1#1.KICK 6.495094e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P3V1#1.KICK 7.965555e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P3V1#1.KICK 7.500762e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P3V1#1.KICK 6.987422e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P3V1#1.KICK 1.975833e+00 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P3V1#1.KICK -1.329210e+00 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P3V1#1.KICK -6.359843e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P3V1#1.KICK -7.449066e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P3V1#1.KICK -8.251959e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P4V1#1.KICK -8.219675e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P4V1#1.KICK -7.347356e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P4V1#1.KICK -6.323015e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P4V1#1.KICK -1.364222e+00 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P4V1#1.KICK 1.902308e+00 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P4V1#1.KICK 6.875853e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P4V1#1.KICK 7.437637e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P4V1#1.KICK 7.956328e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P4V1#1.KICK 6.690030e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P4V1#1.KICK 6.706942e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P4V1#1.KICK 6.798870e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P4V1#1.KICK 2.366723e+00 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P4V1#1.KICK -5.738447e-01 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P4V1#1.KICK -5.079719e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P4V1#1.KICK -6.599478e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P4V1#1.KICK -7.745897e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P4V2#1.KICK -6.592460e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P4V2#1.KICK -6.226393e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P4V2#1.KICK -5.833521e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P4V2#1.KICK -1.672942e+00 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P4V2#1.KICK 1.086735e+00 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P4V2#1.KICK 5.307363e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P4V2#1.KICK 6.248769e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P4V2#1.KICK 7.053175e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P4V2#1.KICK 6.776844e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P4V2#1.KICK 5.806262e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P4V2#1.KICK 4.812860e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P4V2#1.KICK 2.061084e+00 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P4V2#1.KICK 2.185139e-01 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P4V2#1.KICK -2.633381e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P4V2#1.KICK -4.108556e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P4V2#1.KICK -5.237189e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P1V3#1.KICK 1.664743e-01 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P1V3#1.KICK -7.755300e-02 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P1V3#1.KICK -3.892084e-01 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P1V3#1.KICK -3.651432e-01 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P1V3#1.KICK -3.364253e-01 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P1V3#1.KICK -2.799370e-01 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P1V3#1.KICK 4.177139e-02 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P1V3#1.KICK 2.948377e-01 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P1V3#1.KICK 9.249131e-01 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P1V3#1.KICK 1.020767e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P1V3#1.KICK 1.153580e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P1V3#1.KICK 4.896065e-01 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P1V3#1.KICK 4.722340e-01 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P1V3#1.KICK 1.080574e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P1V3#1.KICK 9.374410e-01 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P1V3#1.KICK 8.187175e-01 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P1V2#1.KICK 6.866797e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P1V2#1.KICK 6.082179e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P1V2#1.KICK 5.154628e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P1V2#1.KICK 1.042734e+00 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P1V2#1.KICK -1.662738e+00 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P1V2#1.KICK -5.778879e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P1V2#1.KICK -6.165981e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P1V2#1.KICK -6.534243e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P1V2#1.KICK -5.176035e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P1V2#1.KICK -4.042505e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P1V2#1.KICK -2.641028e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P1V2#1.KICK 1.601015e-01 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P1V2#1.KICK 1.971342e+00 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P1V2#1.KICK 4.666976e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P1V2#1.KICK 5.711669e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P1V2#1.KICK 6.634363e+00 - sqr" &end
+&optimization_term term = "VR_P2P1V#1_P1V1#1.KICK 7.823472e+00 - sqr" &end
+&optimization_term term = "VR_P2P2V#1_P1V1#1.KICK 7.325336e+00 - sqr" &end
+&optimization_term term = "VR_P2P3V#1_P1V1#1.KICK 6.777218e+00 - sqr" &end
+&optimization_term term = "VR_P2P4V#1_P1V1#1.KICK 1.874776e+00 - sqr" &end
+&optimization_term term = "VR_P3P4V#1_P1V1#1.KICK -1.373512e+00 - sqr" &end
+&optimization_term term = "VR_P3P3V#1_P1V1#1.KICK -6.338007e+00 - sqr" &end
+&optimization_term term = "VR_P3P2V#1_P1V1#1.KICK -7.361446e+00 - sqr" &end
+&optimization_term term = "VR_P3P1V#1_P1V1#1.KICK -8.241871e+00 - sqr" &end
+&optimization_term term = "VR_P4P1V#1_P1V1#1.KICK -7.744847e+00 - sqr" &end
+&optimization_term term = "VR_P4P2V#1_P1V1#1.KICK -6.573666e+00 - sqr" &end
+&optimization_term term = "VR_P4P3V#1_P1V1#1.KICK -5.150794e+00 - sqr" &end
+&optimization_term term = "VR_P4P4V#1_P1V1#1.KICK -6.720030e-01 - sqr" &end
+&optimization_term term = "VR_P1P4V#1_P1V1#1.KICK 2.250487e+00 - sqr" &end
+&optimization_term term = "VR_P1P3V#1_P1V1#1.KICK 6.645834e+00 - sqr" &end
+&optimization_term term = "VR_P1P2V#1_P1V1#1.KICK 6.636509e+00 - sqr" &end
+&optimization_term term = "VR_P1P1V#1_P1V1#1.KICK 6.583422e+00 - sqr" &end
+&bunched_beam &end
+&optimize &end

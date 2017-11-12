@@ -1,0 +1,29 @@
+&run_setup
+    lattice = "quad.lte",
+    p_central = 880,
+    use_beamline="bl",
+    final = %s.fin,
+    default_order = 1
+&end
+
+&run_control
+        n_indices = 1
+&end
+
+&vary_element name=q1, item=k1, initial=-2, final=-0.1, index_number=0, index_limit=31 &end
+&vary_element name=q2, item=k1, initial=0.1, final=4, index_number=0, index_limit=31 &end
+
+&bunched_beam n_particles_per_bunch = 10000
+        enforce_rms_values[0] = 1,1,1,
+        distribution_cutoff[0] = 5,5,5,
+        distribution_type[0] = "gaussian", "gaussian",
+        sigma_dp = 1e-2,
+        emit_x = 5e-6, beta_x = 11, alpha_x = -5,
+        emit_y = 4e-6, beta_y = 12, alpha_y = 5,
+        symmetrize = 1
+        one_random_bunch = 1
+&end
+
+&track &end
+
+    

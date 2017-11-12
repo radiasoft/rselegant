@@ -1,0 +1,28 @@
+SDDS1
+&description text="magnet layout for beamline run.new" &end
+&column name=ElementName, type=string &end
+&column name=ElementType, type=string &end
+&column name=s, units=m, type=double &end
+&column name=Profile, type=double &end
+&data mode=ascii, no_row_counts=1 &end
+_BEGIN_ MARK 0 0
+D0 EDRIFT 1.044763e-004 0
+Q1 KQUAD 1.044763e-004  1
+Q1 KQUAD 2.501045e-001  1
+Q1 KQUAD 2.501045e-001  0
+Q1 KQUAD 1.044763e-004 0
+Q1 KQUAD 2.501045e-001 0
+D1 EDRIFT 1.540638e+000 0
+Q2 KQUAD 1.540638e+000  -1
+Q2 KQUAD 1.790638e+000  -1
+Q2 KQUAD 1.790638e+000  0
+Q2 KQUAD 1.540638e+000 0
+Q2 KQUAD 1.790638e+000 0
+D2 EDRIFT 3.156870e+000 0
+B1 CSBEND 3.156870e+000 .33333333
+B1 CSBEND 4.156870e+000 .33333333
+B1 CSBEND 4.156870e+000  0
+B1 CSBEND 3.156870e+000  0
+B1 CSBEND 3.156870e+000  0
+B1 CSBEND 4.156870e+000 0
+D3 EDRIFT 4.337369e+000 0

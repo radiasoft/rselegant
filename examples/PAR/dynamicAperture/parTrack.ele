@@ -1,0 +1,83 @@
+! dynamic aperture vs momentum offset without errors
+
+
+! 
+! first, set the chromaticity to some positive values (to make it more
+! interesting) and save the lattice 
+!
+
+&run_setup
+    lattice = "parTrack.lte",
+    p_central = 880,
+    use_beamline="par",
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+&chromaticity
+    sextupoles = "SDH SFH", n_iterations = 10,
+    change_defined_values = 1,
+    dnux_dp = 3,
+    dnuy_dp = 3,
+    tolerance = 0.00001
+&end
+
+&run_control &end
+&bunched_beam &end
+&track &end
+
+&save_lattice filename=%s.new &end
+
+&run_setup
+    lattice = "parTrack.new",
+    p_central = 880,
+    use_beamline="par",
+    magnets = %s.mag
+    final = %s.fin,
+    ! the second-order is needed here only for the twiss computations.
+    ! the tracking is done with kick elements
+    default_order = 2,
+&end
+
+! put some 8-pole and 10-pole in the dipoles to make things more interesting
+
+&alter_elements name=*, type=CSBEND, item=K3, value=1e2 &end
+&alter_elements name=*, type=CSBEND, item=K4, value=1e3 &end
+
+&twiss_output
+        output_at_each_step = 1,
+        filename = %s.twi,
+&end
+
+&run_control
+        n_indices = 1,
+        n_passes = 400
+&end
+
+&vary_element 
+        name=mal, item=dp, 
+        enumeration_file = <deltaFile>,
+        enumeration_column = delta,
+        index_number=0, &end
+
+&closed_orbit
+    output = %s.clo,
+    closed_orbit_accuracy = 1e-12,
+    closed_orbit_iterations = 500,
+    iteration_fraction = 0.5 
+&end
+
+&find_aperture
+    output = %s.aper,
+    boundary = %s.abnd,
+    mode = "single-particle",
+    verbosity = 1,
+    xmin = -0.05,
+    xmax =  0.05,
+    ymin =  0.0,
+    ymax =  0.05,
+    nx  = 21,
+    ny  = 21,
+&end
+

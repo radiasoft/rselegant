@@ -1,0 +1,22 @@
+&run_setup
+        lattice = fodo.lte
+        p_central_mev = 1e3,
+        centroid = %s.cen
+&end
+
+&load_parameters
+        filename = run1.erl,
+        change_defined_values = 1
+        force_occurence_data = 1
+&end
+
+&run_control
+&end
+
+&correct
+        mode = "trajectory"
+&end
+
+&bunched_beam &end
+
+&track &end

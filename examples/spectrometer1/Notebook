@@ -1,0 +1,5 @@
+This run designs and tests a simple spectrometer consisting of two
+quadrupoles and a dipole.  The design uses the beta function and
+dispersion function to optimize the energy resolution.
+
+Example by M. Borland (ANL).

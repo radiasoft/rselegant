@@ -1,0 +1,10 @@
+Example of computing off-momentum twiss parameters.
+M. Borland, ANL
+
+To run:
+% runScan
+% collateScan
+
+You'll note that the linear terms from the fits (on the plot labels) are the same
+as the derivative terms from the parameter values in the on-momentum file, once 
+you adjust for the fact that the fits have delta in percent.

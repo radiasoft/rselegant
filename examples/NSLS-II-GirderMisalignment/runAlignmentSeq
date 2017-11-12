@@ -1,0 +1,43 @@
+#!/bin/csh -f 
+set nonomatch
+
+# Filename = runAlignmentSeq_Correct
+# Developed by S. Kramer and M. Borland
+# Generates girder errors for NSLS II lattice, then corrects the orbit
+
+set SeedNum = 987654321
+set nEnsembles = 100
+
+# First run adds errors to everything
+elegant run1.ele -macro=seeds=$nEnsembles,seednum=$SeedNum | tee run1.ele.log
+if (! -e run1.done) then
+    echo "Something went wrong with run1!"
+    exit
+endif
+echo  "run1.ele  finished for Nseeds= "$nEnsembles
+
+# This script adds the girder errors
+if (-e InstallGirderErrors.log) then
+    \rm InstallGirderErrors.log
+endif
+./InstallGirderErrors | tee InstallGirderErrors.log
+
+# Apply the new offsets girder + random to magnets and correct as a transport
+# line.  This is good for getting the closed orbit inside the chamber, as it
+# were.
+elegant run2.ele -macro=seeds=$nEnsembles,seednum=$SeedNum | tee run2.ele.log
+if (! -e run2.done) then
+    echo "Something went wrong with run2!"
+    exit
+endif
+echo  "run2.ele  finished for Nseeds= "$nEnsembles
+
+# Apply the offsets plus trajectory correction, then correct the closed orbits.
+elegant run3.ele -macro=seeds=$nEnsembles,seednum=$SeedNum | tee run3.ele.log
+if (! -e run3.done) then
+    echo "Something went wrong with run3!"
+    exit
+endif
+echo  "run3.ele  finished for Nseeds= "$nEnsembles
+
+./processAlignmentSeq

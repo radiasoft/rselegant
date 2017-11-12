@@ -1,0 +1,62 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+# Needed to give the list of quadrupole names:
+set parameters run0.param
+
+# Needed to get the names of the response matrix elements:
+set hResp run1.hrm
+set vResp run1.vrm
+
+# Output filename
+set output match1.ele
+
+# Partial input file
+set input fittingStatements.ele
+set fi [open $input r]
+
+set fo [open $output w]
+
+while {![eof $fi]} {
+    gets $fi data
+    puts $fo $data
+}
+
+if [catch {exec sddsprocess $parameters -pipe=out -match=column,ElementType=*QUAD -match=column,ElementParameter=L \
+             | sdds2stream -pipe -column=ElementName} quadNameList] {
+    puts stderr "Error: $quadNameList"
+    exit 1
+}
+
+foreach quad $quadNameList {
+    puts $fo "&optimization_variable name=$quad, item=FSE, lower_limit=-0.1, upper_limit=0.1, step_size=0.001 &end"
+}
+puts $fo ""
+
+foreach matrix [list $hResp $vResp] HV [list H V] kickName [list KICK KICK] {
+    puts stdout "Working on $matrix"
+    flush stdout
+    if [catch {exec sddsconvert $matrix -pipe=out -delete=column,s,BPMName \
+                 | sddsquery -pipe -column} correctorNameList] {
+        puts stderr "Error: $correctorNameList"
+        exit 1
+    }
+    foreach corrector $correctorNameList {
+        puts stdout "Working on $corrector"
+        flush stdout
+        # Make matching terms for each BPM for one corrector.
+        # We assume that each element name (BPMs and correctors) is unique
+        if [catch {exec sddsprocess $matrix -pipe=out \
+                     "-print=column,statement,&optimization_term term = \"${HV}R_%s\#1_${corrector}\#1.$kickName %e - sqr\" &end,BPMName,$corrector"  \
+                     | sdds2stream -pipe -column=statement} statementList] {
+            puts stderr "Error: $statementList"
+        }
+        foreach statement $statementList {
+            puts $fo $statement
+        }
+    }
+}
+
+puts $fo "&bunched_beam &end"
+puts $fo "&optimize &end"

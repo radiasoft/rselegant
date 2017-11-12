@@ -1,0 +1,17 @@
+There are four separate examples in this directory, all relevant
+to a system consisting of a (linac, bunch-compressor, linac) system.
+
+A basic linac and four dipole chicane simulation with CSR and wakefields:
+% ./fourDipoleCSR
+
+A simulation of the sensitivity to changes in the initial beam timing:
+% ./dtSweep
+
+A simulation of the sensitivity to changes in the phase of the upstream linac:
+% ./phaseSweep
+
+A simulation of the effect of operating the compressor for different beam energy:
+% ./energySweep
+
+Examples by M. Borland, APS.
+

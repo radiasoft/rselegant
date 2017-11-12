@@ -1,0 +1,60 @@
+! Example of chromaticity correction.
+! We also illustrate use of saving/loading a parameter file.
+
+&run_setup
+        lattice = "par.lte",
+        parameters = %s.param
+        p_central = 880,
+        use_beamline="par",
+        default_order = 2,
+        semaphore_file = %s.done,
+&end
+
+&twiss_output 
+        output_at_each_step=1
+&end
+
+&chromaticity
+        dnux_dp = 1,
+        dnuy_dp = 1,
+        sextupoles = "SDH SFH",
+&end
+
+&run_control
+&end
+
+&bunched_beam 
+&end
+
+&track 
+&end
+
+! Now we reload the solution and output results to the twiss output file.
+
+&run_setup
+        lattice = "par.lte",
+        parameters = %s.param
+        p_central = 880,
+        default_order = 2,
+        semaphore_file = %s.done,
+&end
+
+&load_parameters
+        filename = %s.param,
+&end
+
+&twiss_output filename = "%s.twi", 
+        output_at_each_step=1
+        radiation_integrals = 1,
+        statistics = 1
+&end
+
+&run_control
+&end
+
+&bunched_beam 
+&end
+
+&track 
+&end
+

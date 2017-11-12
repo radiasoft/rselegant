@@ -1,0 +1,23 @@
+! Take the beam from makeBeam1.ele run
+! Send it through a beamline that does scattering and energy loss
+! Write it out
+
+&run_setup
+    lattice = "slc.lte",
+	expand_for = "beam1.out",
+    default_order = 1,
+    concat_order = 1,
+    output = "beam2.out",
+	use_beamline = scatloss,
+&end
+
+&run_control
+    n_passes = 1
+&end
+
+&sdds_beam
+	input = beam1.out
+&end
+
+&track &end
+

@@ -1,0 +1,33 @@
+&run_setup
+        lattice = lattice.lte,
+	magnets = "%s.mag",
+        default_order = 2,
+        use_beamline = bl,
+        p_central_mev = 20,
+        sigma = %s.sig,
+        centroid = %s.cen,
+        output = %s.out,
+        final = %s.fin
+&end
+
+&run_control
+        n_steps = 1
+&end
+
+&bunched_beam
+        n_particles_per_bunch = 10000,
+        one_random_bunch=1,
+	emit_nx = 1.5e-6,
+	emit_ny = 1.5e-6,
+        beta_x = 62.00, alpha_x = 0.0, eta_x = 0.0, etap_x = 0.0,
+        beta_y = 19.00, alpha_y = 0.0, eta_y = 0.0, etap_y = 0.0
+        sigma_dp = 0.00625,
+        sigma_s = 1800.e-6,
+        distribution_type[0] = 3*"gaussian",
+        distribution_cutoff[0] = 3*4,
+        symmetrize = 0,
+        enforce_rms_values[0] = 1,1,1,
+        bunch = %s.bun
+&end
+
+&track &end

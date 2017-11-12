@@ -1,0 +1,7 @@
+By default, when elegant imparts FSEs (fractional strength errors) to a
+dipole, the strength of the multipoles (e.g., K1, K2, etc) is also changed.
+The assumption is that the error comes from variation of the power supply,
+rather than construction tolerances.  This example shows how to use link_elements
+to defeat this linkage.
+
+Example by M. Borland (ANL).

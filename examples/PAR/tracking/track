@@ -1,0 +1,18 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists parTrack.log] {
+    catch {exec elegant parTrack.ele > parTrack.log}
+}
+exec sddsplot -column=Cx,Cxp parTrack-x.w1 -graph=dot -end \
+ -column=Cy,Cyp parTrack-y.w1 -graph=dot &
+
+exec sddsfft parTrack-x.w1 parTrack-x.w1fft -window -column=Pass,Cx
+exec sddsfft parTrack-y.w1 parTrack-y.w1fft -window -column=Pass,Cy
+exec sddsplot \
+    -mode=y=log,y=special -graph=line,vary -legend \
+    -split=page -separate=page -groupby=page -same \
+    -column=f,FFTCx parTrack-x.w1fft \
+    -column=f,FFTCy parTrack-y.w1fft &
+

@@ -1,0 +1,11 @@
+This is an example of using Pelegant to perform FMA.
+Example by M. Borland and Y. Wang.
+
+You need to modify the path variable in run_Pelegant to match your MPI
+installation.  Following that, try
+
+elegant parTrack1.ele 
+run_Pelegant parTrack2.ele 
+
+sddsplot -column=x,y parTrack2.aper
+

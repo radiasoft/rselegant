@@ -1,0 +1,17 @@
+#!/bin/sh  
+# \
+exec tclsh "$0" "$@"
+
+if ![file exists emitOpt.log] {
+    catch {exec elegant emitOpt.ele > emitOpt.log}
+}
+exec sddsplot -parameter=Step,optimizationFunction emitOpt.fin -limit=ymax=1e-4 &
+
+catch {exec sddsprintout emitOpt.twi \
+    -parameter=ex0 -parameter=Sdelta0,end \
+    -parameter=nu?,end \
+    -parameter=dnu?/dp,end \
+    -parameter=betax*,end \
+    -parameter=betay*,end} result
+puts "$result"
+
