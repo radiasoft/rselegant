@@ -24,4 +24,4 @@ M. Borland, "elegant: A Flexible SDDS-Compliant Code for Accelerator Simulation,
 Y. Wang and M. Borland, "Pelegant: A Parallel Accelerator Simulation Code for Electron Generation and Tracking," [AIP Conf. Proc. 877, 241 (2006)](http://aip.scitation.org/doi/pdf/10.1063/1.2409141).
 
 ## Run the Examples (and more)
-Please select the topic of interest from the sidebar to your right.
+More information is [provided in the wiki](https://github.com/radiasoft/elegant/wiki).
