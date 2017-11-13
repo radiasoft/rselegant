@@ -1,4 +1,4 @@
-# The rselegant community repository
+# The `rselegant` community repository
 This is a community repository for the widely used code `elegant`, which is widely used to simulate all types of charged particle accelerators with a wide range of features, including support for nonlinear optimization and design. 
 
 ## User Manual
