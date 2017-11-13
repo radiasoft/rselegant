@@ -1,14 +1,14 @@
-# elegant
-The widely used code 'elegant' simulates all types of charged particle accelerators with a wide range of features, including support for nonlinear optimization and design. 
+# The rselegant community repository
+This is a community repository for the widely used code `elegant`, which is widely used to simulate all types of charged particle accelerators with a wide range of features, including support for nonlinear optimization and design. 
 
 ## User Manual
 Michael Borland and Tim Berenc, "User’s Manual for elegant, Program Version 34.0" [Advanced Photon Source (October 31, 2017)](http://www.aps.anl.gov/Accelerator_Systems_Division/Accelerator_Operations_Physics/manuals/elegant_latest/elegant.html).
 
 ## Discussion forum
-There is an active [online user forum](https://www.aps.anl.gov/Accelerator_Systems_Division/Accelerator_Operations_Physics/phpBB3/) for elegant.
+There is an active [online user forum](https://www.aps.anl.gov/Accelerator_Systems_Division/Accelerator_Operations_Physics/phpBB3/) for `elegant`.
 
 ## Download
-elegant is [freely available](https://www1.aps.anl.gov/Accelerator-Operations-Physics/Software).
+`elegant` is [freely available](https://www1.aps.anl.gov/Accelerator-Operations-Physics/Software).
 
 ## Sirepo GUI
 A [browser-based GUI for elegant](http://sirepo.com) enables easy cloud-based execution.
