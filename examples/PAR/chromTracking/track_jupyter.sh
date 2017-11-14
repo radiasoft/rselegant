@@ -15,7 +15,7 @@ exec sddsfft parTrack.w1 -pipe=out -window -column=Pass,Cx,Cy \
  | sddsprocess -pipe=in parTrack.w1fft \
   "-print=parameter,Label1,\$gd\$r = %.4f,delta"
 
-exec sddsplot -title=@Label1 -device=png[rootname='chromTracking'] \
+exec sddsplot -title=@Label1 -device=png,rootname='chromTracking' \
     -mode=y=log,y=special -graph=line,vary -legend \
     -split=page -separate=page -groupby=page -same \
     -column=f,FFTCx parTrack.w1fft \
@@ -33,7 +33,7 @@ exec sddsnaff parTrack.w1 -pipe=out -column=Pass,Cx,Cy \
   "-print=parameter,xLabel,x chrom.:  fit gives %.4f    Twiss gives %.4f,CxFrequencySlope,dnux/dp" \
   "-print=parameter,yLabel,y chrom.:  fit gives %.4f    Twiss gives %.4f,CyFrequencySlope,dnuy/dp" \
 
-  exec sddsplot -device=png[rootname='chromTracking'] \
+  exec sddsplot -device=png,rootname='chromTracking' \
     -column=delta,CxFrequency -graph=sym parTrack.fit -title=@xLabel \
     -column=delta,CxFrequencyFit -graph=line,type=1 parTrack.fit -end \
     -column=delta,CyFrequency -graph=sym parTrack.fit -title=@yLabel \
